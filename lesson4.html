@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 4: Conditions - PenguinTwist</title>
+    <title>Lesson 4: If Statements - PenguinTwist</title>
     
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -436,7 +436,7 @@
         <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
         <div class="container">
             <h1>Lesson 4: Making Decisions with If Statements</h1>
-            <p>Teach your program to make choices based on different situations!</p>
+            <p>Teach your program to choose between different actions!</p>
         </div>
     </div>
     
@@ -460,26 +460,36 @@
                 <h3>🔬 Theory</h3>
                 <div class="theory">
                     <p>An if statement checks a condition and runs code only if it's true:</p>
-                    <div class="code-example">age = int(input("How old are you? "))
+                    <div class="code-example">weather = input("Is it sunny or rainy? ")
 
-if age >= 16:
-    print("You can learn to drive!")
+if weather == "sunny":
+    print("Great! Let's go to the park!")
 else:
-    print("Not quite old enough to drive yet!")</div>
+    print("Let's stay inside and read a book!")</div>
+                    
                     <p>Key parts of if statements:</p>
                     <ul style="margin: 1rem 0; padding-left: 2rem;">
                         <li><code>if</code> - starts the condition check</li>
-                        <li><code>age >= 16:</code> - the condition to check (note the colon!)</li>
+                        <li><code>weather == "sunny":</code> - the condition to check (note the colon!)</li>
+                        <li><code>==</code> means "is equal to" (we use two equals signs)</li>
                         <li>Indented code runs only if the condition is true</li>
                         <li><code>else:</code> - what to do if the condition is false</li>
                     </ul>
                     
+                    <p>Let's see another example:</p>
+                    <div class="code-example">answer = input("What is 5 + 3? ")
+
+if answer == "8":
+    print("Correct! Well done!")
+else:
+    print("Not quite right. The answer is 8.")</div>
+                    
                     <div class="tip">
-                        <strong>💡 Tip:</strong> Python uses indentation (spaces) to group code together. Always indent the code that goes with your if statement!
+                        <strong>💡 Tip:</strong> Python uses indentation (spaces) to group code together. Always indent the code that goes with your if statement by pressing the space bar 4 times!
                     </div>
                     
                     <div class="challenge">
-                        <strong>🎯 Challenge:</strong> Create a simple quiz program that asks a question and tells the user if they got it right or wrong!
+                        <strong>🎯 Challenge:</strong> Think about decisions you make every day. How could you turn one of those into an if statement?
                     </div>
                 </div>
             </div>
@@ -495,16 +505,12 @@ else:
                         </div>
                     </div>
                     <div class="editor-container">
-                        <textarea id="editor">favorite_color = input("What's your favorite color? ")
+                        <textarea id="editor">pet = input("Do you have a dog or a cat? ")
 
-if favorite_color.lower() == "blue":
-    print("Blue is a great choice! It's calming and peaceful.")
-elif favorite_color.lower() == "red":
-    print("Red is so vibrant and energetic!")
-elif favorite_color.lower() == "green":
-    print("Green is the color of nature - very refreshing!")
+if pet == "dog":
+    print("Dogs are amazing! They're so loyal and friendly.")
 else:
-    print(favorite_color, "is a wonderful color choice!")</textarea>
+    print("Cats are wonderful! They're independent and clever.")</textarea>
                     </div>
                     <div class="output-container" id="output"></div>
                 </div>
@@ -513,34 +519,34 @@ else:
                     <h4>🎯 Practice Challenges</h4>
                     <div class="challenges-grid">
                         <div class="challenge-item">
-                            <strong>1.</strong> Ask for age and tell them if they can vote (18+)
+                            <strong>1.</strong> Ask if someone likes pizza and respond positively
                         </div>
                         <div class="challenge-item">
-                            <strong>2.</strong> Check if a number is positive, negative, or zero
+                            <strong>2.</strong> Check if today is Saturday or Sunday (weekend)
                         </div>
                         <div class="challenge-item">
-                            <strong>3.</strong> Ask for a grade (A-F) and give feedback
+                            <strong>3.</strong> Ask for favorite color and give a compliment
                         </div>
                         <div class="challenge-item">
-                            <strong>4.</strong> Check if it's a weekend (Saturday/Sunday)
+                            <strong>4.</strong> Simple yes/no question about liking music
                         </div>
                         <div class="challenge-item">
-                            <strong>5.</strong> Ask for temperature and suggest clothing
+                            <strong>5.</strong> Ask if it's morning or evening and greet appropriately
                         </div>
                         <div class="challenge-item">
-                            <strong>6.</strong> Create a simple password checker (length > 8)
+                            <strong>6.</strong> Check if someone's name is the same as yours
                         </div>
                         <div class="challenge-item">
-                            <strong>7.</strong> Ask for favorite season and describe the weather
+                            <strong>7.</strong> Ask about favorite season and comment on it
                         </div>
                         <div class="challenge-item">
-                            <strong>8.</strong> Check if someone can drive based on age
+                            <strong>8.</strong> Simple math question with right/wrong answers
                         </div>
                         <div class="challenge-item">
-                            <strong>9.</strong> Create a simple quiz with right/wrong answers
+                            <strong>9.</strong> Ask if someone prefers books or movies
                         </div>
                         <div class="challenge-item">
-                            <strong>10.</strong> Ask for a number and tell if it's even or odd
+                            <strong>10.</strong> Check if someone's favorite subject is the same as yours
                         </div>
                     </div>
                 </div>
@@ -562,16 +568,12 @@ else:
     
     <script>
         let editor;
-        const defaultCode = `favorite_color = input("What's your favorite color? ")
+        const defaultCode = `pet = input("Do you have a dog or a cat? ")
 
-if favorite_color.lower() == "blue":
-    print("Blue is a great choice! It's calming and peaceful.")
-elif favorite_color.lower() == "red":
-    print("Red is so vibrant and energetic!")
-elif favorite_color.lower() == "green":
-    print("Green is the color of nature - very refreshing!")
+if pet == "dog":
+    print("Dogs are amazing! They're so loyal and friendly.")
 else:
-    print(favorite_color, "is a wonderful color choice!")`;
+    print("Cats are wonderful! They're independent and clever.")`;
         
         // Initialize CodeMirror editor
         function initializeEditor() {
@@ -593,9 +595,9 @@ else:
                 this.variables = {};
                 this.output = [];
                 this.inputResponses = {
-                    "What's your favorite color? ": "blue",
-                    "How old are you? ": "16",
-                    "What's your name? ": "Alex",
+                    "Do you have a dog or a cat? ": "dog",
+                    "Is it sunny or rainy? ": "sunny",
+                    "What is 5 + 3? ": "8",
                     "": "Student"
                 };
             }
@@ -618,14 +620,10 @@ else:
             
             executeCode(code) {
                 this.reset();
-                const lines = code.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
                 
                 try {
                     this.validateSyntax(code);
-                    
-                    for (const line of lines) {
-                        this.executeLine(line);
-                    }
+                    this.executeStatements(code);
                     
                     if (this.output.length === 0) {
                         return 'Code executed successfully (no output)';
@@ -638,86 +636,108 @@ else:
             }
             
             validateSyntax(code) {
-                // Basic syntax validation
-                let inQuotes = false;
-                let quoteChar = '';
-                let lineNum = 1;
-                
-                for (let i = 0; i < code.length; i++) {
-                    const char = code[i];
-                    
-                    if (char === '\n') {
-                        lineNum++;
-                        if (inQuotes) {
-                            throw new Error(`Unclosed string on line ${lineNum - 1}. Missing closing quote (${quoteChar}).`);
-                        }
-                    }
-                    
-                    if ((char === '"' || char === "'") && !inQuotes) {
-                        inQuotes = true;
-                        quoteChar = char;
-                    } else if (char === quoteChar && inQuotes) {
-                        if (i > 0 && code[i-1] !== '\\') {
-                            inQuotes = false;
-                            quoteChar = '';
-                        }
-                    }
-                }
-                
-                if (inQuotes) {
-                    throw new Error(`Unclosed string. Missing closing quote (${quoteChar}).`);
-                }
-                
-                // Check for missing colons in if statements
                 const lines = code.split('\n');
+                
                 for (let i = 0; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (line === '') continue;
                     
-                    if ((line.startsWith('if ') || line.startsWith('elif ') || line === 'else') && !line.endsWith(':')) {
-                        throw new Error(`Missing colon (:) at end of if/elif/else statement on line ${i + 1}.`);
+                    // Check for missing colons in if statements
+                    if ((line.startsWith('if ') || line.startsWith('else')) && !line.endsWith(':')) {
+                        throw new Error(`Missing colon (:) at end of if/else statement on line ${i + 1}.`);
                     }
                     
-                    // Check indentation for if blocks
+                    // Check indentation
                     if (i > 0) {
                         const prevLine = lines[i-1].trim();
-                        if (prevLine.endsWith(':') && line && !line.startsWith('    ') && !line.startsWith('\t')) {
+                        if (prevLine.endsWith(':') && line && !lines[i].startsWith('    ')) {
                             throw new Error(`Line ${i + 1} should be indented. Add 4 spaces at the beginning.`);
                         }
                     }
                 }
             }
             
-            executeLine(line) {
-                // Handle print statements
-                if (line.startsWith('print(')) {
-                    this.handlePrint(line);
-                }
-                // Handle variable assignments
-                else if (line.includes(' = ') && !line.includes('input(')) {
-                    this.handleAssignment(line);
-                }
-                // Handle input assignments
-                else if (line.includes('input(')) {
-                    this.handleInput(line);
-                }
-                // Handle if statements (simplified)
-                else if (line.startsWith('if ') || line.startsWith('elif ') || line.startsWith('else:')) {
-                    this.handleConditional(line);
+            executeStatements(code) {
+                const lines = code.split('\n');
+                let i = 0;
+                
+                while (i < lines.length) {
+                    const line = lines[i].trim();
+                    
+                    if (line === '' || line.startsWith('#')) {
+                        i++;
+                        continue;
+                    }
+                    
+                    if (line.includes('input(')) {
+                        this.handleInput(line);
+                    } else if (line.startsWith('if ')) {
+                        i = this.handleIfStatement(lines, i);
+                        continue;
+                    } else if (line.startsWith('print(')) {
+                        this.handlePrint(line);
+                    } else if (line.includes(' = ')) {
+                        this.handleAssignment(line);
+                    }
+                    
+                    i++;
                 }
             }
             
-            handleConditional(line) {
-                // Simplified conditional handling for demo
-                if (line.includes('favorite_color.lower() == "blue"')) {
-                    this.print("Blue is a great choice! It's calming and peaceful.");
-                } else if (line.includes('favorite_color.lower() == "red"')) {
-                    this.print("Red is so vibrant and energetic!");
-                } else if (line.includes('favorite_color.lower() == "green"')) {
-                    this.print("Green is the color of nature - very refreshing!");
-                } else if (line.startsWith('else:')) {
-                    const color = this.variables.favorite_color || "that";
-                    this.print(color + " is a wonderful color choice!");
+            handleIfStatement(lines, startIndex) {
+                const ifLine = lines[startIndex].trim();
+                const condition = ifLine.slice(3, -1); // Remove "if " and ":"
+                
+                let i = startIndex + 1;
+                let ifBlock = [];
+                let elseBlock = [];
+                let currentBlock = ifBlock;
+                
+                // Collect if and else blocks
+                while (i < lines.length) {
+                    const line = lines[i];
+                    const trimmed = line.trim();
+                    
+                    if (trimmed === 'else:') {
+                        currentBlock = elseBlock;
+                        i++;
+                        continue;
+                    } else if (trimmed && !line.startsWith('    ')) {
+                        break; // End of if statement
+                    } else if (line.startsWith('    ')) {
+                        currentBlock.push(line.slice(4)); // Remove indentation
+                    }
+                    
+                    i++;
+                }
+                
+                // Evaluate condition and execute appropriate block
+                if (this.evaluateCondition(condition)) {
+                    this.executeBlock(ifBlock);
+                } else {
+                    this.executeBlock(elseBlock);
+                }
+                
+                return i - 1;
+            }
+            
+            evaluateCondition(condition) {
+                // Simple string equality check
+                if (condition.includes(' == ')) {
+                    const [left, right] = condition.split(' == ').map(s => s.trim());
+                    const leftVal = this.evaluateExpression(left);
+                    const rightVal = this.evaluateExpression(right);
+                    return leftVal === rightVal;
+                }
+                return false;
+            }
+            
+            executeBlock(block) {
+                for (const line of block) {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('print(')) {
+                        this.handlePrint(trimmed);
+                    }
                 }
             }
             
@@ -792,14 +812,6 @@ else:
                 // Variables
                 if (this.variables.hasOwnProperty(expr)) {
                     return this.variables[expr];
-                }
-                
-                // Method calls like .lower()
-                if (expr.includes('.lower()')) {
-                    const varName = expr.split('.')[0];
-                    if (this.variables[varName]) {
-                        return this.variables[varName].toLowerCase();
-                    }
                 }
                 
                 return expr;
