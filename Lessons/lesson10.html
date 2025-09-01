@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10: Printing Different Data Types - PenguinTwist</title>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .dark-mode-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-back {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-back .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-back a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .nav-back a:hover {
+            text-decoration: underline;
+        }
+        
+        .lesson-content {
+            background: white;
+            margin: 2rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .intro {
+            background: #e8f4fd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .theory {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+        
+        .tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #fdcb6e;
+        }
+        
+        .challenge {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .data-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .data-type-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .data-type-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .data-type-card.string-type {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .data-type-card.integer-type {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+        
+        .data-type-card.float-type {
+            border-color: #ffc107;
+            background: #fffef8;
+        }
+        
+        .data-type-card.boolean-type {
+            border-color: #dc3545;
+            background: #fff8f8;
+        }
+        
+        .data-type-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .python-playground {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .playground-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .playground-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-run {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-run:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #545b62;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .editor-container {
+            position: relative;
+        }
+        
+        .CodeMirror {
+            height: 280px;
+            font-size: 14px;
+        }
+        
+        .output-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+        }
+        
+        .output-container:empty::before {
+            content: "Click 'Run Code' to see output here...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .loading {
+            color: #ffc107;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .challenges-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .challenges-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .challenge-item {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .challenge-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .challenge-item strong {
+            color: #fff3cd;
+            margin-right: 0.5rem;
+        }
+        
+        .lesson-navigation {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+        
+        body.dark-mode .dark-mode-toggle:hover {
+            background: rgba(251, 191, 36, 0.3);
+        }
+        
+        body.dark-mode .nav-back {
+            background: #2d3748;
+        }
+        
+        body.dark-mode .nav-back a {
+            color: #81c784;
+        }
+        
+        body.dark-mode .lesson-content,
+        body.dark-mode .lesson-navigation {
+            background: #2d3748;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .intro {
+            background: #1e3a3a;
+            border-left-color: #4facfe;
+        }
+        
+        body.dark-mode .theory {
+            background: #1e2d1e;
+            border-left-color: #28a745;
+        }
+        
+        body.dark-mode .tip {
+            background: #3d3520;
+            border-color: #ffeaa7;
+            color: #fff3cd;
+        }
+        
+        body.dark-mode .challenge {
+            background: #3d2020;
+            border-color: #f5c6cb;
+            color: #f8d7da;
+        }
+        
+        body.dark-mode .data-type-card {
+            background: #374151;
+            border-color: #4b5563;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .data-type-card.string-type {
+            background: #1e3a2e;
+            border-color: #28a745;
+        }
+        
+        body.dark-mode .data-type-card.integer-type {
+            background: #1e2a3a;
+            border-color: #007bff;
+        }
+        
+        body.dark-mode .data-type-card.float-type {
+            background: #3a3520;
+            border-color: #ffc107;
+        }
+        
+        body.dark-mode .data-type-card.boolean-type {
+            background: #3a1e1e;
+            border-color: #dc3545;
+        }
+        
+        body.dark-mode .challenges-section {
+            background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%);
+        }
+        
+        body.dark-mode .challenge-item {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-mode .challenge-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .section h3 {
+            color: #81c784;
+            border-bottom-color: #81c784;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .lesson-content {
+                padding: 1rem;
+            }
+            
+            .playground-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .dark-mode-toggle {
+                top: 0.5rem;
+                right: 1rem;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .data-types-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
+        <div class="container">
+            <h1>Lesson 10: Printing Different Data Types</h1>
+            <p>Learn how to display strings, integers, floats, and booleans together!</p>
+        </div>
+    </div>
+    
+    <div class="nav-back">
+        <div class="container">
+            <a href="navigation.html">← Back to All Lessons</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="lesson-content">
+            <div class="section">
+                <h3>📚 Introduction</h3>
+                <div class="intro">
+                    <p>Now that you know about strings, integers, floats, and booleans, it's time to learn how to display them all together! In real programs, you'll often need to print different types of data in the same message.</p>
+                    <p>Python makes it easy to mix and match different data types when printing - let's learn how!</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🔬 Theory</h3>
+                <div class="theory">
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">The Four Main Data Types:</h4>
+                    <div class="data-types-grid">
+                        <div class="data-type-card string-type">
+                            <div class="data-type-icon">📝</div>
+                            <h4>String</h4>
+                            <p>"Hello World"</p>
+                            <small>Text in quotes</small>
+                        </div>
+                        <div class="data-type-card integer-type">
+                            <div class="data-type-icon">🔢</div>
+                            <h4>Integer</h4>
+                            <p>42</p>
+                            <small>Whole numbers</small>
+                        </div>
+                        <div class="data-type-card float-type">
+                            <div class="data-type-icon">📊</div>
+                            <h4>Float</h4>
+                            <p>3.14</p>
+                            <small>Decimal numbers</small>
+                        </div>
+                        <div class="data-type-card boolean-type">
+                            <div class="data-type-icon">✅</div>
+                            <h4>Boolean</h4>
+                            <p>True</p>
+                            <small>True or False</small>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Method 1: Using commas in print()</h4>
+                    <div class="code-example"># Different data types
+name = "Alice"
+age = 16
+height = 1.65
+is_student = True
+
+# Print with commas (adds spaces automatically)
+print("Name:", name)
+print("Age:", age, "years old")
+print("Height:", height, "meters")
+print("Student:", is_student)</div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Method 2: Using f-strings (recommended)</h4>
+                    <div class="code-example"># Same variables as above
+name = "Alice"
+age = 16
+height = 1.65
+is_student = True
+
+# F-strings for clean formatting
+print(f"Hi, I'm {name}")
+print(f"I am {age} years old")
+print(f"My height is {height}m")
+print(f"Am I a student? {is_student}")</div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Method 3: Converting with str()</h4>
+                    <div class="code-example"># Convert everything to strings for concatenation
+score = 95
+percentage = 87.5
+passed = True
+
+# Convert numbers and booleans to strings
+print("Score: " + str(score))
+print("Percentage: " + str(percentage) + "%")
+print("Passed: " + str(passed))</div>
+                    
+                    <div class="tip">
+                        <strong>💡 Tip:</strong> F-strings are usually the best choice! They're clean, readable, and automatically convert different data types to strings for you.
+                    </div>
+                    
+                    <div class="challenge">
+                        <strong>🎯 Challenge:</strong> Create a complete profile using all four data types - your name (string), age (integer), height (float), and whether you like coding (boolean)!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>💻 Interactive Coding</h3>
+                <div class="python-playground">
+                    <div class="playground-header">
+                        <span>🐍 Python Playground - Lesson 10</span>
+                        <div class="playground-controls">
+                            <button class="btn btn-run" onclick="runCode()">▶ Run Code</button>
+                            <button class="btn btn-reset" onclick="resetCode()">🔄 Reset</button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <textarea id="editor"># Student profile with all data types
+name = "Alex"           # String
+age = 16               # Integer  
+height = 1.72          # Float
+likes_python = True    # Boolean
+
+print("=== Student Profile ===")
+
+# Method 1: Using commas
+print("Name:", name)
+print("Age:", age, "years")
+print("Height:", height, "meters")
+print("Likes Python:", likes_python)
+
+print("\n=== Using F-strings ===")
+
+# Method 2: Using f-strings (recommended)
+print(f"Hello! My name is {name}")
+print(f"I am {age} years old")
+print(f"I am {height}m tall")
+print(f"Do I like Python? {likes_python}")
+
+# Mixing data types in one statement
+print(f"\nSummary: {name}, age {age}, height {height}m")
+
+# Check all the data types
+print(f"\nData types:")
+print(f"Name type: {type(name)}")
+print(f"Age type: {type(age)}")
+print(f"Height type: {type(height)}")
+print(f"Likes Python type: {type(likes_python)}")</textarea>
+                    </div>
+                    <div class="output-container" id="output"></div>
+                </div>
+                
+                <div class="challenges-section">
+                    <h4>🎯 Practice Challenges</h4>
+                    <div class="challenges-grid">
+                        <div class="challenge-item">
+                            <strong>1.</strong> Create a book profile: title (string), pages (int), price (float), bestseller (bool)
+                        </div>
+                        <div class="challenge-item">
+                            <strong>2.</strong> Make a weather report using all four data types
+                        </div>
+                        <div class="challenge-item">
+                            <strong>3.</strong> Print your favorite movie with rating, year, and whether you own it
+                        </div>
+                        <div class="challenge-item">
+                            <strong>4.</strong> Create a sports score display with team names and scores
+                        </div>
+                        <div class="challenge-item">
+                            <strong>5.</strong> Make a product listing: name, price, quantity, in stock (bool)
+                        </div>
+                        <div class="challenge-item">
+                            <strong>6.</strong> Display a recipe with ingredients and cooking time
+                        </div>
+                        <div class="challenge-item">
+                            <strong>7.</strong> Create a game character profile with stats
+                        </div>
+                        <div class="challenge-item">
+                            <strong>8.</strong> Print exam results: subject, score, percentage, passed
+                        </div>
+                        <div class="challenge-item">
+                            <strong>9.</strong> Make a travel itinerary with destinations and costs
+                        </div>
+                        <div class="challenge-item">
+                            <strong>10.</strong> Display a complete person's profile using all data types
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lesson-navigation">
+            <div class="nav-buttons">
+                <a href="lesson9.html" class="nav-btn">← Previous Lesson</a>
+                <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
+                <a href="lesson11.html" class="nav-btn">Next Lesson →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <script>
+        let editor;
+        const defaultCode = `# Student profile with all data types
+name = "Alex"           # String
+age = 16               # Integer  
+height = 1.72          # Float
+likes_python = True    # Boolean
+
+print("=== Student Profile ===")
+
+# Method 1: Using commas
+print("Name:", name)
+print("Age:", age, "years")
+print("Height:", height, "meters")
+print("Likes Python:", likes_python)
+
+print("\\n=== Using F-strings ===")
+
+# Method 2: Using f-strings (recommended)
+print(f"Hello! My name is {name}")
+print(f"I am {age} years old")
+print(f"I am {height}m tall")
+print(f"Do I like Python? {likes_python}")
+
+# Mixing data types in one statement
+print(f"\\nSummary: {name}, age {age}, height {height}m")
+
+# Check all the data types
+print(f"\\nData types:")
+print(f"Name type: {type(name)}")
+print(f"Age type: {type(age)}")
+print(f"Height type: {type(height)}")
+print(f"Likes Python type: {type(likes_python)}")`;
+        
+        // Initialize CodeMirror editor
+        function initializeEditor() {
+            const textarea = document.getElementById('editor');
+            editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true
+            });
+            editor.setValue(defaultCode);
+        }
+        
+        // Simple Python interpreter for educational purposes
+        class SimplePythonInterpreter {
+            constructor() {
+                this.variables = {};
+                this.output = [];
+            }
+            
+            reset() {
+                this.variables = {};
+                this.output = [];
+            }
+            
+            print(...args) {
+                const line = args.map(arg => String(arg)).join(' ');
+                this.output.push(line);
+            }
+            
+            executeCode(code) {
+                this.reset();
+                const lines = code.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+                
+                try {
+                    this.validateSyntax(code);
+                    
+                    for (const line of lines) {
+                        this.executeLine(line);
+                    }
+                    
+                    if (this.output.length === 0) {
+                        return 'Code executed successfully (no output)';
+                    }
+                    
+                    return this.output.join('\n');
+                } catch (error) {
+                    return `Error: ${error.message}`;
+                }
+            }
+            
+            validateSyntax(code) {
+                // Basic syntax validation
+                let inQuotes = false;
+                let quoteChar = '';
+                let lineNum = 1;
+                
+                for (let i = 0; i < code.length; i++) {
+                    const char = code[i];
+                    
+                    if (char === '\n') {
+                        lineNum++;
+                        if (inQuotes) {
+                            throw new Error(`Unclosed string on line ${lineNum - 1}. Missing closing quote (${quoteChar}).`);
+                        }
+                    }
+                    
+                    if ((char === '"' || char === "'") && !inQuotes) {
+                        inQuotes = true;
+                        quoteChar = char;
+                    } else if (char === quoteChar && inQuotes) {
+                        if (i > 0 && code[i-1] !== '\\') {
+                            inQuotes = false;
+                            quoteChar = '';
+                        }
+                    }
+                }
+                
+                if (inQuotes) {
+                    throw new Error(`Unclosed string. Missing closing quote (${quoteChar}).`);
+                }
+            }
+            
+            executeLine(line) {
+                // Handle print statements
+                if (line.startsWith('print(')) {
+                    this.handlePrint(line);
+                }
+                // Handle variable assignments
+                else if (line.includes(' = ') && !line.includes('input(')) {
+                    this.handleAssignment(line);
+                }
+            }
+            
+            handlePrint(line) {
+                const match = line.match(/print\((.*)\)/);
+                if (match) {
+                    const content = match[1];
+                    const parts = this.parseArguments(content);
+                    const values = parts.map(part => this.evaluateExpression(part));
+                    this.print(...values);
+                }
+            }
+            
+            handleAssignment(line) {
+                const [varName, value] = line.split(' = ').map(s => s.trim());
+                this.variables[varName] = this.evaluateExpression(value);
+            }
+            
+            parseArguments(content) {
+                const args = [];
+                let current = '';
+                let inQuotes = false;
+                let quoteChar = '';
+                
+                for (let i = 0; i < content.length; i++) {
+                    const char = content[i];
+                    
+                    if ((char === '"' || char === "'") && !inQuotes) {
+                        inQuotes = true;
+                        quoteChar = char;
+                        current += char;
+                    } else if (char === quoteChar && inQuotes) {
+                        inQuotes = false;
+                        current += char;
+                    } else if (char === ',' && !inQuotes) {
+                        args.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                if (current.trim()) {
+                    args.push(current.trim());
+                }
+                
+                return args;
+            }
+            
+            evaluateExpression(expr) {
+                expr = expr.trim();
+                
+                // Handle f-strings (simplified)
+                if (expr.startsWith('f"') && expr.endsWith('"')) {
+                    let content = expr.slice(2, -1);
+                    // Replace variable references in curly braces
+                    Object.keys(this.variables).forEach(varName => {
+                        const pattern = new RegExp(`\\{${varName}\\}`, 'g');
+                        content = content.replace(pattern, this.variables[varName]);
+                    });
+                    return content;
+                }
+                
+                // Handle type() function
+                if (expr.startsWith('type(') && expr.endsWith(')')) {
+                    const varName = expr.slice(5, -1);
+                    if (this.variables.hasOwnProperty(varName)) {
+                        const value = this.variables[varName];
+                        if (typeof value === 'boolean') {
+                            return "<class 'bool'>";
+                        } else if (typeof value === 'number') {
+                            if (Number.isInteger(value)) {
+                                return "<class 'int'>";
+                            } else {
+                                return "<class 'float'>";
+                            }
+                        } else if (typeof value === 'string') {
+                            return "<class 'str'>";
+                        }
+                    }
+                    return "<class 'str'>";
+                }
+                
+                // Handle str() conversion
+                if (expr.startsWith('str(') && expr.endsWith(')')) {
+                    const inner = expr.slice(4, -1);
+                    const value = this.evaluateExpression(inner);
+                    return String(value);
+                }
+                
+                // Boolean literals
+                if (expr === 'True') {
+                    return true;
+                }
+                if (expr === 'False') {
+                    return false;
+                }
+                
+                // String literals
+                if ((expr.startsWith('"') && expr.endsWith('"')) || 
+                    (expr.startsWith("'") && expr.endsWith("'"))) {
+                    return expr.slice(1, -1);
+                }
+                
+                // Numbers (including decimals and negative)
+                if (/^-?\d*\.?\d+$/.test(expr)) {
+                    const num = parseFloat(expr);
+                    return num;
+                }
+                
+                // Variables
+                if (this.variables.hasOwnProperty(expr)) {
+                    return this.variables[expr];
+                }
+                
+                // String concatenation with +
+                if (expr.includes(' + ')) {
+                    const parts = expr.split(' + ');
+                    return parts.map(part => this.evaluateExpression(part.trim())).join('');
+                }
+                
+                return expr;
+            }
+        }
+        
+        const pythonInterpreter = new SimplePythonInterpreter();
+        
+        // Run Python code
+        async function runCode() {
+            const outputElement = document.getElementById('output');
+            const runButton = document.querySelector('.btn-run');
+            
+            try {
+                runButton.disabled = true;
+                runButton.textContent = "Running...";
+                outputElement.innerHTML = '<div class="loading">Running your code...</div>';
+                
+                const code = editor.getValue();
+                
+                // Simulate execution time
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const output = pythonInterpreter.executeCode(code);
+                outputElement.innerHTML = `<pre>${output}</pre>`;
+                
+            } catch (error) {
+                outputElement.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            } finally {
+                runButton.disabled = false;
+                runButton.textContent = "▶ Run Code";
+            }
+        }
+        
+        // Reset code to default
+        function resetCode() {
+            editor.setValue(defaultCode);
+            document.getElementById('output').innerHTML = '';
+        }
+        
+        // Dark Mode Functionality
+        function initializeDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '☀️ Light Mode';
+            }
+            
+            darkModeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                const isNowDark = body.classList.contains('dark-mode');
+                
+                darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('darkMode', isNowDark);
+                
+                if (editor) {
+                    editor.setOption('theme', isNowDark ? 'monokai' : 'default');
+                }
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+            initializeDarkMode();
+        });
+    </script>
+</body>
+</html>
