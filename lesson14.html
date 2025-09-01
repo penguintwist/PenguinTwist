@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14: Concatenating Numbers - PenguinTwist</title>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+            transition: all 0.3s ease;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .dark-mode-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-back {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-back .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .nav-back a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .nav-back a:hover {
+            text-decoration: underline;
+        }
+        
+        .lesson-content {
+            background: white;
+            margin: 2rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .intro {
+            background: #e8f4fd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .theory {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+        
+        .tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #fdcb6e;
+        }
+        
+        .challenge {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning strong {
+            color: #721c24;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .comparison-item h4 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        
+        .python-playground {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+        }
+        
+        .playground-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .playground-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-run {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-run:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #545b62;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .editor-container {
+            position: relative;
+        }
+        
+        .CodeMirror {
+            height: 320px;
+            font-size: 14px;
+        }
+        
+        .output-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+        }
+        
+        .output-container:empty::before {
+            content: "Click 'Run Code' to see output here...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .loading {
+            color: #ffc107;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .challenges-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .challenges-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+        
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .challenge-item {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .challenge-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .challenge-item strong {
+            color: #fff3cd;
+            margin-right: 0.5rem;
+        }
+        
+        .lesson-navigation {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+        
+        body.dark-mode .dark-mode-toggle:hover {
+            background: rgba(251, 191, 36, 0.3);
+        }
+        
+        body.dark-mode .nav-back {
+            background: #2d3748;
+        }
+        
+        body.dark-mode .nav-back a {
+            color: #81c784;
+        }
+        
+        body.dark-mode .lesson-content,
+        body.dark-mode .lesson-navigation {
+            background: #2d3748;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .intro {
+            background: #1e3a3a;
+            border-left-color: #4facfe;
+        }
+        
+        body.dark-mode .theory {
+            background: #1e2d1e;
+            border-left-color: #28a745;
+        }
+        
+        body.dark-mode .tip {
+            background: #3d3520;
+            border-color: #ffeaa7;
+            color: #fff3cd;
+        }
+        
+        body.dark-mode .challenge {
+            background: #3d2020;
+            border-color: #f5c6cb;
+            color: #f8d7da;
+        }
+        
+        body.dark-mode .warning {
+            background: #3d2020;
+            border-color: #f5c6cb;
+            color: #f8d7da;
+        }
+        
+        body.dark-mode .warning strong {
+            color: #f8d7da;
+        }
+        
+        body.dark-mode .comparison-item {
+            background: #374151;
+            color: #e0e0e0;
+            border-left-color: #81c784;
+        }
+        
+        body.dark-mode .comparison-item h4 {
+            color: #81c784;
+        }
+        
+        body.dark-mode .challenges-section {
+            background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%);
+        }
+        
+        body.dark-mode .challenge-item {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-mode .challenge-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        body.dark-mode .section h3 {
+            color: #81c784;
+            border-bottom-color: #81c784;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .lesson-content {
+                padding: 1rem;
+            }
+            
+            .playground-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .dark-mode-toggle {
+                top: 0.5rem;
+                right: 1rem;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
+        <div class="container">
+            <h1>Lesson 14: Concatenating Numbers</h1>
+            <p>Learn how to combine numbers with text to create meaningful messages!</p>
+        </div>
+    </div>
+    
+    <div class="nav-back">
+        <div class="container">
+            <a href="navigation.html">← Back to All Lessons</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="lesson-content">
+            <div class="section">
+                <h3>📚 Introduction</h3>
+                <div class="intro">
+                    <p>When you're working with numbers in your programs, you often want to display them alongside text. This means combining numbers with strings to create readable messages and reports.</p>
+                    <p>Think about displaying a score ("You scored 85 points!") or showing a calculation result ("The total is £24.50"). This is where concatenating numbers with strings becomes essential!</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🔬 Theory</h3>
+                <div class="theory">
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">The Problem: Numbers vs Strings</h4>
+                    <p>Numbers and strings are different data types. You can't directly concatenate them with the + operator:</p>
+                    <div class="code-example"># This will cause an error!
+age = 16
+message = "I am " + age + " years old"  # ERROR!</div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Solution 1: Convert Numbers to Strings</h4>
+                    <div class="code-example"># Convert number to string with str()
+age = 16
+score = 85.5
+
+message1 = "I am " + str(age) + " years old"
+message2 = "You scored " + str(score) + " points"
+
+print(message1)
+print(message2)</div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Solution 2: Use F-Strings (Recommended)</h4>
+                    <div class="code-example"># F-strings automatically convert numbers
+age = 16
+score = 85.5
+price = 24.99
+
+message1 = f"I am {age} years old"
+message2 = f"You scored {score} points"  
+message3 = f"The price is £{price}"
+
+print(message1)
+print(message2)
+print(message3)</div>
+                    
+                    <h4 style="color: #667eea; margin: 1.5rem 0 1rem 0;">Solution 3: Use Commas in Print</h4>
+                    <div class="code-example"># Print handles different data types automatically
+age = 16
+height = 1.75
+name = "Alex"
+
+print("Name:", name, "Age:", age, "Height:", height, "metres")
+print("Total score:", 95, "out of", 100)</div>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <h4>✅ F-strings (Best)</h4>
+                            <ul style="padding-left: 1.5rem; margin-top: 1rem;">
+                                <li>Clean and readable</li>
+                                <li>Automatic type conversion</li>
+                                <li>Easy formatting options</li>
+                                <li>Modern Python standard</li>
+                            </ul>
+                        </div>
+                        <div class="comparison-item">
+                            <h4>⚠️ str() Method</h4>
+                            <ul style="padding-left: 1.5rem; margin-top: 1rem;">
+                                <li>Works but gets messy</li>
+                                <li>Manual conversion needed</li>
+                                <li>More typing required</li>
+                                <li>Error-prone with many numbers</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>⚠️ Remember:</strong> You cannot use + to directly combine strings and numbers. You must convert the number to a string first, or use f-strings which do it automatically.
+                    </div>
+                    
+                    <div class="tip">
+                        <strong>💡 Tip:</strong> F-strings are usually the best choice for combining numbers and text. They're cleaner, easier to read, and handle the conversion automatically!
+                    </div>
+                    
+                    <div class="challenge">
+                        <strong>🎯 Challenge:</strong> Create a program that displays a shopping receipt with item names, quantities, prices, and a total - all nicely formatted with numbers and text combined!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>💻 Interactive Coding</h3>
+                <div class="python-playground">
+                    <div class="playground-header">
+                        <span>🐍 Python Playground - Lesson 14</span>
+                        <div class="playground-controls">
+                            <button class="btn btn-run" onclick="runCode()">▶ Run Code</button>
+                            <button class="btn btn-reset" onclick="resetCode()">🔄 Reset</button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <textarea id="editor"># Number concatenation examples
+print("=== Student Report Card ===")
+
+# Student information (mix of strings and numbers)
+student_name = "Emma Johnson"
+student_age = 16
+year_group = 11
+
+# Test scores (numbers)
+maths_score = 87
+english_score = 92
+science_score = 78
+
+# Calculate average
+total_score = maths_score + english_score + science_score
+average_score = total_score / 3
+
+print("")
+print("Student Details:")
+print(f"Name: {student_name}")
+print(f"Age: {student_age} years old")
+print(f"Year Group: {year_group}")
+
+print("")
+print("Test Results:")
+print(f"Mathematics: {maths_score}/100")
+print(f"English: {english_score}/100") 
+print(f"Science: {science_score}/100")
+
+print("")
+print("Summary:")
+print(f"Total Points: {total_score}/300")
+print(f"Average Score: {average_score:.1f}%")
+
+# Demonstrate different approaches
+print("")
+print("=== Concatenation Methods ===")
+
+points = 250
+level = 5
+
+# F-strings work best
+print(f"Method 1: Level {level}, Points {points}")
+
+# Comma separation in print also works
+print("Method 2: Level", level, "Points", points)
+
+# Formatting numbers
+price = 19.99
+quantity = 3
+total = price * quantity
+
+print("")
+print("Shopping Example:")
+print(f"Price: £{price} each")
+print(f"Quantity: {quantity} items")  
+print(f"Total: £{total:.2f}")</textarea>
+                    </div>
+                    <div class="output-container" id="output"></div>
+                </div>
+                
+                <div class="challenges-section">
+                    <h4>🎯 Practice Challenges</h4>
+                    <div class="challenges-grid">
+                        <div class="challenge-item">
+                            <strong>1.</strong> Create a game score display with player name and points
+                        </div>
+                        <div class="challenge-item">
+                            <strong>2.</strong> Make a temperature report combining city name and degrees
+                        </div>
+                        <div class="challenge-item">
+                            <strong>3.</strong> Build a birthday message with name and age
+                        </div>
+                        <div class="challenge-item">
+                            <strong>4.</strong> Create a sports result with team names and scores
+                        </div>
+                        <div class="challenge-item">
+                            <strong>5.</strong> Make a product listing with name, price, and stock count
+                        </div>
+                        <div class="challenge-item">
+                            <strong>6.</strong> Display exam results with subject and percentage
+                        </div>
+                        <div class="challenge-item">
+                            <strong>7.</strong> Create a distance tracker with location and kilometres
+                        </div>
+                        <div class="challenge-item">
+                            <strong>8.</strong> Build a time display with hours and minutes
+                        </div>
+                        <div class="challenge-item">
+                            <strong>9.</strong> Make a bank balance statement with account and amount
+                        </div>
+                        <div class="challenge-item">
+                            <strong>10.</strong> Create a recipe scaler with ingredients and quantities
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="lesson-navigation">
+            <div class="nav-buttons">
+                <a href="lesson13.html" class="nav-btn">← Previous Lesson</a>
+                <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
+                <a href="lesson15.html" class="nav-btn">Next Lesson →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <script>
+        let editor;
+        const defaultCode = `# Number concatenation examples
+print("=== Student Report Card ===")
+
+# Student information (mix of strings and numbers)
+student_name = "Emma Johnson"
+student_age = 16
+year_group = 11
+
+# Test scores (numbers)
+maths_score = 87
+english_score = 92
+science_score = 78
+
+# Calculate average
+total_score = maths_score + english_score + science_score
+average_score = total_score / 3
+
+print("")
+print("Student Details:")
+print(f"Name: {student_name}")
+print(f"Age: {student_age} years old")
+print(f"Year Group: {year_group}")
+
+print("")
+print("Test Results:")
+print(f"Mathematics: {maths_score}/100")
+print(f"English: {english_score}/100") 
+print(f"Science: {science_score}/100")
+
+print("")
+print("Summary:")
+print(f"Total Points: {total_score}/300")
+print(f"Average Score: {average_score:.1f}%")
+
+# Demonstrate different approaches
+print("")
+print("=== Concatenation Methods ===")
+
+points = 250
+level = 5
+
+# F-strings work best
+print(f"Method 1: Level {level}, Points {points}")
+
+# Comma separation in print also works
+print("Method 2: Level", level, "Points", points)
+
+# Formatting numbers
+price = 19.99
+quantity = 3
+total = price * quantity
+
+print("")
+print("Shopping Example:")
+print(f"Price: £{price} each")
+print(f"Quantity: {quantity} items")  
+print(f"Total: £{total:.2f}")`;
+        
+        // Reusing the simplified interpreter from lesson 13
+        function initializeEditor() {
+            const textarea = document.getElementById('editor');
+            editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true
+            });
+            editor.setValue(defaultCode);
+        }
+        
+        class SimplePythonInterpreter {
+            constructor() {
+                this.variables = {};
+                this.output = [];
+            }
+            
+            reset() {
+                this.variables = {};
+                this.output = [];
+            }
+            
+            print(...args) {
+                const line = args.map(arg => String(arg)).join(' ');
+                this.output.push(line);
+            }
+            
+            executeCode(code) {
+                this.reset();
+                const lines = code.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+                
+                try {
+                    for (const line of lines) {
+                        this.executeLine(line);
+                    }
+                    
+                    return this.output.length > 0 ? this.output.join('\n') : 'Code executed successfully (no output)';
+                } catch (error) {
+                    return `Error: ${error.message}`;
+                }
+            }
+            
+            executeLine(line) {
+                if (line.startsWith('print(')) {
+                    this.handlePrint(line);
+                } else if (line.includes(' = ')) {
+                    this.handleAssignment(line);
+                }
+            }
+            
+            handlePrint(line) {
+                const content = line.slice(6, -1);
+                
+                if (content.startsWith('f"') && content.endsWith('"')) {
+                    // Handle f-strings
+                    let output = content.slice(2, -1);
+                    for (const [varName, value] of Object.entries(this.variables)) {
+                        const regex = new RegExp(`\\{${varName}\\}`, 'g');
+                        output = output.replace(regex, value);
+                        const formatRegex = new RegExp(`\\{${varName}:\\.1f\\}`, 'g');
+                        output = output.replace(formatRegex, typeof value === 'number' ? value.toFixed(1) : value);
+                        const formatRegex2 = new RegExp(`\\{${varName}:\\.2f\\}`, 'g');
+                        output = output.replace(formatRegex2, typeof value === 'number' ? value.toFixed(2) : value);
+                    }
+                    this.print(output);
+                } else if (content.startsWith('"') && content.endsWith('"')) {
+                    // Handle simple strings
+                    this.print(content.slice(1, -1));
+                } else if (content.includes(' + ')) {
+                    // Handle string concatenation with +
+                    const parts = content.split(' + ');
+                    let result = '';
+                    for (const part of parts) {
+                        const trimmed = part.trim();
+                        if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+                            result += trimmed.slice(1, -1);
+                        } else if (trimmed.startsWith('str(') && trimmed.endsWith(')')) {
+                            const varName = trimmed.slice(4, -1);
+                            result += String(this.variables[varName] || '');
+                        } else if (this.variables[trimmed]) {
+                            result += String(this.variables[trimmed]);
+                        } else {
+                            result += trimmed;
+                        }
+                    }
+                    this.print(result);
+                } else if (content.includes(',')) {
+                    // Handle comma-separated values in print
+                    const parts = content.split(',').map(part => {
+                        const trimmed = part.trim();
+                        if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+                            return trimmed.slice(1, -1);
+                        }
+                        return this.variables[trimmed] || trimmed;
+                    });
+                    this.print(parts.join(' '));
+                } else {
+                    // Handle single variables
+                    this.print(this.variables[content] || content);
+                }
+            }
+            
+            handleAssignment(line) {
+                const parts = line.split(' = ');
+                const varName = parts[0].trim();
+                const expression = parts[1].trim();
+                
+                if (expression.startsWith('"') && expression.endsWith('"')) {
+                    this.variables[varName] = expression.slice(1, -1);
+                } else if (!isNaN(parseFloat(expression))) {
+                    this.variables[varName] = parseFloat(expression);
+                } else if (expression.includes(' + ')) {
+                    const parts = expression.split(' + ');
+                    let result = this.getValue(parts[0]);
+                    for (let i = 1; i < parts.length; i++) {
+                        result += this.getValue(parts[i]);
+                    }
+                    this.variables[varName] = result;
+                } else if (expression.includes(' - ')) {
+                    const parts = expression.split(' - ');
+                    let result = this.getValue(parts[0]);
+                    for (let i = 1; i < parts.length; i++) {
+                        result -= this.getValue(parts[i]);
+                    }
+                    this.variables[varName] = result;
+                } else if (expression.includes(' * ')) {
+                    const parts = expression.split(' * ');
+                    let result = this.getValue(parts[0]);
+                    for (let i = 1; i < parts.length; i++) {
+                        result *= this.getValue(parts[i]);
+                    }
+                    this.variables[varName] = result;
+                } else if (expression.includes(' / ')) {
+                    const parts = expression.split(' / ');
+                    let result = this.getValue(parts[0]);
+                    for (let i = 1; i < parts.length; i++) {
+                        result /= this.getValue(parts[i]);
+                    }
+                    this.variables[varName] = result;
+                } else if (expression.startsWith('str(')) {
+                    const inner = expression.slice(4, -1);
+                    const value = this.variables[inner];
+                    this.variables[varName] = String(value);
+                } else {
+                    this.variables[varName] = this.variables[expression] || expression;
+                }
+            }
+            
+            getValue(token) {
+                token = token.trim();
+                if (this.variables.hasOwnProperty(token)) {
+                    return this.variables[token];
+                }
+                return parseFloat(token) || 0;
+            }
+        }
+        
+        const pythonInterpreter = new SimplePythonInterpreter();
+        
+        async function runCode() {
+            const outputElement = document.getElementById('output');
+            const runButton = document.querySelector('.btn-run');
+            
+            try {
+                runButton.disabled = true;
+                runButton.textContent = "Running...";
+                outputElement.innerHTML = '<div class="loading">Running your code...</div>';
+                
+                const code = editor.getValue();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const output = pythonInterpreter.executeCode(code);
+                outputElement.innerHTML = `<pre>${output}</pre>`;
+            } catch (error) {
+                outputElement.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            } finally {
+                runButton.disabled = false;
+                runButton.textContent = "▶ Run Code";
+            }
+        }
+        
+        function resetCode() {
+            editor.setValue(defaultCode);
+            document.getElementById('output').innerHTML = '';
+        }
+        
+        function initializeDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '☀️ Light Mode';
+            }
+            
+            darkModeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                const isNowDark = body.classList.contains('dark-mode');
+                
+                darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('darkMode', isNowDark);
+                
+                if (editor) {
+                    editor.setOption('theme', isNowDark ? 'monokai' : 'default');
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+            initializeDarkMode();
+        });
+    </script>
+</body>
+</html>
