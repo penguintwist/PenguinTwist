@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 1: Hello World - PenguinTwist</title>
+    <title>Lesson 1: Your First Python Program - PenguinTwist</title>
     
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -22,13 +22,6 @@
             color: #333;
             background: #f5f7fa;
             transition: all 0.3s ease;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
         }
         
         .header {
@@ -64,12 +57,17 @@
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.9rem;
-            z-index: 10;
         }
         
         .dark-mode-toggle:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
         .nav-back {
@@ -98,8 +96,7 @@
             text-decoration: underline;
         }
         
-        .lesson-content,
-        .lesson-navigation {
+        .lesson-content {
             background: white;
             margin: 2rem auto;
             border-radius: 12px;
@@ -135,6 +132,18 @@
             border-left: 4px solid #28a745;
         }
         
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+        
         .tip {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -151,18 +160,6 @@
             border-radius: 6px;
             margin: 1rem 0;
             border-left: 4px solid #dc3545;
-        }
-        
-        .code-example {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 1rem;
-            border-radius: 6px;
-            margin: 1rem 0;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            white-space: pre-line;
-            line-height: 1.4;
         }
         
         .python-playground {
@@ -296,6 +293,16 @@
         .challenge-item strong {
             color: #fff3cd;
             margin-right: 0.5rem;
+        }
+        
+        .lesson-navigation {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            text-align: center;
+            transition: all 0.3s ease;
         }
         
         .nav-buttons {
@@ -435,7 +442,7 @@
         <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
         <div class="container">
             <h1>Lesson 1: Your First Python Program</h1>
-            <p>Learn how to make Python say hello to the world!</p>
+            <p>Learn how to make the computer display a message!</p>
         </div>
     </div>
     
@@ -448,37 +455,36 @@
     <div class="container">
         <div class="lesson-content">
             <div class="section">
-                <h3>📚 Introduction</h3>
+                <h3>📚 Why Do We Need Print Statements?</h3>
                 <div class="intro">
-                    <p>Welcome to your first Python lesson! Today we're going to learn how to make the computer display text on the screen. This is called "printing" in programming.</p>
-                    <p>Think of it like teaching a parrot to speak - we're going to teach Python to say "Hello, World!" which is a tradition that almost every programmer starts with.</p>
+                    <p>Computers are powerful, but they can't speak to us naturally. When we write a program, we need a way to see what's happening inside the computer's "mind."</p>
+                    <p>The <code>print()</code> function is like giving your computer a voice - it lets the computer show you messages on the screen.</p>
                 </div>
             </div>
             
             <div class="section">
-                <h3>🔬 Theory</h3>
+                <h3>🔬 How Print Works</h3>
                 <div class="theory">
-                    <p>In Python, we use the <code>print()</code> function to display text. Here's how it works:</p>
+                    <p>In Python, we tell the computer to display a message using this pattern:</p>
                     <div class="code-example">print("Hello, World!")</div>
-                    <p>Let's break this down:</p>
-                    <ul style="margin: 1rem 0; padding-left: 2rem;">
-                        <li><code>print</code> - This is the command that tells Python to display something</li>
-                        <li><code>()</code> - The parentheses contain what we want to display</li>
-                        <li><code>"Hello, World!"</code> - The quotes tell Python this is text (called a "string")</li>
-                    </ul>
+                    
+                    <p>When you run this code, the computer will display exactly what's between the quotes:</p>
+                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #28a745;">
+                        <strong>Output:</strong> Hello, World!
+                    </div>
                     
                     <div class="tip">
-                        <strong>💡 Tip:</strong> Always use quotes around text in Python. You can use either single quotes ('Hello') or double quotes ("Hello") - both work the same way!
+                        <strong>💡 Remember:</strong> Always put quotes around your message. The quotes tell Python "this is text that should be displayed exactly as written."
                     </div>
                     
                     <div class="challenge">
-                        <strong>🎯 Challenge:</strong> Try changing the text inside the quotes to your own message. What happens when you run it?
+                        <strong>🎯 Try It:</strong> Change "Hello, World!" to your own message and see what happens!
                     </div>
                 </div>
             </div>
             
             <div class="section">
-                <h3>💻 Interactive Coding</h3>
+                <h3>💻 Practice Area</h3>
                 <div class="python-playground">
                     <div class="playground-header">
                         <span>🐍 Python Playground - Lesson 1</span>
@@ -497,34 +503,28 @@
                     <h4>🎯 Practice Challenges</h4>
                     <div class="challenges-grid">
                         <div class="challenge-item">
-                            <strong>1.</strong> Print your favorite food
+                            <strong>1.</strong> Print your name
                         </div>
                         <div class="challenge-item">
-                            <strong>2.</strong> Print "Python is fun!" 
+                            <strong>2.</strong> Print your favorite food
                         </div>
                         <div class="challenge-item">
-                            <strong>3.</strong> Print your school's name
+                            <strong>3.</strong> Print "Python is awesome!"
                         </div>
                         <div class="challenge-item">
-                            <strong>4.</strong> Print three different animals on separate lines
+                            <strong>4.</strong> Print your school name
                         </div>
                         <div class="challenge-item">
-                            <strong>5.</strong> Print a welcome message for new students
+                            <strong>5.</strong> Print a welcome message
                         </div>
                         <div class="challenge-item">
-                            <strong>6.</strong> Print your favorite quote
+                            <strong>6.</strong> Print your dream job
                         </div>
                         <div class="challenge-item">
-                            <strong>7.</strong> Print "Learning", "is", "awesome" as separate words
+                            <strong>7.</strong> Print your favorite color
                         </div>
                         <div class="challenge-item">
-                            <strong>8.</strong> Print a simple ASCII art smiley: :-)
-                        </div>
-                        <div class="challenge-item">
-                            <strong>9.</strong> Print your dream job
-                        </div>
-                        <div class="challenge-item">
-                            <strong>10.</strong> Print a motivational message to yourself
+                            <strong>8.</strong> Print "I love coding!"
                         </div>
                     </div>
                 </div>
@@ -546,7 +546,7 @@
     
     <script>
         let editor;
-        const defaultCode = `print("Hello, World!")`;
+        const defaultCode = 'print("Hello, World!")';
         
         // Initialize CodeMirror editor
         function initializeEditor() {
@@ -565,18 +565,15 @@
         // Simple Python interpreter for educational purposes
         class SimplePythonInterpreter {
             constructor() {
-                this.variables = {};
                 this.output = [];
             }
             
             reset() {
-                this.variables = {};
                 this.output = [];
             }
             
-            print(...args) {
-                const line = args.map(arg => String(arg)).join(' ');
-                this.output.push(line);
+            print(message) {
+                this.output.push(String(message));
             }
             
             executeCode(code) {
@@ -584,10 +581,14 @@
                 const lines = code.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
                 
                 try {
+                    // Basic validation
                     this.validateSyntax(code);
                     
+                    // Execute each line
                     for (const line of lines) {
-                        this.executeLine(line);
+                        if (line.startsWith('print(')) {
+                            this.handlePrint(line);
+                        }
                     }
                     
                     if (this.output.length === 0) {
@@ -604,142 +605,48 @@
                 // Check for unclosed quotes
                 let inQuotes = false;
                 let quoteChar = '';
-                let lineNum = 1;
                 
                 for (let i = 0; i < code.length; i++) {
                     const char = code[i];
                     
-                    if (char === '\n') {
-                        lineNum++;
-                        if (inQuotes) {
-                            throw new Error(`Unclosed string on line ${lineNum - 1}. Missing closing quote (${quoteChar}).`);
-                        }
-                    }
-                    
                     if ((char === '"' || char === "'") && !inQuotes) {
                         inQuotes = true;
                         quoteChar = char;
-                    } else if (char === quoteChar && inQuotes) {
-                        if (i > 0 && code[i-1] !== '\\') {
-                            inQuotes = false;
-                            quoteChar = '';
-                        }
+                    } else if (char === quoteChar && inQuotes && code[i-1] !== '\\') {
+                        inQuotes = false;
+                        quoteChar = '';
                     }
                 }
                 
                 if (inQuotes) {
-                    throw new Error(`Unclosed string. Missing closing quote (${quoteChar}).`);
+                    throw new Error('Missing closing quote. Make sure to close your quotes!');
                 }
                 
-                // Check for mismatched parentheses in print statements
+                // Check for basic print syntax
                 const printMatches = code.match(/print\([^)]*$/gm);
                 if (printMatches) {
-                    throw new Error("Unclosed parentheses in print statement. Missing closing )");
+                    throw new Error('Missing closing ) in print statement');
                 }
                 
-                // Check for common typos and errors
-                const lines = code.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (line.trim() === '') continue;
-                    
-                    // Check for case-sensitivity errors
-                    if (line.includes('Print(') && !line.includes('print(')) {
-                        throw new Error(`'Print' is not defined. Did you mean 'print' (lowercase)? Python is case-sensitive.`);
-                    }
-                    
-                    // Check for common typos
-                    if (line.includes('prin(') && !line.includes('print(')) {
-                        throw new Error(`'prin' is not defined. Did you mean 'print'? Check your spelling.`);
-                    }
-                    if (line.includes('pritn(')) {
-                        throw new Error(`'pritn' is not defined. Did you mean 'print'? Check your spelling.`);
-                    }
+                // Check for common typos
+                if (code.includes('Print(')) {
+                    throw new Error('Python is case-sensitive. Use "print" (lowercase), not "Print"');
                 }
-            }
-            
-            executeLine(line) {
-                // Handle print statements
-                if (line.startsWith('print(')) {
-                    this.handlePrint(line);
-                }
-                // Handle variable assignments
-                else if (line.includes(' = ') && !line.includes('input(')) {
-                    this.handleAssignment(line);
+                
+                if (code.includes('prin(') || code.includes('pritn(')) {
+                    throw new Error('Check your spelling. Did you mean "print"?');
                 }
             }
             
             handlePrint(line) {
                 // Extract content between print( and )
-                const match = line.match(/print\((.*)\)/);
+                const match = line.match(/print\("(.*)"\)|print\('(.*)'\)/);
                 if (match) {
-                    const content = match[1];
-                    const parts = this.parseArguments(content);
-                    const values = parts.map(part => this.evaluateExpression(part));
-                    this.print(...values);
+                    const message = match[1] || match[2];
+                    this.print(message);
+                } else {
+                    throw new Error('Invalid print statement. Make sure your text is in quotes!');
                 }
-            }
-            
-            handleAssignment(line) {
-                const [varName, value] = line.split(' = ').map(s => s.trim());
-                this.variables[varName] = this.evaluateExpression(value);
-            }
-            
-            parseArguments(content) {
-                const args = [];
-                let current = '';
-                let inQuotes = false;
-                let quoteChar = '';
-                
-                for (let i = 0; i < content.length; i++) {
-                    const char = content[i];
-                    
-                    if ((char === '"' || char === "'") && !inQuotes) {
-                        inQuotes = true;
-                        quoteChar = char;
-                        current += char;
-                    } else if (char === quoteChar && inQuotes) {
-                        inQuotes = false;
-                        current += char;
-                    } else if (char === ',' && !inQuotes) {
-                        args.push(current.trim());
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                }
-                
-                if (current.trim()) {
-                    args.push(current.trim());
-                }
-                
-                return args;
-            }
-            
-            evaluateExpression(expr) {
-                expr = expr.trim();
-                
-                // String literals
-                if ((expr.startsWith('"') && expr.endsWith('"')) || 
-                    (expr.startsWith("'") && expr.endsWith("'"))) {
-                    return expr.slice(1, -1);
-                }
-                
-                // Numbers
-                if (/^\d+$/.test(expr)) {
-                    return parseInt(expr);
-                }
-                
-                if (/^\d+\.\d+$/.test(expr)) {
-                    return parseFloat(expr);
-                }
-                
-                // Variables
-                if (this.variables.hasOwnProperty(expr)) {
-                    return this.variables[expr];
-                }
-                
-                return expr;
             }
         }
         
@@ -758,7 +665,7 @@
                 const code = editor.getValue();
                 
                 // Simulate execution time
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 300));
                 
                 const output = pythonInterpreter.executeCode(code);
                 outputElement.innerHTML = `<pre>${output}</pre>`;
@@ -782,27 +689,19 @@
             const darkModeToggle = document.getElementById('darkModeToggle');
             const body = document.body;
             
-            // Check for saved dark mode preference
-            const isDarkMode = window.localStorage && localStorage.getItem('darkMode') === 'true';
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
             if (isDarkMode) {
                 body.classList.add('dark-mode');
                 darkModeToggle.innerHTML = '☀️ Light Mode';
             }
             
-            // Toggle dark mode
             darkModeToggle.addEventListener('click', function() {
                 body.classList.toggle('dark-mode');
                 const isNowDark = body.classList.contains('dark-mode');
                 
-                // Update button text
                 darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('darkMode', isNowDark);
                 
-                // Save preference if localStorage is available
-                if (window.localStorage) {
-                    localStorage.setItem('darkMode', isNowDark);
-                }
-                
-                // Update CodeMirror theme
                 if (editor) {
                     editor.setOption('theme', isNowDark ? 'monokai' : 'default');
                 }
