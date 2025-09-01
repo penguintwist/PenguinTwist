@@ -461,21 +461,26 @@
                 <div class="theory">
                     <p>The <code>input()</code> function lets us ask the user to type something:</p>
                     <div class="code-example">name = input("What's your name? ")
-print("Nice to meet you,", name)</div>
-                    <p>Here's what happens:</p>
+print("Nice to meet you", name)</div>
+                    
+                    <p>Here's what happens step by step:</p>
                     <ul style="margin: 1rem 0; padding-left: 2rem;">
                         <li><code>input()</code> pauses the program and waits for the user to type</li>
                         <li>The text in quotes is the prompt (question) shown to the user</li>
                         <li>Whatever the user types gets stored in the variable</li>
-                        <li>The program continues with the user's input</li>
+                        <li>The program continues using the user's input</li>
                     </ul>
+                    
+                    <p>Let's see another example:</p>
+                    <div class="code-example">age = input("How old are you? ")
+print("You are", age, "years old")</div>
                     
                     <div class="tip">
                         <strong>💡 Tip:</strong> Always include a space after your question in the input prompt. This makes it look nicer when the user types their answer!
                     </div>
                     
                     <div class="challenge">
-                        <strong>🎯 Challenge:</strong> Create a program that asks for the user's name, age, and favorite color, then introduces them using all that information!
+                        <strong>🎯 Challenge:</strong> Think about what questions you could ask a user. What would make your program more interesting and personal?
                     </div>
                 </div>
             </div>
@@ -493,10 +498,11 @@ print("Nice to meet you,", name)</div>
                     <div class="editor-container">
                         <textarea id="editor">name = input("What's your name? ")
 age = input("How old are you? ")
+subject = input("What's your favorite subject? ")
 
-print("Hello", name + "!")
-print("So you're", age, "years old!")
-print("Welcome to Python programming!")</textarea>
+print("Hello", name)
+print("So you're", age, "years old")
+print("I love", subject, "too!")</textarea>
                     </div>
                     <div class="output-container" id="output"></div>
                 </div>
@@ -505,34 +511,34 @@ print("Welcome to Python programming!")</textarea>
                     <h4>🎯 Practice Challenges</h4>
                     <div class="challenges-grid">
                         <div class="challenge-item">
-                            <strong>1.</strong> Ask for the user's favorite sport and respond
+                            <strong>1.</strong> Ask for the user's favorite sport and respond positively
                         </div>
                         <div class="challenge-item">
-                            <strong>2.</strong> Get the user's birth month and wish them happy birthday
+                            <strong>2.</strong> Get the user's birth month and comment on it
                         </div>
                         <div class="challenge-item">
                             <strong>3.</strong> Ask for their dream job and encourage them
                         </div>
                         <div class="challenge-item">
-                            <strong>4.</strong> Get their favorite subject and explain why it's great
+                            <strong>4.</strong> Get two favorite colors and mention both
                         </div>
                         <div class="challenge-item">
-                            <strong>5.</strong> Ask for their hometown and say something nice about it
+                            <strong>5.</strong> Ask for their hometown and say something nice
                         </div>
                         <div class="challenge-item">
-                            <strong>6.</strong> Get their favorite season and describe what's fun about it
+                            <strong>6.</strong> Get their favorite season and describe why it's great
                         </div>
                         <div class="challenge-item">
-                            <strong>7.</strong> Ask for their hobby and show interest
+                            <strong>7.</strong> Ask about their hobby and show interest
                         </div>
                         <div class="challenge-item">
-                            <strong>8.</strong> Get their favorite animal and share a fun fact
+                            <strong>8.</strong> Get their favorite animal and share enthusiasm
                         </div>
                         <div class="challenge-item">
-                            <strong>9.</strong> Ask for their lucky number and comment on it
+                            <strong>9.</strong> Ask for their lucky number and comment positively
                         </div>
                         <div class="challenge-item">
-                            <strong>10.</strong> Create a simple "getting to know you" questionnaire
+                            <strong>10.</strong> Create a complete "getting to know you" conversation
                         </div>
                     </div>
                 </div>
@@ -556,10 +562,11 @@ print("Welcome to Python programming!")</textarea>
         let editor;
         const defaultCode = `name = input("What's your name? ")
 age = input("How old are you? ")
+subject = input("What's your favorite subject? ")
 
-print("Hello", name + "!")
-print("So you're", age, "years old!")
-print("Welcome to Python programming!")`;
+print("Hello", name)
+print("So you're", age, "years old")
+print("I love", subject, "too!")`;
         
         // Initialize CodeMirror editor
         function initializeEditor() {
@@ -583,6 +590,7 @@ print("Welcome to Python programming!")`;
                 this.inputResponses = {
                     "What's your name? ": "Alex",
                     "How old are you? ": "16",
+                    "What's your favorite subject? ": "Computer Science",
                     "What's your favorite color? ": "blue",
                     "": "Student"
                 };
@@ -769,12 +777,6 @@ print("Welcome to Python programming!")`;
                 // Variables
                 if (this.variables.hasOwnProperty(expr)) {
                     return this.variables[expr];
-                }
-                
-                // String concatenation
-                if (expr.includes(' + ')) {
-                    const parts = expr.split(' + ');
-                    return parts.map(part => this.evaluateExpression(part)).join('');
                 }
                 
                 return expr;
