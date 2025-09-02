@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson 1: Your First Python Program - PenguinTwist</title>
+    <title>Lesson 1: Hello World - PenguinTwist</title>
     
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -139,9 +139,19 @@
             border-radius: 6px;
             margin: 1rem 0;
             overflow-x: auto;
-            font-family: 'Courier New', monospace;
+            font-family: 'Fira Code', 'Courier New', monospace;
             white-space: pre-line;
             line-height: 1.4;
+        }
+        
+        .expected-output {
+            background: #e8f5e8;
+            color: #2d5016;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #28a745;
+            font-family: 'Fira Code', 'Courier New', monospace;
         }
         
         .tip {
@@ -153,7 +163,7 @@
             border-left: 4px solid #fdcb6e;
         }
         
-        .challenge {
+        .warning {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
             padding: 1rem;
@@ -226,23 +236,29 @@
         }
         
         .CodeMirror {
-            height: 200px;
+            height: 150px;
             font-size: 14px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+        
+        #challengeArea .CodeMirror {
+            height: 200px;
         }
         
         .output-container {
             background: #1a1a1a;
             color: #00ff00;
             padding: 1rem;
-            font-family: 'Courier New', monospace;
+            font-family: 'Fira Code', 'Courier New', monospace;
             font-size: 14px;
             max-height: 200px;
             overflow-y: auto;
             border-top: 1px solid #333;
+            min-height: 60px;
         }
         
         .output-container:empty::before {
-            content: "Click 'Run Code' to see output here...";
+            content: "Click 'Run Code' to see your output here...";
             color: #666;
             font-style: italic;
         }
@@ -255,44 +271,212 @@
             color: #ff6b6b;
         }
         
-        .challenges-section {
+        .success {
+            color: #28a745;
+        }
+        
+        .mastery-check {
             margin-top: 2rem;
             padding: 1.5rem;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             border-radius: 12px;
             color: white;
         }
         
-        .challenges-section h4 {
+        .mastery-check h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .mastery-question {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .mastery-question input[type="text"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            margin-top: 0.5rem;
+        }
+        
+        .check-answer-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 1rem auto;
+        }
+        
+        .check-answer-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .feedback.correct {
+            background: rgba(40, 167, 69, 0.2);
+            border: 2px solid rgba(40, 167, 69, 0.5);
+        }
+        
+        .practice-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .practice-section h4 {
             margin-bottom: 1rem;
             font-size: 1.3rem;
             text-align: center;
         }
         
-        .challenges-grid {
+        .practice-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1rem;
         }
         
-        .challenge-item {
-            background: rgba(255, 255, 255, 0.2);
+        .practice-card {
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, background 0.3s ease;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
         }
         
-        .challenge-item:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.3);
+        .practice-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
         
-        .challenge-item strong {
-            color: #fff3cd;
-            margin-right: 0.5rem;
+        .practice-card h5 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .practice-card p {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+        }
+        
+        .difficulty-badge.basic {
+            background: rgba(40, 167, 69, 0.8);
+            color: white;
+        }
+        
+        .difficulty-badge.creative {
+            background: rgba(255, 193, 7, 0.8);
+            color: #333;
+        }
+        
+        .difficulty-badge.advanced {
+            background: rgba(220, 53, 69, 0.8);
+            color: white;
+        }
+        
+        .challenge-area {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .challenge-header h4 {
+            color: #667eea;
+            margin: 0;
+        }
+        
+        .close-challenge-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .close-challenge-btn:hover {
+            background: #c82333;
+        }
+        
+        .challenge-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .nav-challenge-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .nav-challenge-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .nav-challenge-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        #challengeCounter {
+            font-weight: 600;
+            color: #667eea;
         }
         
         .lesson-navigation {
@@ -386,22 +570,15 @@
             color: #fff3cd;
         }
         
-        body.dark-mode .challenge {
+        body.dark-mode .warning {
             background: #3d2020;
             border-color: #f5c6cb;
             color: #f8d7da;
         }
         
-        body.dark-mode .challenges-section {
-            background: linear-gradient(135deg, #6b46c1 0%, #7c3aed 100%);
-        }
-        
-        body.dark-mode .challenge-item {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        body.dark-mode .challenge-item:hover {
-            background: rgba(255, 255, 255, 0.2);
+        body.dark-mode .expected-output {
+            background: #1e2d1e;
+            color: #81c784;
         }
         
         body.dark-mode .section h3 {
@@ -441,8 +618,8 @@
     <div class="header">
         <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
         <div class="container">
-            <h1>Lesson 1: Your First Python Program</h1>
-            <p>Learn how to make the computer display a message!</p>
+            <h1>Lesson 1: Hello World</h1>
+            <p>Learn how to make the computer display a message</p>
         </div>
     </div>
     
@@ -455,39 +632,37 @@
     <div class="container">
         <div class="lesson-content">
             <div class="section">
-                <h3>📚 Why Do We Need Print Statements?</h3>
+                <h3>Why Programs Need to Communicate</h3>
                 <div class="intro">
-                    <p>Computers are powerful, but they can't speak to us naturally. When we write a program, we need a way to see what's happening inside the computer's "mind."</p>
-                    <p>The <code>print()</code> function is like giving your computer a voice - it lets the computer show you messages on the screen.</p>
+                    <p>Computers are powerful machines, but they can't speak to us naturally. When you write a program, you need a way to see what the computer is thinking and doing.</p>
+                    <p>The <code>print()</code> function is like giving your computer a voice - it displays messages on the screen so you can see what's happening inside your program.</p>
                 </div>
             </div>
             
             <div class="section">
-                <h3>🔬 How Print Works</h3>
+                <h3>How Print Works</h3>
                 <div class="theory">
-                    <p>In Python, we tell the computer to display a message using this pattern:</p>
+                    <p>In Python, you tell the computer to show a message using this exact pattern:</p>
                     <div class="code-example">print("Hello, World!")</div>
                     
-                    <p>When you run this code, the computer will display exactly what's between the quotes:</p>
-                    <div style="background: #e8f5e8; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 4px solid #28a745;">
-                        <strong>Output:</strong> Hello, World!
-                    </div>
+                    <p>When you run this code, the computer displays exactly what's between the quotes:</p>
+                    <div class="expected-output"><strong>Output:</strong> Hello, World!</div>
                     
                     <div class="tip">
-                        <strong>💡 Remember:</strong> Always put quotes around your message. The quotes tell Python "this is text that should be displayed exactly as written."
+                        <strong>Key Rule:</strong> Always put quotes around your message. The quotes tell Python "this is text that should be displayed exactly as written."
                     </div>
                     
-                    <div class="challenge">
-                        <strong>🎯 Try It:</strong> Change "Hello, World!" to your own message and see what happens!
+                    <div class="warning">
+                        <strong>Common Mistake:</strong> Forgetting the quotes will cause an error. Python won't understand what you mean without them.
                     </div>
                 </div>
             </div>
             
             <div class="section">
-                <h3>💻 Practice Area</h3>
+                <h3>Try It Yourself</h3>
                 <div class="python-playground">
                     <div class="playground-header">
-                        <span>🐍 Python Playground - Lesson 1</span>
+                        <span>🐍 Python Practice Area</span>
                         <div class="playground-controls">
                             <button class="btn btn-run" onclick="runCode()">▶ Run Code</button>
                             <button class="btn btn-reset" onclick="resetCode()">🔄 Reset</button>
@@ -498,35 +673,62 @@
                     </div>
                     <div class="output-container" id="output"></div>
                 </div>
-                
-                <div class="challenges-section">
-                    <h4>🎯 Practice Challenges</h4>
-                    <div class="challenges-grid">
-                        <div class="challenge-item">
-                            <strong>1.</strong> Print your name
-                        </div>
-                        <div class="challenge-item">
-                            <strong>2.</strong> Print your favorite food
-                        </div>
-                        <div class="challenge-item">
-                            <strong>3.</strong> Print "Python is awesome!"
-                        </div>
-                        <div class="challenge-item">
-                            <strong>4.</strong> Print your school name
-                        </div>
-                        <div class="challenge-item">
-                            <strong>5.</strong> Print a welcome message
-                        </div>
-                        <div class="challenge-item">
-                            <strong>6.</strong> Print your dream job
-                        </div>
-                        <div class="challenge-item">
-                            <strong>7.</strong> Print your favorite color
-                        </div>
-                        <div class="challenge-item">
-                            <strong>8.</strong> Print "I love coding!"
+            </div>
+            
+            <div class="mastery-check">
+                <h4>Check Your Understanding</h4>
+                <div class="mastery-question">
+                    <p><strong>Question:</strong> Write a print statement that displays your name.</p>
+                    <input type="text" id="masteryAnswer" placeholder='Type your answer here, like: print("Alex")'>
+                </div>
+                <button class="check-answer-btn" onclick="checkMastery()">Check Answer</button>
+                <div id="masteryFeedback" class="feedback" style="display: none;"></div>
+            </div>
+            
+            <div class="practice-section" id="practiceSection" style="display: none;">
+                <h4>Additional Practice</h4>
+                <div class="practice-grid">
+                    <div class="practice-card" onclick="loadPractice('basic')">
+                        <h5>More Practice</h5>
+                        <p>Need extra practice with print statements? Try more examples.</p>
+                        <div class="difficulty-badge basic">Beginner</div>
+                    </div>
+                    <div class="practice-card" onclick="loadPractice('creative')">
+                        <h5>Creative Challenges</h5>
+                        <p>Make your print statements more interesting and personal.</p>
+                        <div class="difficulty-badge creative">Creative</div>
+                    </div>
+                    <div class="practice-card" onclick="loadPractice('advanced')">
+                        <h5>Extension Tasks</h5>
+                        <p>Ready for something more challenging? Try these advanced tasks.</p>
+                        <div class="difficulty-badge advanced">Advanced</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="challenge-area" id="challengeArea" style="display: none;">
+                <div class="challenge-header">
+                    <h4 id="challengeTitle">Challenge Task</h4>
+                    <button class="close-challenge-btn" onclick="closeChallengeArea()">× Close</button>
+                </div>
+                <div id="challengeDescription"></div>
+                <div class="python-playground">
+                    <div class="playground-header">
+                        <span>Challenge Practice Area</span>
+                        <div class="playground-controls">
+                            <button class="btn btn-run" onclick="runChallengeCode()">▶ Run Code</button>
+                            <button class="btn btn-reset" onclick="resetChallengeCode()">🔄 Reset</button>
                         </div>
                     </div>
+                    <div class="editor-container">
+                        <textarea id="challengeEditor"># Write your code here</textarea>
+                    </div>
+                    <div class="output-container" id="challengeOutput"></div>
+                </div>
+                <div class="challenge-navigation">
+                    <button class="nav-challenge-btn" onclick="previousChallenge()">← Previous</button>
+                    <span id="challengeCounter">1 of 3</span>
+                    <button class="nav-challenge-btn" onclick="nextChallenge()">Next →</button>
                 </div>
             </div>
         </div>
@@ -535,7 +737,7 @@
             <div class="nav-buttons">
                 <a href="#" class="nav-btn disabled">← Previous Lesson</a>
                 <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
-                <a href="lesson2.html" class="nav-btn">Next Lesson →</a>
+                <a href="lesson2.html" class="nav-btn" id="nextLessonBtn">Next Lesson →</a>
             </div>
         </div>
     </div>
@@ -546,7 +748,76 @@
     
     <script>
         let editor;
+        let challengeEditor;
+        let masteryCompleted = false;
         const defaultCode = 'print("Hello, World!")';
+        
+        // Challenge content organized by difficulty - PROPERLY FORMATTED
+        const challenges = {
+            basic: [
+                {
+                    title: "Practice: Your Information",
+                    description: "Write three print statements to show: your name, your age, and your favorite subject.",
+                    starter: "# Print your name\nprint(\"Your name here\")\n\n# Print your age  \nprint(\"Your age here\")\n\n# Print your favorite subject\nprint(\"Your favorite subject here\")",
+                    hint: "Replace the placeholder text with your actual information. Keep the quotes around your text!"
+                },
+                {
+                    title: "Practice: School Information", 
+                    description: "Print your school name, your year group, and your form/tutor group.",
+                    starter: "# Print your school name\nprint(\"Your school name here\")\n\n# Print your year group\nprint(\"Your year group here\")\n\n# Print your form group\nprint(\"Your form group here\")",
+                    hint: "Remember: print(\"your text here\")"
+                },
+                {
+                    title: "Practice: Simple Messages",
+                    description: "Print a welcome message, a goodbye message, and a thank you message.",
+                    starter: "# Welcome message\nprint(\"Welcome message here\")\n\n# Goodbye message\nprint(\"Goodbye message here\")\n\n# Thank you message\nprint(\"Thank you message here\")",
+                    hint: "Think about what you might say to greet someone, say goodbye, and show appreciation."
+                }
+            ],
+            creative: [
+                {
+                    title: "Creative: Write a Poem",
+                    description: "Write a 3-line poem about your favorite animal using three print statements.",
+                    starter: "# Line 1 of your poem\nprint(\"First line about your animal\")\n\n# Line 2 of your poem\nprint(\"Second line about your animal\")\n\n# Line 3 of your poem\nprint(\"Third line about your animal\")",
+                    hint: "Each line should be in its own print statement. Make it rhyme if you can!"
+                },
+                {
+                    title: "Creative: Design a Menu",
+                    description: "Create a simple menu for a restaurant. Print the restaurant name and three menu items.",
+                    starter: "# Restaurant name\nprint(\"*** Restaurant Name ***\")\n\n# Menu item 1\nprint(\"1. Menu item here\")\n\n# Menu item 2\nprint(\"2. Menu item here\")\n\n# Menu item 3\nprint(\"3. Menu item here\")",
+                    hint: "Be creative with your restaurant name and delicious menu items!"
+                },
+                {
+                    title: "Creative: Story Beginning",
+                    description: "Start a short story with three print statements that set the scene.",
+                    starter: "# First sentence - introduce the character\nprint(\"Character introduction here\")\n\n# Second sentence - describe the setting\nprint(\"Setting description here\")\n\n# Third sentence - hint at what happens next\nprint(\"What happens next hint here\")",
+                    hint: "Think: Who is your character? Where are they? What's about to happen?"
+                }
+            ],
+            advanced: [
+                {
+                    title: "Advanced: ASCII Art",
+                    description: "Use print statements to create simple ASCII art, like a smiley face or your initials.",
+                    starter: "# Create ASCII art using print statements\n# Example: \nprint(\"  :-)  \")\nprint(\" /   \\\\ \")\nprint(\"  ---  \")\n\n# Now create your own ASCII art:",
+                    hint: "Try making shapes with characters like *, -, |, and spaces."
+                },
+                {
+                    title: "Advanced: Formatted Display",
+                    description: "Create a formatted display showing information like a simple ID card or profile.",
+                    starter: "# Create a formatted display\nprint(\"===================\")\nprint(\"    STUDENT ID     \")\nprint(\"===================\")\nprint(\"Name: Your Name\")\nprint(\"Year: Your Year\")\nprint(\"Subject: Computer Science\")\nprint(\"===================\")",
+                    hint: "Use spaces to align your text nicely. Think about how an ID card might look."
+                },
+                {
+                    title: "Advanced: Multiple Concepts",
+                    description: "Print information that demonstrates you understand why print statements are useful in programming.",
+                    starter: "# Show multiple ways print can be used\nprint(\"Print statements help programmers:\")\nprint(\"1. Show results to users\")\nprint(\"2. Debug code by showing values\")  \nprint(\"3. Provide feedback and messages\")\nprint(\"4. Display program output\")\n\n# Add your own examples:",
+                    hint: "Think about what print statements help programmers do - communicate with users, show results, debug code..."
+                }
+            ]
+        };
+        
+        let currentChallengeSet = [];
+        let currentChallengeIndex = 0;
         
         // Initialize CodeMirror editor
         function initializeEditor() {
@@ -557,13 +828,14 @@
                 lineNumbers: true,
                 indentUnit: 4,
                 indentWithTabs: false,
-                lineWrapping: true
+                lineWrapping: true,
+                fontSize: '14px'
             });
             editor.setValue(defaultCode);
         }
         
-        // Simple Python interpreter for educational purposes
-        class SimplePythonInterpreter {
+        // Enhanced Python interpreter with better error messages
+        class EducationalPythonInterpreter {
             constructor() {
                 this.output = [];
             }
@@ -578,21 +850,32 @@
             
             executeCode(code) {
                 this.reset();
-                const lines = code.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+                
+                // Clean the code
+                const trimmedCode = code.trim();
+                if (!trimmedCode) {
+                    return 'Please write some code to run!';
+                }
+                
+                const lines = trimmedCode.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line && !line.startsWith('#'));
                 
                 try {
-                    // Basic validation
-                    this.validateSyntax(code);
+                    // Enhanced validation with specific feedback
+                    this.validateSyntax(trimmedCode);
                     
                     // Execute each line
                     for (const line of lines) {
                         if (line.startsWith('print(')) {
                             this.handlePrint(line);
+                        } else {
+                            throw new Error(`I don't recognize this command: "${line}". In this lesson, we only use print() statements.`);
                         }
                     }
                     
                     if (this.output.length === 0) {
-                        return 'Code executed successfully (no output)';
+                        return 'Your code ran successfully, but nothing was printed. Try using print("Your message here")';
                     }
                     
                     return this.output.join('\n');
@@ -602,39 +885,66 @@
             }
             
             validateSyntax(code) {
-                // Check for unclosed quotes
-                let inQuotes = false;
-                let quoteChar = '';
-                
-                for (let i = 0; i < code.length; i++) {
-                    const char = code[i];
+                // Check for unclosed quotes with line-by-line feedback
+                const lines = code.split('\n');
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line || line.startsWith('#')) continue;
                     
-                    if ((char === '"' || char === "'") && !inQuotes) {
-                        inQuotes = true;
-                        quoteChar = char;
-                    } else if (char === quoteChar && inQuotes && code[i-1] !== '\\') {
-                        inQuotes = false;
-                        quoteChar = '';
+                    let inQuotes = false;
+                    let quoteChar = '';
+                    
+                    for (let j = 0; j < line.length; j++) {
+                        const char = line[j];
+                        
+                        if ((char === '"' || char === "'") && !inQuotes) {
+                            inQuotes = true;
+                            quoteChar = char;
+                        } else if (char === quoteChar && inQuotes && line[j-1] !== '\\') {
+                            inQuotes = false;
+                            quoteChar = '';
+                        }
+                    }
+                    
+                    if (inQuotes) {
+                        throw new Error(`Missing closing quote (${quoteChar}) on line ${i + 1}. Every opening quote needs a closing quote.`);
                     }
                 }
                 
-                if (inQuotes) {
-                    throw new Error('Missing closing quote. Make sure to close your quotes!');
+                // Check for missing parentheses
+                if (code.includes('print') && !code.includes('print(')) {
+                    throw new Error('Missing opening parenthesis ( after print. Use print("your message")');
                 }
                 
-                // Check for basic print syntax
                 const printMatches = code.match(/print\([^)]*$/gm);
                 if (printMatches) {
-                    throw new Error('Missing closing ) in print statement');
+                    throw new Error('Missing closing parenthesis ) in print statement. Use print("your message")');
                 }
                 
-                // Check for common typos
-                if (code.includes('Print(')) {
-                    throw new Error('Python is case-sensitive. Use "print" (lowercase), not "Print"');
+                // Check for common typos with helpful suggestions
+                if (code.toLowerCase().includes('print') && !code.includes('print')) {
+                    if (code.includes('Print')) {
+                        throw new Error('Python is case-sensitive. Use "print" (lowercase), not "Print"');
+                    }
+                    if (code.includes('PRINT')) {
+                        throw new Error('Python is case-sensitive. Use "print" (lowercase), not "PRINT"');
+                    }
                 }
                 
                 if (code.includes('prin(') || code.includes('pritn(')) {
                     throw new Error('Check your spelling. Did you mean "print"?');
+                }
+                
+                // Check for missing quotes around text
+                const printLines = lines.filter(line => line.includes('print('));
+                for (const line of printLines) {
+                    const match = line.match(/print\((.*)\)/);
+                    if (match) {
+                        const content = match[1].trim();
+                        if (content && !content.startsWith('"') && !content.startsWith("'") && !content.match(/^\d+$/)) {
+                            throw new Error(`Text needs to be in quotes. Try print("${content}") instead of print(${content})`);
+                        }
+                    }
                 }
             }
             
@@ -645,14 +955,14 @@
                     const message = match[1] || match[2];
                     this.print(message);
                 } else {
-                    throw new Error('Invalid print statement. Make sure your text is in quotes!');
+                    throw new Error('Invalid print statement. Make sure your text is in quotes like print("Hello")');
                 }
             }
         }
         
-        const pythonInterpreter = new SimplePythonInterpreter();
+        const pythonInterpreter = new EducationalPythonInterpreter();
         
-        // Run Python code
+        // Run Python code with enhanced feedback
         async function runCode() {
             const outputElement = document.getElementById('output');
             const runButton = document.querySelector('.btn-run');
@@ -664,14 +974,20 @@
                 
                 const code = editor.getValue();
                 
-                // Simulate execution time
+                // Simulate execution time for better UX
                 await new Promise(resolve => setTimeout(resolve, 300));
                 
                 const output = pythonInterpreter.executeCode(code);
-                outputElement.innerHTML = `<pre>${output}</pre>`;
+                
+                // Color code the output based on success/error
+                if (output.startsWith('Error:')) {
+                    outputElement.innerHTML = `<div class="error">${output}</div>`;
+                } else {
+                    outputElement.innerHTML = `<div class="success">${output}</div>`;
+                }
                 
             } catch (error) {
-                outputElement.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                outputElement.innerHTML = `<div class="error">Unexpected error: ${error.message}</div>`;
             } finally {
                 runButton.disabled = false;
                 runButton.textContent = "▶ Run Code";
@@ -682,6 +998,148 @@
         function resetCode() {
             editor.setValue(defaultCode);
             document.getElementById('output').innerHTML = '';
+        }
+        
+        // Mastery check function
+        function checkMastery() {
+            const answer = document.getElementById('masteryAnswer').value.trim();
+            const feedbackElement = document.getElementById('masteryFeedback');
+            const nextBtn = document.getElementById('nextLessonBtn');
+            const practiceSection = document.getElementById('practiceSection');
+            
+            // Check if answer follows correct pattern
+            const printPattern = /^print\s*\(\s*["'][^"']+["']\s*\)$/;
+            
+            if (printPattern.test(answer)) {
+                feedbackElement.innerHTML = "✅ Perfect! You understand how to write a print statement. Ready to practice more or continue to the next lesson?";
+                feedbackElement.className = "feedback correct";
+                masteryCompleted = true;
+                
+                // Enable next lesson and show practice options
+                nextBtn.style.opacity = '1';
+                nextBtn.style.pointerEvents = 'auto';
+                practiceSection.style.display = 'block';
+                
+            } else if (answer.toLowerCase().includes('print')) {
+                if (!answer.includes('"') && !answer.includes("'")) {
+                    feedbackElement.innerHTML = "Almost! Remember to put quotes around your text. Try: print(\"YourName\")";
+                } else if (!answer.includes('(') || !answer.includes(')')) {
+                    feedbackElement.innerHTML = "Close! Don't forget the parentheses. Try: print(\"YourName\")";
+                } else {
+                    feedbackElement.innerHTML = "You're on the right track! Check your syntax carefully. The format should be: print(\"YourName\")";
+                }
+                feedbackElement.className = "feedback incorrect";
+            } else {
+                feedbackElement.innerHTML = "Remember, we use the print() function to display text. Try: print(\"YourName\")";
+                feedbackElement.className = "feedback incorrect";
+            }
+            
+            feedbackElement.style.display = 'block';
+        }
+        
+        // Load practice challenges based on difficulty
+        function loadPractice(difficulty) {
+            currentChallengeSet = challenges[difficulty];
+            currentChallengeIndex = 0;
+            
+            document.getElementById('challengeArea').style.display = 'block';
+            document.getElementById('practiceSection').style.display = 'none';
+            
+            loadCurrentChallenge();
+            
+            // Scroll to challenge area
+            document.getElementById('challengeArea').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Load the current challenge
+        function loadCurrentChallenge() {
+            const challenge = currentChallengeSet[currentChallengeIndex];
+            
+            document.getElementById('challengeTitle').textContent = challenge.title;
+            document.getElementById('challengeDescription').innerHTML = `
+                <div style="background: #e8f4fd; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                    <strong>Task:</strong> ${challenge.description}
+                    <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #666;">
+                        <strong>Hint:</strong> ${challenge.hint}
+                    </div>
+                </div>
+            `;
+            
+            // Properly set the editor value and refresh to ensure proper formatting
+            challengeEditor.setValue(challenge.starter);
+            setTimeout(() => {
+                challengeEditor.refresh();
+                challengeEditor.setCursor(challengeEditor.lineCount(), 0);
+            }, 100);
+            
+            document.getElementById('challengeOutput').innerHTML = '';
+            
+            // Update counter and navigation
+            document.getElementById('challengeCounter').textContent = `${currentChallengeIndex + 1} of ${currentChallengeSet.length}`;
+            document.querySelector('.nav-challenge-btn').disabled = currentChallengeIndex === 0;
+            document.querySelector('.nav-challenge-btn:last-child').disabled = currentChallengeIndex === currentChallengeSet.length - 1;
+        }
+        
+        // Challenge navigation
+        function previousChallenge() {
+            if (currentChallengeIndex > 0) {
+                currentChallengeIndex--;
+                loadCurrentChallenge();
+            }
+        }
+        
+        function nextChallenge() {
+            if (currentChallengeIndex < currentChallengeSet.length - 1) {
+                currentChallengeIndex++;
+                loadCurrentChallenge();
+            }
+        }
+        
+        // Close challenge area
+        function closeChallengeArea() {
+            document.getElementById('challengeArea').style.display = 'none';
+            document.getElementById('practiceSection').style.display = 'block';
+        }
+        
+        // Challenge code execution
+        async function runChallengeCode() {
+            const outputElement = document.getElementById('challengeOutput');
+            const runButton = document.querySelector('#challengeArea .btn-run');
+            
+            try {
+                runButton.disabled = true;
+                runButton.textContent = "Running...";
+                outputElement.innerHTML = '<div class="loading">Running your code...</div>';
+                
+                const code = challengeEditor.getValue();
+                
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const output = pythonInterpreter.executeCode(code);
+                
+                if (output.startsWith('Error:')) {
+                    outputElement.innerHTML = `<div class="error">${output}</div>`;
+                } else {
+                    outputElement.innerHTML = `<div class="success">${output}</div>`;
+                }
+                
+            } catch (error) {
+                outputElement.innerHTML = `<div class="error">Unexpected error: ${error.message}</div>`;
+            } finally {
+                runButton.disabled = false;
+                runButton.textContent = "▶ Run Code";
+            }
+        }
+        
+        // Reset challenge code
+        function resetChallengeCode() {
+            const challenge = currentChallengeSet[currentChallengeIndex];
+            challengeEditor.setValue(challenge.starter);
+            setTimeout(() => {
+                challengeEditor.refresh();
+                challengeEditor.setCursor(challengeEditor.lineCount(), 0);
+            }, 100);
+            document.getElementById('challengeOutput').innerHTML = '';
         }
         
         // Dark Mode Functionality
@@ -705,13 +1163,42 @@
                 if (editor) {
                     editor.setOption('theme', isNowDark ? 'monokai' : 'default');
                 }
+                if (challengeEditor) {
+                    challengeEditor.setOption('theme', isNowDark ? 'monokai' : 'default');
+                }
             });
+        }
+        
+        // Initialize challenge editor
+        function initializeChallengeEditor() {
+            const textarea = document.getElementById('challengeEditor');
+            challengeEditor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                fontSize: '14px',
+                viewportMargin: Infinity
+            });
+            
+            // Set initial placeholder and ensure proper formatting
+            setTimeout(() => {
+                challengeEditor.refresh();
+            }, 100);
         }
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeEditor();
+            initializeChallengeEditor();
             initializeDarkMode();
+            
+            // Initially disable next lesson button until mastery is shown
+            const nextBtn = document.getElementById('nextLessonBtn');
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.pointerEvents = 'none';
         });
     </script>
 </body>
