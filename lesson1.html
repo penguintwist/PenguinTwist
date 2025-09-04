@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -172,7 +172,7 @@
             border-left: 4px solid #dc3545;
         }
         
-        /* NEW: Visual Metaphor Styles */
+        /* Visual Metaphor Styles */
         .print-metaphor {
             background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             padding: 2rem;
@@ -801,6 +801,25 @@
             color: #81c784;
         }
         
+        body.dark-mode .challenge-area {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        
+        body.dark-mode #challengeDescription {
+            background: #1a202c !important;
+            color: #ffffff !important;
+        }
+        
+        body.dark-mode #challengeDescription div {
+            background: #1a202c !important;
+            color: #ffffff !important;
+        }
+        
+        body.dark-mode #challengeDescription strong {
+            color: #4facfe !important;  /* Blue for "Task:" to make it stand out */
+        }
+        
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -859,10 +878,10 @@
     <div class="container">
         <div class="lesson-content">
             <div class="section">
-                <h3>Why Programs Need to Communicate</h3>
+                <h3>Why Programmes Need to Communicate</h3>
                 <div class="intro">
-                    <p>Computers are powerful machines, but they can't speak to us naturally. When you write a program, you need a way to see what the computer is thinking and doing.</p>
-                    <p>The <code>print()</code> function is like giving your computer a voice - it displays messages on the screen so you can see what's happening inside your program.</p>
+                    <p>Computers are powerful machines, but they can't speak to us naturally. When you write a programme, you need a way to see what the computer is thinking and doing.</p>
+                    <p>The <code>print()</code> function is like giving your computer a voice - it displays messages on the screen so you can see what's happening inside your programme.</p>
                 </div>
             </div>
             
@@ -916,11 +935,6 @@
                             <div class="step-number">1</div>
                             <div class="step-title">Code Written</div>
                             <div class="step-description">You type: print("Hello, World!")</div>
-                        </div>
-                        <div class="step" id="step2">
-                            <div class="step-number">2</div>
-                            <div class="step-title">Python Analyzes</div>
-                            <div class="step-description">Python reads your code and finds the message "Hello, World!" inside the quotes</div>
                         </div>
                         <div class="step" id="step3">
                             <div class="step-number">3</div>
@@ -1049,66 +1063,262 @@
         let masteryCompleted = false;
         const defaultCode = 'print("Hello, World!")';
         
-        // Challenge content organized by difficulty
+        // Fixed and Simplified Python Interpreter for Lesson 1
+        class SimplifiedPrintInterpreter {
+            constructor() {
+                this.output = [];
+            }
+
+            reset() {
+                this.output = [];
+            }
+
+            execute(code) {
+                this.reset();
+                
+                if (!code || !code.trim()) {
+                    return { success: false, message: "Please write some code to run!" };
+                }
+
+                try {
+                    const lines = this.preprocessCode(code);
+                    return this.executeLines(lines);
+                } catch (error) {
+                    return { success: false, message: `💡 ${error.message}` };
+                }
+            }
+
+            preprocessCode(code) {
+                const lines = code.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0 && !line.startsWith('#'));
+
+                this.validateSyntax(lines);
+                return lines;
+            }
+
+            validateSyntax(lines) {
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    
+                    // Check for unclosed quotes
+                    if (!this.validateQuotes(line)) {
+                        throw new Error(`Missing closing quote on line ${i + 1}. Every opening quote needs a closing quote!`);
+                    }
+
+                    // Check for basic print syntax
+                    if (line.includes('print')) {
+                        if (!this.isValidPrintStatement(line)) {
+                            // Check for common mistakes
+                            if (line.includes('Print')) {
+                                throw new Error('Python is case-sensitive - use lowercase "print", not "Print"');
+                            }
+                            if (line.includes('PRINT')) {
+                                throw new Error('Python is case-sensitive - use lowercase "print", not "PRINT"');
+                            }
+                            if (line.includes('prin(') || line.includes('pritn(')) {
+                                throw new Error('Check the spelling - it should be "print" (with a t at the end)');
+                            }
+                            if (!line.includes('(') || !line.includes(')')) {
+                                throw new Error('Print statements need parentheses: print("your message")');
+                            }
+                            throw new Error(`Invalid print statement on line ${i + 1}. Try: print("your message")`);
+                        }
+                    }
+                }
+            }
+
+            validateQuotes(line) {
+                let inQuotes = false;
+                let quoteChar = '';
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if ((char === '"' || char === "'") && !inQuotes) {
+                        inQuotes = true;
+                        quoteChar = char;
+                    } else if (char === quoteChar && inQuotes) {
+                        if (i === 0 || line[i-1] !== '\\') {
+                            inQuotes = false;
+                            quoteChar = '';
+                        }
+                    }
+                }
+                
+                return !inQuotes;
+            }
+
+            isValidPrintStatement(line) {
+                // More flexible regex that allows extra spaces
+                return /^\s*print\s*\([^)]*\)\s*$/.test(line);
+            }
+
+            executeLines(lines) {
+                for (const line of lines) {
+                    try {
+                        // Check if line contains 'print' followed by opening parenthesis (with flexible spacing)
+                        if (/^\s*print\s*\(/i.test(line)) {
+                            this.handlePrint(line);
+                        } else {
+                            throw new Error(`I don't recognise this command: "${line}". In this lesson, we focus on print() statements.`);
+                        }
+                    } catch (error) {
+                        return { success: false, message: `💡 ${error.message}` };
+                    }
+                }
+
+                if (this.output.length === 0) {
+                    return { success: true, message: "Code ran successfully! Add print() statements to see output." };
+                }
+
+                return { 
+                    success: true, 
+                    message: this.output.join('\n')
+                };
+            }
+
+            handlePrint(line) {
+                // Extract content between parentheses with flexible matching
+                const match = line.match(/print\s*\(([^)]*)\)/);
+                if (!match) {
+                    throw new Error("Invalid print statement format");
+                }
+
+                const content = match[1].trim();
+                
+                if (!content) {
+                    // Empty print() - just add blank line
+                    this.output.push('');
+                    return;
+                }
+
+                // Handle multiple arguments separated by commas
+                const args = this.parseArguments(content);
+                const values = args.map(arg => this.evaluateExpression(arg));
+                
+                this.output.push(values.join(' '));
+            }
+
+            parseArguments(content) {
+                const args = [];
+                let current = '';
+                let inQuotes = false;
+                let quoteChar = '';
+
+                for (let i = 0; i < content.length; i++) {
+                    const char = content[i];
+
+                    if ((char === '"' || char === "'") && !inQuotes) {
+                        inQuotes = true;
+                        quoteChar = char;
+                        current += char;
+                    } else if (char === quoteChar && inQuotes && (i === 0 || content[i-1] !== '\\')) {
+                        inQuotes = false;
+                        current += char;
+                    } else if (char === ',' && !inQuotes) {
+                        if (current.trim()) {
+                            args.push(current.trim());
+                        }
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+
+                if (current.trim()) {
+                    args.push(current.trim());
+                }
+
+                return args;
+            }
+
+            evaluateExpression(expr) {
+                expr = expr.trim();
+
+                // Handle quoted strings
+                if ((expr.startsWith('"') && expr.endsWith('"')) || 
+                    (expr.startsWith("'") && expr.endsWith("'"))) {
+                    return expr.slice(1, -1);
+                }
+
+                // Handle numbers
+                if (/^-?\d+(\.\d+)?$/.test(expr)) {
+                    return expr;
+                }
+
+                // Handle unquoted text (common student mistake)
+                if (/^[a-zA-Z]/.test(expr)) {
+                    throw new Error(`Text "${expr}" needs quotes around it. Try print("${expr}")`);
+                }
+
+                return expr;
+            }
+        }
+        
+        // Global interpreter instance
+        const pythonInterpreter = new SimplifiedPrintInterpreter();
+        
+        // Challenge content organised by difficulty with improved concrete examples
         const challenges = {
             basic: [
                 {
                     title: "Practice: Your Information",
-                    description: "Write three print statements to show: your name, your age, and your favorite subject.",
-                    starter: "# Write three print statements below:\n\n",
-                    hint: "Each print statement should look like: print(\"your text here\")"
+                    description: "Write three print statements to show your name, age, and favourite subject.",
+                    starter: "# Write three print statements below:\n# Example: print(\"Sarah\")\n\n# Your turn - write three print statements:\n# 1. One with your name\n# 2. One with your age\n# 3. One with your favourite subject\n\n",
+                    hint: "Look at the example: print(\"Sarah\") - replace \"Sarah\" with your own information!"
                 },
                 {
                     title: "Practice: School Information", 
                     description: "Print your school name, your year group, and your form/tutor group.",
-                    starter: "# Print three pieces of school information:\n\n",
-                    hint: "Remember the format: print(\"your information\")"
+                    starter: "# Print three pieces of school information\n# Example: print(\"Greenwood High School\")\n\n# Your turn - write three print statements:\n# 1. Your school name\n# 2. Your year group\n# 3. Your form/tutor group\n\n",
+                    hint: "Follow the example pattern: print(\"your school information here\")"
                 },
                 {
                     title: "Practice: Simple Messages",
                     description: "Print a welcome message, a goodbye message, and a thank you message.",
-                    starter: "# Create three different messages:\n\n",
-                    hint: "Think about polite things you might say to someone you're meeting."
+                    starter: "# Create three different messages\n# Example: print(\"Welcome to our classroom!\")\n\n# Your turn - write three print statements:\n# 1. A welcome message\n# 2. A goodbye message\n# 3. A thank you message\n\n",
+                    hint: "Follow the example: print(\"Welcome to our classroom!\") - create your own polite messages!"
                 }
             ],
             creative: [
                 {
                     title: "Creative: Write a Poem",
-                    description: "Write a 3-line poem about your favorite animal using three print statements.",
-                    starter: "# Line 1 of your poem\nprint(\"First line about your animal\")\n\n# Line 2 of your poem\nprint(\"Second line about your animal\")\n\n# Line 3 of your poem\nprint(\"Third line about your animal\")",
-                    hint: "Each line should be in its own print statement. Make it rhyme if you can!"
+                    description: "Write a 3-line poem about your favourite animal using three print statements.",
+                    starter: "# Write a 3-line poem about your favourite animal\n# Example poem about cats:\nprint(\"Cats are soft and furry friends\")\nprint(\"They purr and play and never end\")\nprint(\"My favourite pet, until the end\")\n\n# Your turn - write a poem about YOUR favourite animal:\n\n",
+                    hint: "Follow the example pattern - each line should be in its own print statement. Try to make it rhyme!"
                 },
                 {
                     title: "Creative: Design a Menu",
                     description: "Create a simple menu for a restaurant. Print the restaurant name and three menu items.",
-                    starter: "# Restaurant name\nprint(\"*** Restaurant Name ***\")\n\n# Menu item 1\nprint(\"1. Menu item here\")\n\n# Menu item 2\nprint(\"2. Menu item here\")\n\n# Menu item 3\nprint(\"3. Menu item here\")",
-                    hint: "Be creative with your restaurant name and delicious menu items!"
+                    starter: "# Create a restaurant menu\n# Example:\nprint(\"*** Mario's Pizza Palace ***\")\nprint(\"1. Margherita Pizza - £8.50\")\nprint(\"2. Cheese Garlic Bread - £4.20\")\nprint(\"3. Chocolate Brownie - £3.75\")\n\n# Your turn - create your own restaurant menu:\n\n",
+                    hint: "Follow the example format - restaurant name with *** decoration, then numbered menu items with prices!"
                 },
                 {
                     title: "Creative: Story Beginning",
                     description: "Start a short story with three print statements that set the scene.",
-                    starter: "# First sentence - introduce the character\nprint(\"Character introduction here\")\n\n# Second sentence - describe the setting\nprint(\"Setting description here\")\n\n# Third sentence - hint at what happens next\nprint(\"What happens next hint here\")",
-                    hint: "Think: Who is your character? Where are they? What's about to happen?"
+                    starter: "# Start a short story with three sentences\n# Example story beginning:\nprint(\"Emily found a mysterious key in her grandmother's attic.\")\nprint(\"The old brass key glowed softly in the dusty sunlight.\")\nprint(\"She wondered what secrets it might unlock.\")\n\n# Your turn - write the beginning of YOUR story:\n\n",
+                    hint: "Follow the example: introduce a character, describe the setting, then hint at what happens next!"
                 }
             ],
             advanced: [
                 {
                     title: "Advanced: ASCII Art",
                     description: "Use print statements to create simple ASCII art, like a smiley face or your initials.",
-                    starter: "# Create ASCII art using print statements\n# Example: \nprint(\"  :-)  \")\nprint(\" /   \\\\ \")\nprint(\"  ---  \")\n\n# Now create your own ASCII art:",
-                    hint: "Try making shapes with characters like *, -, |, and spaces."
+                    starter: "# Create ASCII art using print statements\n# Example smiley face:\nprint(\"  :-)  \")\nprint(\" /   \\\\ \")\nprint(\"  ---  \")\n\n# Your turn - create your own ASCII art:\n# Try making your initials, a house, or a simple shape\n\n",
+                    hint: "Follow the example pattern - use characters like *, -, |, and spaces to make shapes!"
                 },
                 {
                     title: "Advanced: Formatted Display",
                     description: "Create a formatted display showing information like a simple ID card or profile.",
-                    starter: "# Create a formatted display\nprint(\"===================\")\nprint(\"    STUDENT ID     \")\nprint(\"===================\")\nprint(\"Name: Your Name\")\nprint(\"Year: Your Year\")\nprint(\"Subject: Computer Science\")\nprint(\"===================\")",
-                    hint: "Use spaces to align your text nicely. Think about how an ID card might look."
+                    starter: "# Create a formatted ID card display\n# Example:\nprint(\"===================\")\nprint(\"    STUDENT ID     \")\nprint(\"===================\")\nprint(\"Name: Alex Johnson\")\nprint(\"Year: 10\")\nprint(\"Subject: Computer Science\")\nprint(\"===================\")\n\n# Your turn - create your own formatted display:\n\n",
+                    hint: "Follow the example format - use = symbols for borders and consistent spacing to make it look neat!"
                 },
                 {
                     title: "Advanced: Multiple Concepts",
                     description: "Print information that demonstrates you understand why print statements are useful in programming.",
-                    starter: "# Show multiple ways print can be used\nprint(\"Print statements help programmers:\")\nprint(\"1. Show results to users\")\nprint(\"2. Debug code by showing values\")  \nprint(\"3. Provide feedback and messages\")\nprint(\"4. Display program output\")\n\n# Add your own examples:",
-                    hint: "Think about what print statements help programmers do - communicate with users, show results, debug code..."
+                    starter: "# Show multiple ways print can be used\n# Example:\nprint(\"Print statements help programmers:\")\nprint(\"1. Show results to users\")\nprint(\"2. Debug code by showing values\")\nprint(\"3. Provide feedback and messages\")\nprint(\"4. Display programme output\")\n\n# Your turn - add your own examples of how print() is useful:\n\n",
+                    hint: "Follow the example format - explain what print statements do and add your own ideas about why they're useful!"
                 }
             ]
         };
@@ -1116,10 +1326,18 @@
         let currentChallengeSet = [];
         let currentChallengeIndex = 0;
         
-        // Animation demo function
+        // Animation demo function with smart timing
         function playExecutionDemo() {
             const steps = document.querySelectorAll('.step');
             const button = document.querySelector('.demo-btn');
+            
+            // Smart timing based on content complexity and length
+            const stepTimings = [
+                3000,  // Step 1: "You type: print("Hello, World!")" - 5 words, simple concept
+                5000,  // Step 2: "Python reads your code and finds..." - 14 words, complex concept  
+                5000,  // Step 3: "Python takes the text from between..." - 14 words, technical process
+                4000   // Step 4: "The message appears on your screen..." - 9 words, conclusion
+            ];
             
             button.disabled = true;
             button.textContent = '⏳ Running Demo...';
@@ -1127,10 +1345,13 @@
             // Reset all steps
             steps.forEach(step => step.classList.remove('active'));
             
-            // Animate each step with delay
+            // Animate each step with appropriate timing
+            let cumulativeTime = 0;
             steps.forEach((step, index) => {
                 setTimeout(() => {
                     step.classList.add('active');
+                    
+                    // Special handling for the final step
                     if (index === steps.length - 1) {
                         setTimeout(() => {
                             button.disabled = false;
@@ -1139,14 +1360,19 @@
                             // Keep final step active for a moment, then reset
                             setTimeout(() => {
                                 steps.forEach(s => s.classList.remove('active'));
-                            }, 2000);
+                            }, 3000); // Hold final state for 3 seconds
                         }, 500);
                     }
-                }, index * 800);
+                }, cumulativeTime);
+                
+                // Add this step's timing to cumulative total
+                cumulativeTime += stepTimings[index];
             });
+            
+            // Total animation time: 3+5+5+4 = 17 seconds (much better for comprehension!)
         }
         
-        // Initialize CodeMirror editor
+        // Initialise CodeMirror editor
         function initializeEditor() {
             const textarea = document.getElementById('editor');
             editor = CodeMirror.fromTextArea(textarea, {
@@ -1161,230 +1387,7 @@
             editor.setValue(defaultCode);
         }
         
-        // Enhanced Python interpreter with more encouraging error messages
-        class EducationalPythonInterpreter {
-            constructor() {
-                this.output = [];
-            }
-            
-            reset() {
-                this.output = [];
-            }
-            
-            print(message) {
-                this.output.push(String(message));
-            }
-            
-            executeCode(code) {
-                this.reset();
-                
-                const trimmedCode = code.trim();
-                if (!trimmedCode) {
-                    return 'Ready to run your code! Write a print statement and click Run.';
-                }
-                
-                const lines = trimmedCode.split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line && !line.startsWith('#'));
-                
-                try {
-                    this.validateSyntax(trimmedCode);
-                    
-                    for (const line of lines) {
-                        // Much simpler check - just look for "print" followed by "(" anywhere in the line
-                        if (line.includes('print') && line.includes('(')) {
-                            this.handlePrint(line);
-                        } else if (line.trim()) {
-                            throw new Error(`Python doesn't recognize "${line}" yet. In this lesson, we're focusing on print() statements - try print("your message here")`);
-                        }
-                    }
-                    
-                    if (this.output.length === 0) {
-                        return 'Your code ran successfully! Add some print statements to see messages appear here.';
-                    }
-                    
-                    return this.output.join('\n');
-                } catch (error) {
-                    return `💡 Learning moment: ${error.message}`;
-                }
-            }
-            
-            validateSyntax(code) {
-                const lines = code.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line || line.startsWith('#')) continue;
-                    
-                    let inQuotes = false;
-                    let quoteChar = '';
-                    
-                    for (let j = 0; j < line.length; j++) {
-                        const char = line[j];
-                        
-                        if ((char === '"' || char === "'") && !inQuotes) {
-                            inQuotes = true;
-                            quoteChar = char;
-                        } else if (char === quoteChar && inQuotes && line[j-1] !== '\\') {
-                            inQuotes = false;
-                            quoteChar = '';
-                        }
-                    }
-                    
-                    if (inQuotes) {
-                        throw new Error(`You're missing a closing quote (${quoteChar}) on line ${i + 1}. Remember: every opening quote needs a closing quote to wrap your message properly!`);
-                    }
-                }
-                
-                if (code.includes('print') && !code.includes('print(')) {
-                    throw new Error('Almost there! You need opening parentheses after print. Try: print("your message")');
-                }
-                
-                const printMatches = code.match(/print\s*\([^)]*$/gm);
-                if (printMatches) {
-                    throw new Error('You need a closing parenthesis ) to complete your print statement. Try: print("your message")');
-                }
-                
-                if (code.toLowerCase().includes('print') && !code.includes('print')) {
-                    if (code.includes('Print')) {
-                        throw new Error('Python is case-sensitive - use lowercase "print", not "Print". You\'ve got this!');
-                    }
-                    if (code.includes('PRINT')) {
-                        throw new Error('Python is case-sensitive - use lowercase "print", not "PRINT". Keep going!');
-                    }
-                }
-                
-                if (code.includes('prin(') || code.includes('pritn(')) {
-                    throw new Error('Check the spelling - it should be "print" (with a t at the end). Almost perfect!');
-                }
-                
-                const printLines = lines.filter(line => line.includes('print'));
-                for (const line of printLines) {
-                    const match = line.match(/print\s*\((.*)\)/);
-                    if (match) {
-                        const content = match[1].trim();
-                        // Allow quoted strings, numbers, or empty content
-                        if (content && !content.startsWith('"') && !content.startsWith("'") && !content.match(/^\d+(\.\d+)?$/)) {
-                            throw new Error(`Text needs to be wrapped in quotes so Python knows it's a message. Try: print("${content}")`);
-                        }
-                    }
-                }
-            }
-            
-            handlePrint(line) {
-                // Enhanced regex to handle both quoted strings and numbers
-                const quotedMatch = line.match(/print\s*\(\s*["'](.*)["']\s*\)/);
-                const numberMatch = line.match(/print\s*\(\s*(\d+(?:\.\d+)?)\s*\)/);
-                
-                if (quotedMatch) {
-                    const message = quotedMatch[1];
-                    this.print(message);
-                } else if (numberMatch) {
-                    const number = numberMatch[1];
-                    this.print(number);
-                } else {
-                    throw new Error('Make sure your message is wrapped in quotes like print("Hello") or use a number like print(42)');
-                }
-            }
-        }
-        
-        // Completely rewritten Python interpreter to avoid caching issues
-        class SimplePythonInterpreter {
-            constructor() {
-                this.results = [];
-            }
-            
-            clear() {
-                this.results = [];
-            }
-            
-            addOutput(text) {
-                this.results.push(String(text));
-            }
-            
-            run(sourceCode) {
-                this.clear();
-                
-                if (!sourceCode.trim()) {
-                    return 'Write some code and click Run to see the output!';
-                }
-                
-                // Split into individual lines and clean them
-                const codeLines = sourceCode.split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line && !line.startsWith('#'));
-                
-                try {
-                    // Very minimal validation - just check quotes
-                    this.checkQuotes(sourceCode);
-                    
-                    // Process each line
-                    for (const line of codeLines) {
-                        if (this.isPrintStatement(line)) {
-                            this.executePrint(line);
-                        } else {
-                            throw new Error(`Not sure what "${line}" means. Try using print("your message") instead.`);
-                        }
-                    }
-                    
-                    return this.results.length > 0 ? this.results.join('\n') : 'Code ran but nothing was printed.';
-                    
-                } catch (error) {
-                    return `💡 ${error.message}`;
-                }
-            }
-            
-            isPrintStatement(line) {
-                // Simple check: contains both "print" and parentheses
-                return line.includes('print') && line.includes('(') && line.includes(')');
-            }
-            
-            executePrint(line) {
-                // Extract content between parentheses
-                const match = line.match(/print\s*\((.*)\)/);
-                if (!match) return;
-                
-                const content = match[1].trim();
-                
-                // Handle quoted strings
-                if ((content.startsWith('"') && content.endsWith('"')) || 
-                    (content.startsWith("'") && content.endsWith("'"))) {
-                    this.addOutput(content.slice(1, -1));
-                }
-                // Handle numbers
-                else if (/^\d+(\.\d+)?$/.test(content)) {
-                    this.addOutput(content);
-                }
-                // Handle unquoted text
-                else if (content) {
-                    throw new Error(`Text "${content}" needs quotes around it. Try print("${content}") instead.`);
-                }
-            }
-            
-            checkQuotes(code) {
-                let inQuotes = false;
-                let quoteChar = '';
-                
-                for (let i = 0; i < code.length; i++) {
-                    const char = code[i];
-                    
-                    if ((char === '"' || char === "'") && !inQuotes) {
-                        inQuotes = true;
-                        quoteChar = char;
-                    } else if (char === quoteChar && inQuotes) {
-                        inQuotes = false;
-                        quoteChar = '';
-                    }
-                }
-                
-                if (inQuotes) {
-                    throw new Error(`Missing closing quote (${quoteChar}). Every opening quote needs a closing quote!`);
-                }
-            }
-        }
-        
-        const simplePython = new SimplePythonInterpreter();
-        
-        // Run Python code with new simple interpreter
+        // Main code execution function
         async function runCode() {
             const outputElement = document.getElementById('output');
             const runButton = document.querySelector('.btn-run');
@@ -1398,14 +1401,13 @@
                 
                 await new Promise(resolve => setTimeout(resolve, 300));
                 
-                const result = simplePython.run(code);
+                const result = pythonInterpreter.execute(code);
                 
-                if (result.startsWith('💡')) {
-                    outputElement.innerHTML = `<div class="error">${result}</div>`;
-                } else {
-                    // Ensure proper line breaks in output display
-                    const formattedOutput = result.replace(/\n/g, '<br>');
+                if (result.success) {
+                    const formattedOutput = result.message.replace(/\n/g, '<br>');
                     outputElement.innerHTML = `<div class="success">${formattedOutput}</div>`;
+                } else {
+                    outputElement.innerHTML = `<div class="error">${result.message}</div>`;
                 }
                 
             } catch (error) {
@@ -1415,20 +1417,22 @@
                 runButton.textContent = "▶ Run Code";
             }
         }
-        
+
         function resetCode() {
             editor.setValue(defaultCode);
             document.getElementById('output').innerHTML = '';
+            pythonInterpreter.reset();
         }
         
-        // Enhanced mastery check with more encouraging feedback
+        // Fixed mastery check with more flexible pattern matching
         function checkMastery() {
             const answer = document.getElementById('masteryAnswer').value.trim();
             const feedbackElement = document.getElementById('masteryFeedback');
             const nextBtn = document.getElementById('nextLessonBtn');
             const practiceSection = document.getElementById('practiceSection');
             
-            const printPattern = /^print\s*\(\s*["'][^"']+["']\s*\)$/;
+            // More flexible regex that allows extra spaces and empty strings
+            const printPattern = /^\s*print\s*\(\s*["'][^"']*["']\s*\)\s*$/;
             
             if (printPattern.test(answer)) {
                 feedbackElement.innerHTML = "🎉 Perfect! You understand exactly how print() works - you've wrapped your message in quotes and used the right syntax. You're ready to continue learning!";
@@ -1456,7 +1460,7 @@
             feedbackElement.style.display = 'block';
         }
         
-        // Load practice challenges based on difficulty
+        // Practice challenge functions
         function loadPractice(difficulty) {
             currentChallengeSet = challenges[difficulty];
             currentChallengeIndex = 0;
@@ -1465,7 +1469,6 @@
             document.getElementById('practiceSection').style.display = 'none';
             
             loadCurrentChallenge();
-            
             document.getElementById('challengeArea').scrollIntoView({ behavior: 'smooth' });
         }
         
@@ -1514,6 +1517,7 @@
             document.getElementById('practiceSection').style.display = 'block';
         }
         
+        // Challenge code execution
         async function runChallengeCode() {
             const outputElement = document.getElementById('challengeOutput');
             const runButton = document.querySelector('#challengeArea .btn-run');
@@ -1527,14 +1531,13 @@
                 
                 await new Promise(resolve => setTimeout(resolve, 300));
                 
-                const result = simplePython.run(code);
+                const result = pythonInterpreter.execute(code);
                 
-                if (result.startsWith('💡')) {
-                    outputElement.innerHTML = `<div class="error">${result}</div>`;
-                } else {
-                    // Ensure proper line breaks in output display
-                    const formattedOutput = result.replace(/\n/g, '<br>');
+                if (result.success) {
+                    const formattedOutput = result.message.replace(/\n/g, '<br>');
                     outputElement.innerHTML = `<div class="success">${formattedOutput}</div>`;
+                } else {
+                    outputElement.innerHTML = `<div class="error">${result.message}</div>`;
                 }
                 
             } catch (error) {
@@ -1553,6 +1556,7 @@
                 challengeEditor.setCursor(challengeEditor.lineCount(), 0);
             }, 100);
             document.getElementById('challengeOutput').innerHTML = '';
+            pythonInterpreter.reset();
         }
         
         // Dark Mode Functionality
