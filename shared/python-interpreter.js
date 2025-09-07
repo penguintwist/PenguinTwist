@@ -462,7 +462,7 @@
         // This will be implemented when needed
     }
     
-    // Interactive playground component
+    // Interactive playground component with auto-sizing
     function InteractivePlayground(containerId, interpreterType, options) {
         this.container = document.getElementById(containerId);
         this.interpreterType = interpreterType;
@@ -515,10 +515,20 @@
                     lineWrapping: true,
                     fontSize: '16px'
                 });
-                this.editor.setValue(this.options.defaultCode || '');
+                
+                var defaultCode = this.options.defaultCode || '';
+                this.editor.setValue(defaultCode);
+                
+                // Auto-size to show all content
+                var lineCount = defaultCode.split('\n').length;
+                var minHeight = Math.max(140, (lineCount + 2) * 20);
+                this.editor.setSize(null, minHeight + 'px');
+                
             } else {
                 // Fallback for environments without CodeMirror
                 textarea.value = this.options.defaultCode || '';
+                var lines = (this.options.defaultCode || '').split('\n').length;
+                textarea.rows = Math.max(8, lines + 2);
                 this.editor = {
                     getValue: function() { return textarea.value; },
                     setValue: function(value) { textarea.value = value; }
