@@ -152,6 +152,16 @@ Alex
             // Wait for shared components to load, then initialize
             setTimeout(function() {
                 try {
+                    // Debug: Log what's available in the global scope
+                    console.log('Available global objects:');
+                    console.log('- PythonInterpreterFactory:', typeof PythonInterpreterFactory);
+                    console.log('- PythonInterpreter:', typeof PythonInterpreter);
+                    console.log('- createInterpreter:', typeof createInterpreter);
+                    console.log('- VisualMetaphor:', typeof VisualMetaphor);
+                    console.log('- InteractivePlayground:', typeof InteractivePlayground);
+                    console.log('- MasteryCheck:', typeof MasteryCheck);
+                    console.log('- DarkModeManager:', typeof DarkModeManager);
+                    
                     // Try different possible interpreter API names
                     var interpreter = null;
                     if (typeof PythonInterpreterFactory !== 'undefined') {
