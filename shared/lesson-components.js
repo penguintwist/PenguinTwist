@@ -452,7 +452,7 @@
             var playgroundContainer = challengeArea.querySelector('.challenge-playground-container');
             playgroundContainer.innerHTML = '<div id="challenge-playground"></div>';
             
-            var playground = PenguinTwistInterpreter.createPlayground('challenge-playground', this.options.interpreterType || 'print', {
+            var playground = PenguinTwistInterpreter.createPlayground('challenge-playground', this.options.interpreterType || this.interpreterType || 'print', {
                 defaultCode: challenge.starter || '',
                 title: 'Challenge Practice Area'
             });
