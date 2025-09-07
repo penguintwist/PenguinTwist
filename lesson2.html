@@ -5,30 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lesson 2: Variables - PenguinTwist</title>
     
-    <!-- External Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-    <link rel="stylesheet" href="shared/lesson-styles.css">
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="lesson-styles.css">
 </head>
 <body>
     <div class="header">
         <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
         <div class="container">
             <h1>Lesson 2: Variables</h1>
-            <p>Teaching your computer to remember information</p>
+            <p>Give your programs memory - store and remember information</p>
         </div>
     </div>
     
     <div class="nav-back">
         <div class="container">
             <a href="navigation.html">← Back to All Lessons</a>
+            <span style="color: #666;">Previous: <a href="lesson1.html" style="color: #667eea;">Hello World</a></span>
         </div>
     </div>
     
     <div class="container">
         <div class="lesson-content">
-            
-            <!-- Section 1: Why Programs Need Memory -->
             <div class="section">
                 <h3>Why Programs Need Memory</h3>
                 <div class="intro">
@@ -37,13 +34,23 @@
                 </div>
             </div>
             
-            <!-- Section 2: Memory Box Metaphor -->
             <div class="section">
                 <h3>Understanding Variables as Memory Boxes</h3>
-                <div id="memoryMetaphor"></div>
+                <div class="theory">
+                    <p>Think of variables as labeled boxes in a warehouse. Each box has:</p>
+                    <p>• A <strong>name</strong> (the label on the box)</p>
+                    <p>• A <strong>value</strong> (what's stored inside the box)</p>
+                    <p>• A <strong>location</strong> (where Python can find it in memory)</p>
+                    
+                    <div class="tip">
+                        <strong>Memory Box Metaphor:</strong> When you create a variable called "name", Python creates a box labeled "name" and puts your value inside it. Whenever you use that variable name later, Python opens the box and looks at what's inside.
+                    </div>
+                </div>
+                
+                <!-- Visual Metaphor Component -->
+                <div id="memoryBoxDemo"></div>
             </div>
             
-            <!-- Section 3: Creating Your First Variable -->
             <div class="section">
                 <h3>Creating Your First Variable</h3>
                 <div class="theory">
@@ -61,19 +68,18 @@
                     <div class="code-example">name = "Alex"
 age = 15</div>
                     
-                    <div class="warning">
+                    <div class="tip">
                         <strong>Important:</strong> Text must be wrapped in quotes, but numbers don't need quotes. Python treats them differently!
                     </div>
                 </div>
             </div>
             
-            <!-- Interactive Playground -->
             <div class="section">
                 <h3>Try Creating Variables</h3>
-                <div id="variablePlayground"></div>
+                <!-- Interactive Playground Component -->
+                <div id="variableCreationPlayground"></div>
             </div>
             
-            <!-- Section 4: Using Variables with Print -->
             <div class="section">
                 <h3>Using Variables with Print</h3>
                 <div class="theory">
@@ -82,7 +88,8 @@ age = 15</div>
                     <div class="code-example">name = "Alex"
 print(name)</div>
                     
-                    <div class="expected-output"><strong>Output:</strong> Alex</div>
+                    <div class="expected-output"><strong>Output:</strong>
+Alex</div>
                     
                     <div class="tip">
                         <strong>Key Distinction:</strong> Notice the difference between print(name) and print("name"). The first prints the contents of the variable, the second prints the word "name".
@@ -94,388 +101,159 @@ age = 15
 print(name)
 print(age)</div>
                     
-                    <div class="expected-output"><strong>Output:</strong> Alex<br>15</div>
+                    <div class="expected-output"><strong>Output:</strong>
+Alex
+15</div>
                 </div>
             </div>
             
-            <!-- Visual Demo -->
             <div class="section">
                 <h3>See Variables in Action</h3>
-                <div id="variableDemo"></div>
+                <!-- Main Practice Playground -->
+                <div id="variablePrintPlayground"></div>
+                
+                <div class="tip">
+                    <strong>Try these experiments:</strong>
+                    <br>• Change "Alex" to your own name
+                    <br>• Add a new variable for your favorite subject
+                    <br>• Try storing a number without quotes
+                    <br>• What happens if you forget the quotes around text?
+                </div>
             </div>
             
-            <!-- Interactive Practice -->
             <div class="section">
                 <h3>Practice with Variables</h3>
-                <div id="practicePlayground"></div>
+                <!-- Advanced Practice Playground -->
+                <div id="variablePracticePlayground"></div>
             </div>
             
-            <!-- Mastery Check -->
+            <!-- Mastery Check Component -->
             <div id="masteryCheck"></div>
-            
-            <!-- Challenge System -->
-            <div id="challengeSystem" style="display: none;"></div>
-            
         </div>
-        
-        <!-- Lesson Navigation -->
+    </div>
+    
+    <div class="container">
         <div class="lesson-navigation">
             <div class="nav-buttons">
                 <a href="lesson1.html" class="nav-btn">← Previous Lesson</a>
                 <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
-                <a href="lesson3.html" class="nav-btn" id="nextLessonBtn">Next Lesson →</a>
+                <a href="lesson3.html" class="nav-btn disabled" id="nextLessonBtn">Next Lesson →</a>
             </div>
         </div>
     </div>
     
-    <!-- External Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
-    
     <!-- Shared Components -->
-    <script src="shared/python-interpreter.js"></script>
-    <script src="shared/lesson-components.js"></script>
+    <script src="python-interpreter.js"></script>
+    <script src="lesson-components.js"></script>
     
     <script>
-        // Lesson 2: Variables Implementation
+        // Lesson 2 Configuration
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize interpreter for variables lesson
+            var interpreter = new PythonInterpreterFactory('variables');
+            
+            // Initialize visual metaphor for memory boxes
+            var memoryBoxDemo = new VisualMetaphor({
+                containerId: 'memoryBoxDemo',
+                type: 'memoryBoxes',
+                title: 'Variables as Memory Boxes',
+                boxes: [
+                    { label: 'name', value: 'Empty' },
+                    { label: 'age', value: 'Empty' },
+                    { label: 'subject', value: 'Empty' }
+                ],
+                demoButton: true,
+                demoScript: [
+                    { action: 'assign', box: 'name', value: '"Alex"', delay: 1000 },
+                    { action: 'assign', box: 'age', value: '15', delay: 1500 },
+                    { action: 'assign', box: 'subject', value: '"Computer Science"', delay: 1500 }
+                ]
+            });
+            
+            // Initialize interactive playgrounds
+            var playground1 = new InteractivePlayground({
+                containerId: 'variableCreationPlayground',
+                title: 'Variable Creation Practice',
+                interpreter: interpreter,
+                starterCode: 'name = "Alex"\nage = 15',
+                showMemory: true,
+                tips: ['Try changing the values', 'Create your own variables']
+            });
+            
+            var playground2 = new InteractivePlayground({
+                containerId: 'variablePrintPlayground',
+                title: 'Variables and Print Practice',
+                interpreter: interpreter,
+                starterCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
+                showMemory: true,
+                tips: ['See how variables are used with print()']
+            });
+            
+            var playground3 = new InteractivePlayground({
+                containerId: 'variablePracticePlayground',
+                title: 'Your Turn to Experiment',
+                interpreter: interpreter,
+                starterCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
+                showMemory: true,
+                tips: ['Create variables for your own information']
+            });
+            
+            // Initialize mastery check
+            var masteryCheck = new MasteryCheck({
+                containerId: 'masteryCheck',
+                title: 'Check Your Understanding',
+                questions: [
+                    {
+                        question: 'To store "Computer Science" in a variable called subject, what code do you write?',
+                        placeholder: 'Type your answer like: variable = "value"',
+                        validateAnswer: function(answer) {
+                            return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                        },
+                        hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
+                    },
+                    {
+                        question: 'What\'s the difference between print(age) and print("age")?',
+                        placeholder: 'Explain the difference',
+                        validateAnswer: function(answer) {
+                            var lower = answer.toLowerCase();
+                            return lower.includes('variable') || lower.includes('stored') || 
+                                   lower.includes('value') || lower.includes('word') || 
+                                   lower.includes('text') || lower.includes('literal') ||
+                                   lower.includes('contents') || lower.includes('name');
+                        },
+                        hint: 'print(age) shows stored value, print("age") shows the word "age"'
+                    },
+                    {
+                        question: 'If you run: name = "Jamie" then print(name), what appears?',
+                        placeholder: 'What gets displayed?',
+                        validateAnswer: function(answer) {
+                            return answer.toLowerCase().includes('jamie');
+                        },
+                        hint: 'The output would be: Jamie'
+                    }
+                ],
+                onComplete: function() {
+                    // Unlock next lesson
+                    var nextBtn = document.getElementById('nextLessonBtn');
+                    if (nextBtn) {
+                        nextBtn.classList.remove('disabled');
+                        nextBtn.style.opacity = '1';
+                        nextBtn.style.pointerEvents = 'auto';
+                    }
+                }
+            });
             
             // Initialize dark mode
-            PenguinTwistComponents.DarkMode.initialize();
+            var darkModeManager = new DarkModeManager();
             
-            // Memory Metaphor Visualization
-            const memoryMetaphor = new PenguinTwistComponents.VisualMetaphor('memoryMetaphor', {
-                title: 'Think of Variables as Labelled Storage Boxes',
-                steps: [
-                    {
-                        title: 'Empty Memory',
-                        description: 'When your program starts, memory is empty - like a room with no storage boxes.',
-                        visual: '<div class="memory-space"><p style="text-align: center; color: #666; font-style: italic;">Empty memory space</p></div>'
-                    },
-                    {
-                        title: 'Creating a Variable',
-                        description: 'When you write name = "Alex", Python creates a labelled box and stores your data.',
-                        visual: `<div class="memory-space">
-                                   <div class="memory-box">
-                                     <div class="box-label">name</div>
-                                     <div class="box-content">"Alex"</div>
-                                   </div>
-                                 </div>`
-                    },
-                    {
-                        title: 'Multiple Variables',
-                        description: 'You can create multiple variables - each gets its own labelled box.',
-                        visual: `<div class="memory-space">
-                                   <div class="memory-box">
-                                     <div class="box-label">name</div>
-                                     <div class="box-content">"Alex"</div>
-                                   </div>
-                                   <div class="memory-box">
-                                     <div class="box-label">age</div>
-                                     <div class="box-content">15</div>
-                                   </div>
-                                 </div>`
-                    },
-                    {
-                        title: 'Using Variables',
-                        description: 'When you print(name), Python looks in the box labelled "name" and shows you what\'s inside.',
-                        visual: `<div class="memory-space">
-                                   <div class="memory-box highlighted">
-                                     <div class="box-label">name</div>
-                                     <div class="box-content">"Alex"</div>
-                                   </div>
-                                   <div class="memory-box">
-                                     <div class="box-label">age</div>
-                                     <div class="box-content">15</div>
-                                   </div>
-                                   <div class="output-arrow">→ Output: Alex</div>
-                                 </div>`
-                    }
-                ]
-            });
-            
-            // Variable Creation Playground
-            const variablePlayground = PenguinTwistInterpreter.createPlayground('variablePlayground', {
-                title: '🧪 Variable Creation Practice',
-                defaultCode: 'name = "Alex"\nage = 15\n\n# Create your own variables below:\n# Try: school = "Your school name"\n',
-                interpreterType: 'variable',
-                showMemoryBoxes: true
-            });
-            
-            // Variable Demonstration
-            const variableDemo = new PenguinTwistComponents.AnimationDemo('variableDemo', {
-                title: 'Watch Variables in Action',
-                demoCode: 'name = "Sarah"\nage = 16\nprint(name)\nprint(age)',
-                steps: [
-                    {
-                        title: 'Variable Assignment',
-                        description: 'Python creates memory boxes and stores the values',
-                        highlight: 'assignment'
-                    },
-                    {
-                        title: 'Print Variable Name',
-                        description: 'Python looks in the "name" box and retrieves "Sarah"',
-                        highlight: 'print-name'
-                    },
-                    {
-                        title: 'Print Variable Age',
-                        description: 'Python looks in the "age" box and retrieves 16',
-                        highlight: 'print-age'
-                    },
-                    {
-                        title: 'Final Output',
-                        description: 'Both values are displayed on screen',
-                        highlight: 'output'
-                    }
-                ]
-            });
-            
-            // Practice Playground
-            const practicePlayground = PenguinTwistInterpreter.createPlayground('practicePlayground', {
-                title: '🐍 Practice Area - Create and Print Variables',
-                defaultCode: '# Create two variables and print them\n# Example:\n# name = "Your name here"\n# age = 15\n# print(name)\n# print(age)\n',
-                interpreterType: 'variable',
-                showMemoryBoxes: true
-            });
-            
-            // Mastery Check Questions
-            const masteryQuestions = [
-                {
-                    question: 'Look at this code and predict what will be displayed:\n\nstudent = "Emma"\nprint(student)\nprint("student")\n\nWhat will appear on the screen?',
-                    type: 'text',
-                    validation: function(answer) {
-                        const normalised = answer.toLowerCase().replace(/\s+/g, ' ').trim();
-                        return normalised.includes('emma') && normalised.includes('student') && 
-                               (normalised.indexOf('emma') < normalised.indexOf('student'));
-                    },
-                    feedback: {
-                        correct: 'Perfect! You understand the difference between variable names and string literals.',
-                        incorrect: 'Remember: print(student) shows the contents of the variable, while print("student") shows the word "student".'
-                    }
-                },
-                {
-                    question: 'Write code to create a variable called "subject" that stores your favourite subject, then print it.',
-                    type: 'text',
-                    validation: function(answer) {
-                        const normalised = answer.toLowerCase().replace(/\s+/g, '');
-                        return normalised.includes('subject=') && normalised.includes('"') && normalised.includes('print(subject)');
-                    },
-                    feedback: {
-                        correct: 'Excellent! You can create variables and use them in print statements.',
-                        incorrect: 'Try: subject = "Your favourite subject" then print(subject)'
-                    }
-                },
-                {
-                    question: 'Why do we use variables in programming? What problem do they solve?',
-                    type: 'text',
-                    validation: function(answer) {
-                        const normalised = answer.toLowerCase();
-                        return (normalised.includes('remember') || normalised.includes('store')) && 
-                               (normalised.includes('information') || normalised.includes('data') || normalised.includes('value'));
-                    },
-                    feedback: {
-                        correct: 'Brilliant! You understand that variables help programs remember and reuse information.',
-                        incorrect: 'Think about what variables allow programs to do - they help programs remember information for later use.'
-                    }
-                }
-            ];
-            
-            // Initialize Mastery Check
-            const masteryCheck = new PenguinTwistComponents.MasteryCheck('masteryCheck', {
-                title: 'Check Your Understanding',
-                questions: masteryQuestions,
-                onComplete: function() {
-                    // Unlock next lesson and show challenges
-                    const nextBtn = document.getElementById('nextLessonBtn');
-                    nextBtn.classList.remove('disabled');
-                    nextBtn.style.opacity = '1';
-                    nextBtn.style.pointerEvents = 'auto';
-                    
-                    const challengeSystem = document.getElementById('challengeSystem');
-                    challengeSystem.style.display = 'block';
-                    challengeSystem.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-            
-            // Challenge Content
-            const challenges = {
-                basic: [
-                    {
-                        title: 'Personal Information Variables',
-                        description: 'Create variables for your name, age, and favourite colour, then print each one.',
-                        starter: '# Create three variables about yourself\n# Then print each one\n\n# Example:\n# name = "Your name"\n# age = 15\n# colour = "blue"\n\n# Your code here:\n',
-                        hint: 'Remember: text needs quotes, numbers don\'t!'
-                    },
-                    {
-                        title: 'School Information',
-                        description: 'Create variables for your school name, year group, and form, then display them.',
-                        starter: '# Create school-related variables\n\n# Example:\n# school = "Greenwood High"\n# year = 10\n# form = "10B"\n\n# Your code here:\n',
-                        hint: 'Use quotes for text like school names and form codes.'
-                    }
-                ],
-                creative: [
-                    {
-                        title: 'Character Profile',
-                        description: 'Create a character for a story. Give them a name, age, and special power.',
-                        starter: '# Create a character profile\n# Example character:\n# hero_name = "Lightning Girl"\n# hero_age = 17\n# power = "Super speed"\n\n# print(hero_name)\n# print(hero_age)\n# print(power)\n\n# Your character:\n',
-                        hint: 'Be creative! What kind of character would you want to read about?'
-                    },
-                    {
-                        title: 'Dream Holiday',
-                        description: 'Plan your ideal holiday using variables for destination, duration, and activity.',
-                        starter: '# Plan your dream holiday\n# Example:\n# destination = "Japan"\n# days = 14\n# activity = "visiting temples"\n\n# Your dream holiday:\n',
-                        hint: 'Think about where you\'d love to visit and what you\'d do there!'
-                    }
-                ],
-                advanced: [
-                    {
-                        title: 'Debug the Variables',
-                        description: 'Find and fix the errors in this code that tries to create and print variables.',
-                        starter: '# This code has 3 errors - can you fix them?\n\nName = "Sarah"\nage = "16"\nschool = Greenwood High\n\nprint(name)\nprint(Age)\nprint("school")\n\n# Hint: Look for case sensitivity, quote problems, and variable vs string issues',
-                        hint: 'Check: variable name case, quotes around text, and printing variables vs strings.'
-                    },
-                    {
-                        title: 'Variable Swap Challenge',
-                        description: 'Advanced: Create two variables, then figure out how to swap their values.',
-                        starter: '# Challenge: Swap the values of two variables\n# Start with:\nfirst_name = "Alex"\nlast_name = "Smith"\n\n# End with first_name containing "Smith" and last_name containing "Alex"\n# (This is tricky - you might need a third variable!)\n\n',
-                        hint: 'Think about using a temporary variable to hold one value while you swap.'
-                    }
-                ]
-            };
-            
-            // Initialize Challenge System - temporarily simplified
-            const challengeArea = document.getElementById('challengeSystem');
-            challengeArea.innerHTML = `
-                <div class="practice-section">
-                    <h4>Additional Practice</h4>
-                    <p>More practice challenges coming soon! For now, use the practice areas above to:</p>
-                    <ul>
-                        <li>Create variables for your personal information</li>
-                        <li>Try different data types (text and numbers)</li>
-                        <li>Practice printing both variables and strings</li>
-                        <li>Experiment with the name vs "name" distinction</li>
-                    </ul>
-                </div>
-            `;
-            
-            // Initially disable next lesson button
-            const nextBtn = document.getElementById('nextLessonBtn');
-            nextBtn.classList.add('disabled');
-            nextBtn.style.opacity = '0.5';
-            nextBtn.style.pointerEvents = 'none';
+            // Initially disable next lesson
+            var nextBtn = document.getElementById('nextLessonBtn');
+            if (nextBtn) {
+                nextBtn.classList.add('disabled');
+                nextBtn.style.opacity = '0.5';
+                nextBtn.style.pointerEvents = 'none';
+            }
         });
     </script>
-    
-    <style>
-        /* Additional styles for memory boxes */
-        .memory-space {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-radius: 12px;
-            margin: 1rem 0;
-            min-height: 150px;
-            flex-wrap: wrap;
-        }
-        
-        .memory-box {
-            background: white;
-            border: 3px solid #667eea;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-            transition: all 0.3s ease;
-            min-width: 120px;
-            text-align: center;
-        }
-        
-        .memory-box.highlighted {
-            border-color: #4facfe;
-            background: #e8f4fd;
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
-        }
-        
-        .box-label {
-            background: #667eea;
-            color: white;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-        
-        .box-content {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
-            padding: 0.75rem;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            font-weight: bold;
-            color: #333;
-            min-height: 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .output-arrow {
-            background: #28a745;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            font-family: 'Fira Code', 'Courier New', monospace;
-            box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
-            animation: outputPulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes outputPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        /* Dark mode adjustments for memory boxes */
-        body.dark-mode .memory-space {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-        }
-        
-        body.dark-mode .memory-box {
-            background: #1a202c;
-            border-color: #81c784;
-        }
-        
-        body.dark-mode .memory-box.highlighted {
-            border-color: #4facfe;
-            background: #2d3748;
-        }
-        
-        body.dark-mode .box-label {
-            background: #81c784;
-            color: #1a202c;
-        }
-        
-        body.dark-mode .box-content {
-            background: #2d3748;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-        
-        @media (max-width: 768px) {
-            .memory-space {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .memory-box {
-                min-width: 100px;
-            }
-        }
-    </style>
 </body>
 </html>
