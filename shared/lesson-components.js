@@ -536,6 +536,7 @@
             var inputs = this.container.querySelectorAll('.mastery-input');
             var answers = [];
             var correct = 0;
+            var self = this;
             
             inputs.forEach(function(input, index) {
                 var answer = input.value.trim();
