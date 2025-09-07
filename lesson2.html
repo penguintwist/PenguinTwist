@@ -149,110 +149,156 @@ Alex
     <script>
         // Lesson 2 Configuration
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize interpreter for variables lesson
-            var interpreter = new PythonInterpreterFactory('variables');
-            
-            // Initialize visual metaphor for memory boxes
-            var memoryBoxDemo = new VisualMetaphor({
-                containerId: 'memoryBoxDemo',
-                type: 'memoryBoxes',
-                title: 'Variables as Memory Boxes',
-                boxes: [
-                    { label: 'name', value: 'Empty' },
-                    { label: 'age', value: 'Empty' },
-                    { label: 'subject', value: 'Empty' }
-                ],
-                demoButton: true,
-                demoScript: [
-                    { action: 'assign', box: 'name', value: '"Alex"', delay: 1000 },
-                    { action: 'assign', box: 'age', value: '15', delay: 1500 },
-                    { action: 'assign', box: 'subject', value: '"Computer Science"', delay: 1500 }
-                ]
-            });
-            
-            // Initialize interactive playgrounds
-            var playground1 = new InteractivePlayground({
-                containerId: 'variableCreationPlayground',
-                title: 'Variable Creation Practice',
-                interpreter: interpreter,
-                starterCode: 'name = "Alex"\nage = 15',
-                showMemory: true,
-                tips: ['Try changing the values', 'Create your own variables']
-            });
-            
-            var playground2 = new InteractivePlayground({
-                containerId: 'variablePrintPlayground',
-                title: 'Variables and Print Practice',
-                interpreter: interpreter,
-                starterCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
-                showMemory: true,
-                tips: ['See how variables are used with print()']
-            });
-            
-            var playground3 = new InteractivePlayground({
-                containerId: 'variablePracticePlayground',
-                title: 'Your Turn to Experiment',
-                interpreter: interpreter,
-                starterCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
-                showMemory: true,
-                tips: ['Create variables for your own information']
-            });
-            
-            // Initialize mastery check
-            var masteryCheck = new MasteryCheck({
-                containerId: 'masteryCheck',
-                title: 'Check Your Understanding',
-                questions: [
-                    {
-                        question: 'To store "Computer Science" in a variable called subject, what code do you write?',
-                        placeholder: 'Type your answer like: variable = "value"',
-                        validateAnswer: function(answer) {
-                            return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
-                        },
-                        hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
-                    },
-                    {
-                        question: 'What\'s the difference between print(age) and print("age")?',
-                        placeholder: 'Explain the difference',
-                        validateAnswer: function(answer) {
-                            var lower = answer.toLowerCase();
-                            return lower.includes('variable') || lower.includes('stored') || 
-                                   lower.includes('value') || lower.includes('word') || 
-                                   lower.includes('text') || lower.includes('literal') ||
-                                   lower.includes('contents') || lower.includes('name');
-                        },
-                        hint: 'print(age) shows stored value, print("age") shows the word "age"'
-                    },
-                    {
-                        question: 'If you run: name = "Jamie" then print(name), what appears?',
-                        placeholder: 'What gets displayed?',
-                        validateAnswer: function(answer) {
-                            return answer.toLowerCase().includes('jamie');
-                        },
-                        hint: 'The output would be: Jamie'
+            // Wait for shared components to load, then initialize
+            setTimeout(function() {
+                try {
+                    // Try different possible interpreter API names
+                    var interpreter = null;
+                    if (typeof PythonInterpreterFactory !== 'undefined') {
+                        interpreter = new PythonInterpreterFactory('variables');
+                    } else if (typeof PythonInterpreter !== 'undefined') {
+                        interpreter = new PythonInterpreter('variables');
+                    } else if (typeof createInterpreter !== 'undefined') {
+                        interpreter = createInterpreter('variables');
+                    } else {
+                        console.log('No interpreter factory found, components may not be fully loaded');
+                        return;
                     }
-                ],
-                onComplete: function() {
-                    // Unlock next lesson
-                    var nextBtn = document.getElementById('nextLessonBtn');
-                    if (nextBtn) {
-                        nextBtn.classList.remove('disabled');
-                        nextBtn.style.opacity = '1';
-                        nextBtn.style.pointerEvents = 'auto';
+                    
+                    // Initialize visual metaphor for memory boxes
+                    var memoryBoxDemo = null;
+                    if (typeof VisualMetaphor !== 'undefined') {
+                        memoryBoxDemo = new VisualMetaphor({
+                            containerId: 'memoryBoxDemo',
+                            type: 'memoryBoxes',
+                            title: 'Variables as Memory Boxes',
+                            boxes: [
+                                { label: 'name', value: 'Empty' },
+                                { label: 'age', value: 'Empty' },
+                                { label: 'subject', value: 'Empty' }
+                            ],
+                            demoButton: true,
+                            demoScript: [
+                                { action: 'assign', box: 'name', value: '"Alex"', delay: 1000 },
+                                { action: 'assign', box: 'age', value: '15', delay: 1500 },
+                                { action: 'assign', box: 'subject', value: '"Computer Science"', delay: 1500 }
+                            ]
+                        });
                     }
+                    
+                    // Initialize interactive playgrounds
+                    if (typeof InteractivePlayground !== 'undefined') {
+                        var playground1 = new InteractivePlayground({
+                            containerId: 'variableCreationPlayground',
+                            title: 'Variable Creation Practice',
+                            interpreter: interpreter,
+                            starterCode: 'name = "Alex"\nage = 15',
+                            showMemory: true,
+                            tips: ['Try changing the values', 'Create your own variables']
+                        });
+                        
+                        var playground2 = new InteractivePlayground({
+                            containerId: 'variablePrintPlayground',
+                            title: 'Variables and Print Practice',
+                            interpreter: interpreter,
+                            starterCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
+                            showMemory: true,
+                            tips: ['See how variables are used with print()']
+                        });
+                        
+                        var playground3 = new InteractivePlayground({
+                            containerId: 'variablePracticePlayground',
+                            title: 'Your Turn to Experiment',
+                            interpreter: interpreter,
+                            starterCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
+                            showMemory: true,
+                            tips: ['Create variables for your own information']
+                        });
+                    }
+                    
+                    // Initialize mastery check
+                    if (typeof MasteryCheck !== 'undefined') {
+                        var masteryCheck = new MasteryCheck({
+                            containerId: 'masteryCheck',
+                            title: 'Check Your Understanding',
+                            questions: [
+                                {
+                                    question: 'To store "Computer Science" in a variable called subject, what code do you write?',
+                                    placeholder: 'Type your answer like: variable = "value"',
+                                    validateAnswer: function(answer) {
+                                        return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                                    },
+                                    hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
+                                },
+                                {
+                                    question: 'What\'s the difference between print(age) and print("age")?',
+                                    placeholder: 'Explain the difference',
+                                    validateAnswer: function(answer) {
+                                        var lower = answer.toLowerCase();
+                                        return lower.includes('variable') || lower.includes('stored') || 
+                                               lower.includes('value') || lower.includes('word') || 
+                                               lower.includes('text') || lower.includes('literal') ||
+                                               lower.includes('contents') || lower.includes('name');
+                                    },
+                                    hint: 'print(age) shows stored value, print("age") shows the word "age"'
+                                },
+                                {
+                                    question: 'If you run: name = "Jamie" then print(name), what appears?',
+                                    placeholder: 'What gets displayed?',
+                                    validateAnswer: function(answer) {
+                                        return answer.toLowerCase().includes('jamie');
+                                    },
+                                    hint: 'The output would be: Jamie'
+                                }
+                            ],
+                            onComplete: function() {
+                                // Unlock next lesson
+                                var nextBtn = document.getElementById('nextLessonBtn');
+                                if (nextBtn) {
+                                    nextBtn.classList.remove('disabled');
+                                    nextBtn.style.opacity = '1';
+                                    nextBtn.style.pointerEvents = 'auto';
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Initialize dark mode
+                    if (typeof DarkModeManager !== 'undefined') {
+                        var darkModeManager = new DarkModeManager();
+                    } else {
+                        // Fallback dark mode toggle
+                        var darkModeToggle = document.getElementById('darkModeToggle');
+                        if (darkModeToggle) {
+                            var isDarkMode = localStorage.getItem('darkMode') === 'true';
+                            if (isDarkMode) {
+                                document.body.classList.add('dark-mode');
+                                darkModeToggle.innerHTML = '☀️ Light Mode';
+                            }
+                            
+                            darkModeToggle.addEventListener('click', function() {
+                                document.body.classList.toggle('dark-mode');
+                                var isNowDark = document.body.classList.contains('dark-mode');
+                                darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                                localStorage.setItem('darkMode', isNowDark);
+                            });
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.log('Error initializing components:', error);
+                    console.log('Falling back to basic functionality');
                 }
-            });
-            
-            // Initialize dark mode
-            var darkModeManager = new DarkModeManager();
-            
-            // Initially disable next lesson
-            var nextBtn = document.getElementById('nextLessonBtn');
-            if (nextBtn) {
-                nextBtn.classList.add('disabled');
-                nextBtn.style.opacity = '0.5';
-                nextBtn.style.pointerEvents = 'none';
-            }
+                
+                // Initially disable next lesson
+                var nextBtn = document.getElementById('nextLessonBtn');
+                if (nextBtn) {
+                    nextBtn.classList.add('disabled');
+                    nextBtn.style.opacity = '0.5';
+                    nextBtn.style.pointerEvents = 'none';
+                }
+                
+            }, 100); // Small delay to ensure scripts are fully loaded
         });
     </script>
 </body>
