@@ -344,10 +344,9 @@ print(age)</div>
             };
             
             // Initialize Challenge System
-            const challengeSystem = new PenguinTwistComponents.ChallengeSystem('challengeSystem', {
-                challenges: challenges,
+            const challengeSystem = PenguinTwistComponents.createChallengeSystem('challengeSystem', challenges, {
                 interpreterType: 'variable'
-            });
+            }).init();
             
             // Initially disable next lesson button
             const nextBtn = document.getElementById('nextLessonBtn');
