@@ -343,10 +343,20 @@ print(age)</div>
                 ]
             };
             
-            // Initialize Challenge System
-            const challengeSystem = PenguinTwistComponents.createChallengeSystem('challengeSystem', challenges, {
-                interpreterType: 'variable'
-            }).init();
+            // Initialize Challenge System - temporarily simplified
+            const challengeArea = document.getElementById('challengeSystem');
+            challengeArea.innerHTML = `
+                <div class="practice-section">
+                    <h4>Additional Practice</h4>
+                    <p>More practice challenges coming soon! For now, use the practice areas above to:</p>
+                    <ul>
+                        <li>Create variables for your personal information</li>
+                        <li>Try different data types (text and numbers)</li>
+                        <li>Practice printing both variables and strings</li>
+                        <li>Experiment with the name vs "name" distinction</li>
+                    </ul>
+                </div>
+            `;
             
             // Initially disable next lesson button
             const nextBtn = document.getElementById('nextLessonBtn');
