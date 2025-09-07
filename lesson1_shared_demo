@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1: Hello World - PenguinTwist</title>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="shared/lesson-styles.css">
+</head>
+<body>
+    <div class="header">
+        <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
+        <div class="container">
+            <h1>Lesson 1: Hello World</h1>
+            <p>Learn how to make the computer display a message</p>
+        </div>
+    </div>
+    
+    <div class="nav-back">
+        <div class="container">
+            <a href="navigation.html">← Back to All Lessons</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="lesson-content">
+            <div class="section">
+                <h3>Why Programs Need to Communicate</h3>
+                <div class="intro">
+                    <p>Computers are powerful machines, but they can't speak to us naturally. When you write a program, you need a way to see what the computer is thinking and doing.</p>
+                    <p>The <code>print()</code> function is like giving your computer a voice - it displays messages on the screen so you can see what's happening inside your program.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>How Print Works - The Message Delivery System</h3>
+                <div id="messageMetaphor"></div>
+            </div>
+            
+            <div class="section">
+                <h3>Watch Print() in Action</h3>
+                <div id="printDemo"></div>
+            </div>
+            
+            <div class="section">
+                <h3>The Print Function Rules</h3>
+                <div class="theory">
+                    <p>In Python, you tell the computer to show a message using this exact pattern:</p>
+                    <div class="code-example">print("Hello, World!")</div>
+                    
+                    <p>When you run this code, the computer displays exactly what's between the quotes:</p>
+                    <div class="expected-output"><strong>Output:</strong> Hello, World!</div>
+                    
+                    <div class="tip">
+                        <strong>The Magic of Quotes:</strong> The quotes are like invisible envelopes that wrap around your message. They tell Python "this is text that should be displayed exactly as written." Without quotes, Python gets confused and doesn't know what you want to show.
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>Remember:</strong> Every opening quote (") needs a closing quote ("). Think of them as a pair that must stay together to protect your message!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Try It Yourself</h3>
+                <div id="mainPlayground"></div>
+            </div>
+            
+            <div id="masterySection"></div>
+            
+            <div id="practiceSection"></div>
+        </div>
+        
+        <div class="lesson-navigation">
+            <div class="nav-buttons">
+                <a href="#" class="nav-btn disabled">← Previous Lesson</a>
+                <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
+                <a href="lesson2.html" class="nav-btn" id="nextLessonBtn">Next Lesson →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <!-- Shared Components -->
+    <script src="shared/python-interpreter.js"></script>
+    <script src="shared/lesson-components.js"></script>
+    
+    <script>
+        // Initialize lesson components using shared architecture
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Setup Dark Mode
+            var darkMode = PenguinTwistComponents.setupDarkMode('darkModeToggle');
+            darkMode.init();
+            
+            // 2. Create Visual Metaphor
+            var messageMetaphor = PenguinTwistComponents.createVisualMetaphor('messageMetaphor', 'message_delivery', {
+                title: 'Think of print() as a Message Delivery Service'
+            });
+            messageMetaphor.init();
+            
+            // 3. Create Animation Demo
+            var printDemo = PenguinTwistComponents.createAnimationDemo('printDemo', 'print_execution', {
+                buttonText: 'Watch How Print Works'
+            });
+            printDemo.init();
+            
+            // 4. Create Main Playground
+            var mainPlayground = PenguinTwistInterpreter.createPlayground('mainPlayground', 'print', {
+                title: '🐍 Python Practice Area',
+                defaultCode: 'print("Hello, World!")'
+            });
+            mainPlayground.init();
+            
+            // 5. Create Mastery Check
+            var masteryQuestions = [
+                {
+                    question: 'Write a print statement that displays your name.',
+                    placeholder: 'Type your answer here, like: print("Alex")',
+                    type: 'code',
+                    expectedPattern: /^\s*print\s*\(\s*["'][^"']*["']\s*\)\s*$/,
+                    feedback: 'Remember the format: print("YourName")'
+                }
+            ];
+            
+            var masteryCheck = PenguinTwistComponents.createMasteryCheck('masterySection', masteryQuestions, {
+                title: 'Check Your Understanding',
+                successMessage: 'Perfect! You understand exactly how print() works. Ready for the next lesson!',
+                onComplete: function() {
+                    // Enable next lesson and show practice section
+                    var nextBtn = document.getElementById('nextLessonBtn');
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.pointerEvents = 'auto';
+                    nextBtn.classList.remove('disabled');
+                    
+                    document.getElementById('practiceSection').style.display = 'block';
+                }
+            });
+            masteryCheck.init();
+            
+            // 6. Create Challenge System
+            var challenges = {
+                basic: [
+                    {
+                        title: "Practice: Your Information",
+                        description: "Write three print statements to show your name, age, and favourite subject.",
+                        starter: "# Write three print statements below:\n# Example: print(\"Sarah\")\n\n# Your turn - write three print statements:\n# 1. One with your name\n# 2. One with your age\n# 3. One with your favourite subject\n\n",
+                        hint: "Look at the example: print(\"Sarah\") - replace \"Sarah\" with your own information!"
+                    },
+                    {
+                        title: "Practice: School Information", 
+                        description: "Print your school name, your year group, and your form/tutor group.",
+                        starter: "# Print three pieces of school information\n# Example: print(\"Greenwood High School\")\n\n# Your turn - write three print statements:\n# 1. Your school name\n# 2. Your year group\n# 3. Your form/tutor group\n\n",
+                        hint: "Follow the example pattern: print(\"your school information here\")"
+                    }
+                ],
+                creative: [
+                    {
+                        title: "Creative: Write a Poem",
+                        description: "Write a 3-line poem about your favourite animal using three print statements.",
+                        starter: "# Write a 3-line poem about your favourite animal\n# Example poem about cats:\nprint(\"Cats are soft and furry friends\")\nprint(\"They purr and play and never end\")\nprint(\"My favourite pet, until the end\")\n\n# Your turn - write a poem about YOUR favourite animal:\n\n",
+                        hint: "Follow the example pattern - each line should be in its own print statement. Try to make it rhyme!"
+                    }
+                ],
+                advanced: [
+                    {
+                        title: "Advanced: ASCII Art",
+                        description: "Use print statements to create simple ASCII art, like a smiley face or your initials.",
+                        starter: "# Create ASCII art using print statements\n# Example smiley face:\nprint(\"  :-)  \")\nprint(\" /   \\\\ \")\nprint(\"  ---  \")\n\n# Your turn - create your own ASCII art:\n# Try making your initials, a house, or a simple shape\n\n",
+                        hint: "Follow the example pattern - use characters like *, -, |, and spaces to make shapes!"
+                    }
+                ]
+            };
+            
+            var challengeSystem = PenguinTwistComponents.createChallengeSystem('practiceSection', challenges, {
+                title: 'Additional Practice',
+                interpreterType: 'print'
+            });
+            challengeSystem.init();
+            
+            // Initially hide practice section and disable next lesson
+            document.getElementById('practiceSection').style.display = 'none';
+            var nextBtn = document.getElementById('nextLessonBtn');
+            nextBtn.style.opacity = '0.5';
+            nextBtn.style.pointerEvents = 'none';
+            nextBtn.classList.add('disabled');
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeLesson);
+    </script>
+</body>
+</html>
