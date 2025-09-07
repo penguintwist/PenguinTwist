@@ -584,7 +584,13 @@
                 var feedback = 'Keep trying:<br>';
                 answers.forEach(function(answer, index) {
                     if (!answer.correct) {
-                        feedback += '• Q' + (index + 1) + ': ' + (answer.question.feedback || 'Please review this concept') + '<br>';
+                        var questionFeedback = 'Please review this concept';
+                        if (answer.question && answer.question.feedback) {
+                            questionFeedback = answer.question.feedback;
+                        } else if (self.questions[index] && self.questions[index].feedback) {
+                            questionFeedback = self.questions[index].feedback;
+                        }
+                        feedback += '• Q' + (index + 1) + ': ' + questionFeedback + '<br>';
                     }
                 });
                 feedbackEl.innerHTML = feedback;
