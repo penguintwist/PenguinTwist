@@ -154,33 +154,22 @@ Alex
                 try {
                     // Debug: Log what's available in the global scope
                     console.log('Available global objects:');
-                    console.log('- PythonInterpreterFactory:', typeof PythonInterpreterFactory);
-                    console.log('- PythonInterpreter:', typeof PythonInterpreter);
-                    console.log('- createInterpreter:', typeof createInterpreter);
-                    console.log('- VisualMetaphor:', typeof VisualMetaphor);
-                    console.log('- InteractivePlayground:', typeof InteractivePlayground);
-                    console.log('- MasteryCheck:', typeof MasteryCheck);
-                    console.log('- DarkModeManager:', typeof DarkModeManager);
+                    console.log('- PenguinTwistComponents:', typeof window.PenguinTwistComponents);
+                    console.log('- PenguinTwistInterpreter:', typeof window.PenguinTwistInterpreter);
                     
-                    // Try different possible interpreter API names
-                    var interpreter = null;
-                    if (typeof PythonInterpreterFactory !== 'undefined') {
-                        interpreter = new PythonInterpreterFactory('variables');
-                    } else if (typeof PythonInterpreter !== 'undefined') {
-                        interpreter = new PythonInterpreter('variables');
-                    } else if (typeof createInterpreter !== 'undefined') {
-                        interpreter = createInterpreter('variables');
-                    } else {
-                        console.log('No interpreter factory found, components may not be fully loaded');
+                    if (!window.PenguinTwistComponents || !window.PenguinTwistInterpreter) {
+                        console.log('Shared components not fully loaded yet');
                         return;
                     }
                     
+                    // Create interpreter using correct API
+                    var interpreter = window.PenguinTwistInterpreter.createInterpreter('variables');
+                    
                     // Initialize visual metaphor for memory boxes
-                    var memoryBoxDemo = null;
-                    if (typeof VisualMetaphor !== 'undefined') {
-                        memoryBoxDemo = new VisualMetaphor({
-                            containerId: 'memoryBoxDemo',
-                            type: 'memoryBoxes',
+                    var memoryBoxDemo = window.PenguinTwistComponents.createVisualMetaphor(
+                        'memoryBoxDemo', 
+                        'storage_boxes',
+                        {
                             title: 'Variables as Memory Boxes',
                             boxes: [
                                 { label: 'name', value: 'Empty' },
@@ -193,74 +182,81 @@ Alex
                                 { action: 'assign', box: 'age', value: '15', delay: 1500 },
                                 { action: 'assign', box: 'subject', value: '"Computer Science"', delay: 1500 }
                             ]
-                        });
+                        }
+                    );
+                    if (memoryBoxDemo && memoryBoxDemo.init) {
+                        memoryBoxDemo.init();
                     }
                     
-                    // Initialize interactive playgrounds
-                    if (typeof InteractivePlayground !== 'undefined') {
-                        var playground1 = new InteractivePlayground({
-                            containerId: 'variableCreationPlayground',
+                    // Initialize interactive playgrounds using correct API
+                    var playground1 = window.PenguinTwistInterpreter.createPlayground(
+                        'variableCreationPlayground',
+                        'variables',
+                        {
                             title: 'Variable Creation Practice',
-                            interpreter: interpreter,
-                            starterCode: 'name = "Alex"\nage = 15',
+                            defaultCode: 'name = "Alex"\nage = 15',
                             showMemory: true,
                             tips: ['Try changing the values', 'Create your own variables']
-                        });
-                        
-                        var playground2 = new InteractivePlayground({
-                            containerId: 'variablePrintPlayground',
+                        }
+                    );
+                    
+                    var playground2 = window.PenguinTwistInterpreter.createPlayground(
+                        'variablePrintPlayground',
+                        'variables',
+                        {
                             title: 'Variables and Print Practice',
-                            interpreter: interpreter,
-                            starterCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
+                            defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
                             showMemory: true,
                             tips: ['See how variables are used with print()']
-                        });
-                        
-                        var playground3 = new InteractivePlayground({
-                            containerId: 'variablePracticePlayground',
+                        }
+                    );
+                    
+                    var playground3 = window.PenguinTwistInterpreter.createPlayground(
+                        'variablePracticePlayground',
+                        'variables',
+                        {
                             title: 'Your Turn to Experiment',
-                            interpreter: interpreter,
-                            starterCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
+                            defaultCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
                             showMemory: true,
                             tips: ['Create variables for your own information']
-                        });
-                    }
+                        }
+                    );
                     
-                    // Initialize mastery check
-                    if (typeof MasteryCheck !== 'undefined') {
-                        var masteryCheck = new MasteryCheck({
-                            containerId: 'masteryCheck',
+                    // Initialize mastery check using correct API
+                    var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
+                        'masteryCheck',
+                        [
+                            {
+                                question: 'To store "Computer Science" in a variable called subject, what code do you write?',
+                                placeholder: 'Type your answer like: variable = "value"',
+                                validateAnswer: function(answer) {
+                                    return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                                },
+                                hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
+                            },
+                            {
+                                question: 'What\'s the difference between print(age) and print("age")?',
+                                placeholder: 'Explain the difference',
+                                validateAnswer: function(answer) {
+                                    var lower = answer.toLowerCase();
+                                    return lower.includes('variable') || lower.includes('stored') || 
+                                           lower.includes('value') || lower.includes('word') || 
+                                           lower.includes('text') || lower.includes('literal') ||
+                                           lower.includes('contents') || lower.includes('name');
+                                },
+                                hint: 'print(age) shows stored value, print("age") shows the word "age"'
+                            },
+                            {
+                                question: 'If you run: name = "Jamie" then print(name), what appears?',
+                                placeholder: 'What gets displayed?',
+                                validateAnswer: function(answer) {
+                                    return answer.toLowerCase().includes('jamie');
+                                },
+                                hint: 'The output would be: Jamie'
+                            }
+                        ],
+                        {
                             title: 'Check Your Understanding',
-                            questions: [
-                                {
-                                    question: 'To store "Computer Science" in a variable called subject, what code do you write?',
-                                    placeholder: 'Type your answer like: variable = "value"',
-                                    validateAnswer: function(answer) {
-                                        return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
-                                    },
-                                    hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
-                                },
-                                {
-                                    question: 'What\'s the difference between print(age) and print("age")?',
-                                    placeholder: 'Explain the difference',
-                                    validateAnswer: function(answer) {
-                                        var lower = answer.toLowerCase();
-                                        return lower.includes('variable') || lower.includes('stored') || 
-                                               lower.includes('value') || lower.includes('word') || 
-                                               lower.includes('text') || lower.includes('literal') ||
-                                               lower.includes('contents') || lower.includes('name');
-                                    },
-                                    hint: 'print(age) shows stored value, print("age") shows the word "age"'
-                                },
-                                {
-                                    question: 'If you run: name = "Jamie" then print(name), what appears?',
-                                    placeholder: 'What gets displayed?',
-                                    validateAnswer: function(answer) {
-                                        return answer.toLowerCase().includes('jamie');
-                                    },
-                                    hint: 'The output would be: Jamie'
-                                }
-                            ],
                             onComplete: function() {
                                 // Unlock next lesson
                                 var nextBtn = document.getElementById('nextLessonBtn');
@@ -270,34 +266,36 @@ Alex
                                     nextBtn.style.pointerEvents = 'auto';
                                 }
                             }
-                        });
+                        }
+                    );
+                    if (masteryCheck && masteryCheck.init) {
+                        masteryCheck.init();
                     }
                     
-                    // Initialize dark mode
-                    if (typeof DarkModeManager !== 'undefined') {
-                        var darkModeManager = new DarkModeManager();
-                    } else {
-                        // Fallback dark mode toggle
-                        var darkModeToggle = document.getElementById('darkModeToggle');
-                        if (darkModeToggle) {
-                            var isDarkMode = localStorage.getItem('darkMode') === 'true';
-                            if (isDarkMode) {
-                                document.body.classList.add('dark-mode');
-                                darkModeToggle.innerHTML = '☀️ Light Mode';
-                            }
-                            
-                            darkModeToggle.addEventListener('click', function() {
-                                document.body.classList.toggle('dark-mode');
-                                var isNowDark = document.body.classList.contains('dark-mode');
-                                darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-                                localStorage.setItem('darkMode', isNowDark);
-                            });
-                        }
-                    }
+                    // Initialize dark mode using correct API
+                    var darkModeController = window.PenguinTwistComponents.setupDarkMode('darkModeToggle');
+                    
+                    console.log('All components initialized successfully');
                     
                 } catch (error) {
                     console.log('Error initializing components:', error);
-                    console.log('Falling back to basic functionality');
+                    
+                    // Fallback dark mode toggle
+                    var darkModeToggle = document.getElementById('darkModeToggle');
+                    if (darkModeToggle) {
+                        var isDarkMode = localStorage.getItem('darkMode') === 'true';
+                        if (isDarkMode) {
+                            document.body.classList.add('dark-mode');
+                            darkModeToggle.innerHTML = '☀️ Light Mode';
+                        }
+                        
+                        darkModeToggle.addEventListener('click', function() {
+                            document.body.classList.toggle('dark-mode');
+                            var isNowDark = document.body.classList.contains('dark-mode');
+                            darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                            localStorage.setItem('darkMode', isNowDark);
+                        });
+                    }
                 }
                 
                 // Initially disable next lesson
@@ -308,7 +306,7 @@ Alex
                     nextBtn.style.pointerEvents = 'none';
                 }
                 
-            }, 100); // Small delay to ensure scripts are fully loaded
+            }, 500); // Increased delay to ensure components are fully loaded
         });
     </script>
 </body>
