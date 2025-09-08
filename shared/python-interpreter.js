@@ -261,7 +261,7 @@
         };
     }
     
-    // Lesson 2: Variables + Print interpreter
+    // Lesson 2: Variables + Print interpreter (Enhanced with memory tracking)
     function VariableInterpreter(options) {
         BaseInterpreter.call(this, options);
         this.allowedStatements = ['print', 'assignment'];
@@ -462,7 +462,7 @@
         // This will be implemented when needed
     }
     
-    // Interactive playground component with auto-sizing
+    // Interactive playground component with enhanced memory display
     function InteractivePlayground(containerId, interpreterType, options) {
         this.container = document.getElementById(containerId);
         this.interpreterType = interpreterType;
@@ -574,10 +574,22 @@
         };
         
         this.updateMemoryDisplay = function(element, variables) {
-            var varText = Object.keys(variables).map(function(name) {
-                return name + ' = "' + variables[name] + '"';
+            if (!variables || Object.keys(variables).length === 0) {
+                element.innerHTML = 'Variables: None';
+                return;
+            }
+            
+            var varDisplay = Object.keys(variables).map(function(name) {
+                var value = variables[name];
+                // Show strings with quotes, numbers without
+                if (typeof value === 'string' && isNaN(value)) {
+                    return name + ' = "' + value + '"';
+                } else {
+                    return name + ' = ' + value;
+                }
             }).join(', ');
-            element.innerHTML = 'Variables: ' + (varText || 'None');
+            
+            element.innerHTML = 'Variables: ' + varDisplay;
         };
     }
     
