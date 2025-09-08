@@ -1,601 +1,419 @@
-// shared/python-interpreter.js
-// PenguinTwist Educational Python Interpreter System
-// ES5 compatible for maximum school network compatibility
-
-(function() {
-    'use strict';
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2: Variables - PenguinTwist</title>
     
-    // Main factory and utility object
-    window.PenguinTwistInterpreter = {
-        version: '1.0.0',
-        
-        // Factory method for creating interpreters
-        createInterpreter: function(lessonType, options) {
-            options = options || {};
-            
-            switch(lessonType) {
-                case 'print':
-                    return new PrintInterpreter(options);
-                case 'variables':
-                    return new VariableInterpreter(options);
-                case 'input':
-                    return new InputInterpreter(options);
-                case 'concatenation':
-                    return new ConcatenationInterpreter(options);
-                case 'datatypes':
-                    return new DataTypeInterpreter(options);
-                default:
-                    throw new Error('Unknown lesson type: ' + lessonType);
-            }
-        },
-        
-        // Factory for creating complete interactive playgrounds
-        createPlayground: function(containerId, interpreterType, options) {
-            return new InteractivePlayground(containerId, interpreterType, options);
-        },
-        
-        // Utility methods for common validation
-        validateCode: function(code) {
-            if (!code || typeof code !== 'string') {
-                return { valid: false, error: 'Code must be a non-empty string' };
-            }
-            return { valid: true };
-        },
-        
-        // Common error messages for consistency
-        getErrorMessage: function(errorType, context) {
-            var messages = {
-                'missing_quotes': 'Text values need quotes around them: "' + (context || 'your text') + '"',
-                'missing_parentheses': 'Remember to include parentheses: print("your message")',
-                'invalid_variable': 'Variable name "' + (context || 'variable') + '" is not valid. Use letters, numbers, and underscores only.',
-                'variable_not_found': 'Variable "' + (context || 'variable') + '" not found. Make sure to create it first.',
-                'syntax_error': 'Check your syntax. Expected: ' + (context || 'valid Python code')
-            };
-            return messages[errorType] || 'Unknown error occurred';
-        }
-    };
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
     
-    // Base interpreter class with shared functionality
-    function BaseInterpreter(options) {
-        this.variables = {};
-        this.output = [];
-        this.options = options || {};
-        this.allowedStatements = this.options.allowedStatements || [];
-        this.strictMode = this.options.strictMode !== false;
-        
-        // Reset interpreter state
-        this.reset = function() {
-            this.variables = {};
-            this.output = [];
-        };
-        
-        // Common preprocessing for all interpreters
-        this.preprocessCode = function(code) {
-            if (!code || !code.trim()) {
-                throw new Error('Please write some code to run!');
-            }
-            
-            return code.split('\n')
-                      .map(function(line) { return line.trim(); })
-                      .filter(function(line) { return line && !line.startsWith('#'); });
-        };
-        
-        // Validate variable names
-        this.validateVariableName = function(name) {
-            if (!name.match(/^[a-zA-Z_][a-zA-Z0-9_]*$/)) {
-                throw new Error(PenguinTwistInterpreter.getErrorMessage('invalid_variable', name));
-            }
-            return true;
-        };
-        
-        // Parse assignment statements
-        this.parseAssignment = function(line) {
-            var equalIndex = line.indexOf(' = ');
-            if (equalIndex === -1) {
-                throw new Error('Assignment needs spaces around = sign: variable = value');
-            }
-            
-            var varName = line.substring(0, equalIndex).trim();
-            var value = line.substring(equalIndex + 3).trim();
-            
-            this.validateVariableName(varName);
-            return { variable: varName, value: value };
-        };
-        
-        // Parse string values
-        this.parseStringValue = function(value) {
-            if ((value.startsWith('"') && value.endsWith('"')) || 
-                (value.startsWith("'") && value.endsWith("'"))) {
-                return value.slice(1, -1);
-            }
-            throw new Error(PenguinTwistInterpreter.getErrorMessage('missing_quotes', value));
-        };
-        
-        // Parse numeric values
-        this.parseNumberValue = function(value) {
-            if (!isNaN(value) && value.trim() !== '') {
-                return parseFloat(value);
-            }
-            throw new Error('Invalid number: ' + value);
-        };
-        
-        // Validate quote pairs
-        this.validateQuotes = function(line) {
-            var doubleQuotes = (line.match(/"/g) || []).length;
-            var singleQuotes = (line.match(/'/g) || []).length;
-            return doubleQuotes % 2 === 0 && singleQuotes % 2 === 0;
-        };
-    }
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="shared/lesson-styles.css">
+</head>
+<body>
+    <div class="header">
+        <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
+        <div class="container">
+            <h1>Lesson 2: Variables</h1>
+            <p>Give your programs memory - store and remember information</p>
+        </div>
+    </div>
     
-    // Lesson 1: Print-only interpreter
-    function PrintInterpreter(options) {
-        BaseInterpreter.call(this, options);
-        this.allowedStatements = ['print'];
-        
-        this.executeCode = function(code) {
-            this.reset();
-            
-            try {
-                var lines = this.preprocessCode(code);
-                return this.executeLines(lines);
-            } catch (error) {
-                return {
-                    success: false,
-                    output: '',
-                    message: error.message
-                };
-            }
-        };
-        
-        this.executeLines = function(lines) {
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                
-                if (!this.validateQuotes(line)) {
-                    throw new Error('Missing closing quote on line ' + (i + 1) + '. Every opening quote needs a closing quote!');
-                }
-                
-                if (line.match(/^\s*print\s*\(/)) {
-                    this.handlePrint(line);
-                } else if (line.trim()) {
-                    this.handleUnknownStatement(line);
-                }
-            }
-            
-            return {
-                success: true,
-                output: this.output.join('\n'),
-                message: this.output.length === 0 ? 'Code ran successfully! Add print() statements to see output.' : this.output.join('\n')
-            };
-        };
-        
-        this.handlePrint = function(line) {
-            // Handle common case variations
-            if (line.includes('Print') || line.includes('PRINT')) {
-                throw new Error('Python is case-sensitive - use lowercase "print"');
-            }
-            
-            var match = line.match(/print\s*\(\s*([^)]*)\s*\)/);
-            if (!match) {
-                if (line.includes('print') && (!line.includes('(') || !line.includes(')'))) {
-                    throw new Error(PenguinTwistInterpreter.getErrorMessage('missing_parentheses'));
-                }
-                throw new Error('Check your print statement syntax: print("your message")');
-            }
-            
-            var content = match[1].trim();
-            
-            if (!content) {
-                this.output.push('');
-                return;
-            }
-            
-            // Parse multiple arguments
-            var args = this.parseArguments(content);
-            var values = [];
-            
-            for (var i = 0; i < args.length; i++) {
-                values.push(this.evaluateExpression(args[i]));
-            }
-            
-            this.output.push(values.join(' '));
-        };
-        
-        this.parseArguments = function(content) {
-            var args = [];
-            var current = '';
-            var inQuotes = false;
-            var quoteChar = '';
-            
-            for (var i = 0; i < content.length; i++) {
-                var char = content[i];
-                
-                if ((char === '"' || char === "'") && !inQuotes) {
-                    inQuotes = true;
-                    quoteChar = char;
-                    current += char;
-                } else if (char === quoteChar && inQuotes) {
-                    inQuotes = false;
-                    current += char;
-                } else if (char === ',' && !inQuotes) {
-                    if (current.trim()) {
-                        args.push(current.trim());
-                    }
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            
-            if (current.trim()) {
-                args.push(current.trim());
-            }
-            
-            return args;
-        };
-        
-        this.evaluateExpression = function(expr) {
-            expr = expr.trim();
-            
-            // Handle quoted strings
-            if ((expr.startsWith('"') && expr.endsWith('"')) || 
-                (expr.startsWith("'") && expr.endsWith("'"))) {
-                return expr.slice(1, -1);
-            }
-            
-            // Handle numbers
-            if (/^-?\d+(\.\d+)?$/.test(expr)) {
-                return expr;
-            }
-            
-            // Handle unquoted text (common mistake)
-            if (/^[a-zA-Z]/.test(expr)) {
-                throw new Error('Text "' + expr + '" needs quotes around it. Try print("' + expr + '")');
-            }
-            
-            return expr;
-        };
-        
-        this.handleUnknownStatement = function(line) {
-            throw new Error('I don\'t recognize this command: "' + line + '". In this lesson, we focus on print() statements.');
-        };
-    }
+    <div class="nav-back">
+        <div class="container">
+            <a href="navigation.html">← Back to All Lessons</a>
+            <span style="color: #666;">Previous: <a href="lesson1.html" style="color: #667eea;">Hello World</a></span>
+        </div>
+    </div>
     
-    // Lesson 2: Variables + Print interpreter (Enhanced with memory tracking)
-    function VariableInterpreter(options) {
-        BaseInterpreter.call(this, options);
-        this.allowedStatements = ['print', 'assignment'];
-        
-        this.executeCode = function(code) {
-            this.reset();
+    <div class="container">
+        <div class="lesson-content">
+            <div class="section">
+                <h3>Why Programs Need Memory</h3>
+                <div class="intro">
+                    <p>Imagine a calculator that forgets your answer the moment you press equals. Or a game that resets your score every time you collect a coin. Or a website that asks for your name on every single page.</p>
+                    <p>Programs need to remember information to be useful. Variables are like labelled storage boxes in the computer's memory - they let your programs remember and reuse information like names, scores, messages, or any data your program needs.</p>
+                </div>
+            </div>
             
-            try {
-                var lines = this.preprocessCode(code);
-                return this.executeLines(lines);
-            } catch (error) {
-                return {
-                    success: false,
-                    output: '',
-                    variables: {},
-                    message: error.message
-                };
-            }
-        };
-        
-        this.executeLines = function(lines) {
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                
-                if (!this.validateQuotes(line)) {
-                    throw new Error('Missing closing quote on line ' + (i + 1));
-                }
-                
-                if (line.includes(' = ') && !line.includes('input(')) {
-                    this.handleAssignment(line);
-                } else if (line.match(/^\s*print\s*\(/)) {
-                    this.handlePrint(line);
-                } else if (line.trim()) {
-                    throw new Error('I understand assignments and print() statements in this lesson.');
-                }
-            }
-            
-            return {
-                success: true,
-                output: this.output.join('\n'),
-                variables: this.variables,
-                message: this.output.length === 0 ? 'Code ran successfully.' : this.output.join('\n')
-            };
-        };
-        
-        this.handleAssignment = function(line) {
-            var parsed = this.parseAssignment(line);
-            
-            if ((parsed.value.startsWith('"') && parsed.value.endsWith('"')) || 
-                (parsed.value.startsWith("'") && parsed.value.endsWith("'"))) {
-                this.variables[parsed.variable] = parsed.value.slice(1, -1);
-            } else if (!isNaN(parsed.value) && parsed.value.trim() !== '') {
-                this.variables[parsed.variable] = parsed.value;
-            } else {
-                throw new Error(PenguinTwistInterpreter.getErrorMessage('missing_quotes', parsed.value));
-            }
-        };
-        
-        this.handlePrint = function(line) {
-            var match = line.match(/print\s*\(\s*([^)]+)\s*\)/);
-            if (!match) {
-                throw new Error('Check your print statement syntax');
-            }
-            
-            var content = match[1].trim();
-            
-            if ((content.startsWith('"') && content.endsWith('"')) || 
-                (content.startsWith("'") && content.endsWith("'"))) {
-                this.output.push(content.slice(1, -1));
-            } else if (this.variables.hasOwnProperty(content)) {
-                this.output.push(this.variables[content]);
-            } else {
-                throw new Error(PenguinTwistInterpreter.getErrorMessage('variable_not_found', content));
-            }
-        };
-    }
-    
-    // Lesson 3: Input interpreter (educational simulation)
-    function InputInterpreter(options) {
-        VariableInterpreter.call(this, options);
-        this.simulatedInputs = options.simulatedInputs || ["Alex", "yes"];
-        this.allowedStatements = ['print', 'assignment', 'input'];
-        
-        this.executeCode = function(code, providedInputs) {
-            this.reset();
-            var inputs = providedInputs || this.simulatedInputs;
-            var inputIndex = 0;
-            var conversationLog = [];
-            
-            try {
-                var lines = this.preprocessCode(code);
-                
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i];
+            <div class="section">
+                <h3>Understanding Variables as Memory Boxes</h3>
+                <div class="theory">
+                    <p>Think of variables as labeled boxes in a warehouse. Each box has:</p>
+                    <p>• A <strong>name</strong> (the label on the box)</p>
+                    <p>• A <strong>value</strong> (what's stored inside the box)</p>
+                    <p>• A <strong>location</strong> (where Python can find it in memory)</p>
                     
-                    if (line.includes(' = ') && line.includes('input(')) {
-                        var result = this.handleInputAssignment(line, inputs, inputIndex);
-                        if (result.prompt && inputIndex < inputs.length) {
-                            conversationLog.push(result.prompt + inputs[inputIndex]);
-                            inputIndex++;
-                        }
-                    } else if (line.includes(' = ')) {
-                        this.handleAssignment(line);
-                    } else if (line.match(/^\s*print\s*\(/)) {
-                        this.handlePrint(line);
-                    } else if (line.trim()) {
-                        throw new Error('I understand assignments, input(), and print() statements in this lesson.');
+                    <div class="tip">
+                        <strong>Memory Box Metaphor:</strong> When you create a variable called "name", Python creates a box labeled "name" and puts your value inside it. Whenever you use that variable name later, Python opens the box and looks at what's inside.
+                    </div>
+                </div>
+                
+                <!-- Visual Metaphor Component -->
+                <div id="memoryBoxDemo"></div>
+            </div>
+            
+            <div class="section">
+                <h3>Creating Your First Variable</h3>
+                <div class="theory">
+                    <p>In Python, you create a variable using the assignment operator (the equals sign). This tells Python to store information in a labelled box.</p>
+                    
+                    <div class="code-example">name = "Alex"</div>
+                    
+                    <p>This code creates a memory box labelled 'name' and stores the text "Alex" inside it.</p>
+                    
+                    <div class="tip">
+                        <strong>The Assignment Process:</strong> The equals sign doesn't mean "equal to" in maths. In programming, it means "store the value on the right into the variable on the left."
+                    </div>
+                    
+                    <p>You can store different types of information:</p>
+                    <div class="code-example">name = "Alex"
+age = 15</div>
+                    
+                    <div class="tip">
+                        <strong>Important:</strong> Text must be wrapped in quotes, but numbers don't need quotes. Python treats them differently!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Try Creating Variables</h3>
+                <!-- Interactive Playground Component -->
+                <div id="variableCreationPlayground"></div>
+            </div>
+            
+            <div class="section">
+                <h3>Using Variables with Print</h3>
+                <div class="theory">
+                    <p>Now that you can create variables, you can use them with print statements. This is where the magic happens - your program can remember and display information!</p>
+                    
+                    <div class="code-example">name = "Alex"
+print(name)</div>
+                    
+                    <div class="expected-output"><strong>Output:</strong>
+Alex</div>
+                    
+                    <div class="tip">
+                        <strong>Key Distinction:</strong> Notice the difference between print(name) and print("name"). The first prints the contents of the variable, the second prints the word "name".
+                    </div>
+                    
+                    <p>Watch what happens when we print both variables:</p>
+                    <div class="code-example">name = "Alex"
+age = 15
+print(name)
+print(age)</div>
+                    
+                    <div class="expected-output"><strong>Output:</strong>
+Alex
+15</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>See Variables in Action</h3>
+                <!-- Main Practice Playground -->
+                <div id="variablePrintPlayground"></div>
+                
+                <div class="tip">
+                    <strong>Try these experiments:</strong>
+                    <br>• Change "Alex" to your own name
+                    <br>• Add a new variable for your favorite subject
+                    <br>• Try storing a number without quotes
+                    <br>• What happens if you forget the quotes around text?
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Practice with Variables</h3>
+                <!-- Advanced Practice Playground -->
+                <div id="variablePracticePlayground"></div>
+            </div>
+            
+            <!-- Mastery Check Component -->
+            <div id="masteryCheck"></div>
+            
+            <!-- Challenge System Component -->
+            <div id="challengeSystem"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="lesson-navigation">
+            <div class="nav-buttons">
+                <a href="lesson1.html" class="nav-btn">← Previous Lesson</a>
+                <a href="navigation.html" class="nav-btn">📚 All Lessons</a>
+                <a href="lesson3.html" class="nav-btn disabled" id="nextLessonBtn">Next Lesson →</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <!-- Shared Components -->
+    <script src="shared/python-interpreter.js"></script>
+    <script src="shared/lesson-components.js"></script>
+    
+    <script>
+        // Lesson 2 Variable Challenges
+        var variableChallenges = {
+            basic: [
+                {
+                    title: "Create Your Profile",
+                    description: "Create three variables: your name, your age, and your favorite color. Then print all three.",
+                    starter: "# Create variables for your profile\n# Example:\n# name = \"Alex\"\n# age = 15\n# color = \"blue\"\n\n# Your turn - create three variables:\n\n\n# Now print them:\n\n\n",
+                    hint: "Remember: text needs quotes, numbers don't. Use print(variable_name) to show the stored value."
+                },
+                {
+                    title: "School Information",
+                    description: "Store your school name, year group, and favorite subject in variables, then display them.",
+                    starter: "# Store school information\n# Example:\n# school = \"Greenwood High\"\n# year = 10\n# subject = \"Computer Science\"\n\n# Your turn:\n\n\n# Print your school information:\n\n\n",
+                    hint: "Follow the pattern: variable_name = \"text\" for text, variable_name = number for numbers."
+                },
+                {
+                    title: "Pet Information",
+                    description: "Create variables for a pet's name, type, and age. Print each piece of information.",
+                    starter: "# Pet information variables\n# Think about:\n# - What's the pet's name?\n# - What type of animal?\n# - How old are they?\n\n# Create your variables:\n\n\n# Show the information:\n\n\n",
+                    hint: "Pet names and types are text (use quotes), age is a number (no quotes needed)."
+                }
+            ],
+            creative: [
+                {
+                    title: "Character Profile",
+                    description: "Create a character for a story. Give them a name, superpower, and hometown. Print a profile.",
+                    starter: "# Create a superhero character\n# Example character:\n# hero_name = \"Lightning Bolt\"\n# power = \"Super Speed\"\n# city = \"Metro City\"\n\n# Create your character:\n\n\n# Print character profile:\nprint(\"Character Profile:\")\n# Add your print statements here:\n\n",
+                    hint: "Make it creative! Think of interesting names, unique powers, and exciting cities."
+                },
+                {
+                    title: "Dream Vacation",
+                    description: "Plan your dream vacation using variables for destination, activity, and duration.",
+                    starter: "# Plan your dream vacation\n# Think about:\n# - Where would you go?\n# - What would you do there?\n# - How long would you stay?\n\n# Your vacation variables:\n\n\n# Share your vacation plan:\nprint(\"My Dream Vacation:\")\n# Add your details:\n\n",
+                    hint: "Be creative with destinations and activities! Remember to use quotes for text."
+                },
+                {
+                    title: "Favorite Things",
+                    description: "Create variables for your favorite movie, food, and hobby. Present them nicely.",
+                    starter: "# Your favorite things\n# Examples:\n# movie = \"The Lion King\"\n# food = \"Pizza\"\n# hobby = \"Reading\"\n\n# Your favorites:\n\n\n# Present your favorites:\nprint(\"My Favorite Things:\")\nprint(\"Movie: \")\nprint(\"Food: \")\nprint(\"Hobby: \")\n# Complete the print statements above\n",
+                    hint: "Complete each print statement by adding your variable name after the text."
+                }
+            ],
+            advanced: [
+                {
+                    title: "Data Collection",
+                    description: "Create variables for different data types: text, numbers, and demonstrate the difference.",
+                    starter: "# Demonstrate different data types\n# Text (strings) - use quotes\nstudent_name = \"Your Name\"\nfavorite_subject = \"Your Subject\"\n\n# Numbers - no quotes needed\nage = 0  # Change this\ntest_score = 0  # Change this\n\n# Print with labels:\nprint(\"Student Information:\")\nprint(\"Name: \")\nprint(\"Subject: \")\nprint(\"Age: \")\nprint(\"Score: \")\n# Complete the print statements\n",
+                    hint: "Notice how numbers don't need quotes but text does. Complete the print statements by adding variable names."
+                },
+                {
+                    title: "Variable Experiment",
+                    description: "Show what happens when you change variable values. Create a variable, print it, change it, print again.",
+                    starter: "# Variable changing experiment\n# Create a variable\nmessage = \"Hello\"\nprint(\"First message: \")\nprint(message)\n\n# Change the variable\nmessage = \"Goodbye\"\nprint(\"Second message: \")\nprint(message)\n\n# Try your own experiment:\n# Create a variable, print it, change it, print again\n\n",
+                    hint: "This shows that variables can be updated! Try changing numbers or creating your own examples."
+                },
+                {
+                    title: "Mini Database",
+                    description: "Create a simple 'database' of information using multiple variables, then display it formatted nicely.",
+                    starter: "# Mini student database\n# Student 1 information\nstudent1_name = \"Alice\"\nstudent1_grade = 95\nstudent1_subject = \"Maths\"\n\n# Student 2 information\nstudent2_name = \"Bob\"\nstudent2_grade = 87\nstudent2_subject = \"Science\"\n\n# Display the database\nprint(\"=== Student Database ===\")\nprint(\"Student 1:\")\nprint(\"Name: \")\nprint(\"Grade: \")\nprint(\"Subject: \")\nprint(\"\")\nprint(\"Student 2:\")\n# Complete this section\n",
+                    hint: "Complete all the print statements by adding the appropriate variable names. Notice the empty print() creates a blank line."
+                }
+            ]
+        };
+        
+        // Initialize lesson components
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a moment for all scripts to load
+            setTimeout(function() {
+                try {
+                    // Check if components are available
+                    if (!window.PenguinTwistComponents || !window.PenguinTwistInterpreter) {
+                        console.log('Shared components not available, setting up fallbacks...');
+                        setupFallbacks();
+                        return;
                     }
+                    
+                    // Initialize visual metaphor for memory boxes
+                    var memoryBoxDemo = window.PenguinTwistComponents.createVisualMetaphor(
+                        'memoryBoxDemo', 
+                        'storage_boxes',
+                        {
+                            title: 'Variables as Memory Boxes',
+                            variableName: 'name',
+                            variableValue: 'Alex',
+                            demoButton: true,
+                            boxes: [
+                                { label: 'name', value: 'Empty' },
+                                { label: 'age', value: 'Empty' },
+                                { label: 'subject', value: 'Empty' }
+                            ],
+                            demoScript: [
+                                { action: 'assign', box: 'name', value: 'Alex', delay: 1000 },
+                                { action: 'assign', box: 'age', value: '15', delay: 1500 },
+                                { action: 'assign', box: 'subject', value: 'Computer Science', delay: 1500 }
+                            ]
+                        }
+                    );
+                    memoryBoxDemo.init();
+                    
+                    // Initialize interactive playgrounds
+                    var playground1 = window.PenguinTwistInterpreter.createPlayground(
+                        'variableCreationPlayground',
+                        'variables',
+                        {
+                            title: 'Variable Creation Practice',
+                            defaultCode: 'name = "Alex"\nage = 15',
+                            showMemory: true
+                        }
+                    );
+                    playground1.init();
+                    
+                    var playground2 = window.PenguinTwistInterpreter.createPlayground(
+                        'variablePrintPlayground',
+                        'variables',
+                        {
+                            title: 'Variables and Print Practice',
+                            defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
+                            showMemory: true
+                        }
+                    );
+                    playground2.init();
+                    
+                    var playground3 = window.PenguinTwistInterpreter.createPlayground(
+                        'variablePracticePlayground',
+                        'variables',
+                        {
+                            title: 'Your Turn to Experiment',
+                            defaultCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
+                            showMemory: true
+                        }
+                    );
+                    playground3.init();
+                    
+                    // Initialize mastery check
+                    var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
+                        'masteryCheck',
+                        [
+                            {
+                                question: 'To store "Computer Science" in a variable called subject, what code do you write?',
+                                placeholder: 'Type your answer like: variable = "value"',
+                                validateAnswer: function(answer) {
+                                    return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                                },
+                                hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
+                            },
+                            {
+                                question: 'What\'s the difference between print(age) and print("age")?',
+                                placeholder: 'Explain the difference',
+                                validateAnswer: function(answer) {
+                                    var lower = answer.toLowerCase();
+                                    return lower.includes('variable') || lower.includes('stored') || 
+                                           lower.includes('value') || lower.includes('word') || 
+                                           lower.includes('text') || lower.includes('literal') ||
+                                           lower.includes('contents') || lower.includes('name');
+                                },
+                                hint: 'print(age) shows stored value, print("age") shows the word "age"'
+                            },
+                            {
+                                question: 'If you run: name = "Jamie" then print(name), what appears?',
+                                placeholder: 'What gets displayed?',
+                                validateAnswer: function(answer) {
+                                    return answer.toLowerCase().includes('jamie');
+                                },
+                                hint: 'The output would be: Jamie'
+                            }
+                        ],
+                        {
+                            title: 'Check Your Understanding',
+                            onComplete: function() {
+                                // Unlock next lesson and show challenges
+                                var nextBtn = document.getElementById('nextLessonBtn');
+                                if (nextBtn) {
+                                    nextBtn.classList.remove('disabled');
+                                    nextBtn.style.opacity = '1';
+                                    nextBtn.style.pointerEvents = 'auto';
+                                }
+                                
+                                // Show challenge system
+                                var challengeSystem = document.getElementById('challengeSystem');
+                                if (challengeSystem) {
+                                    challengeSystem.style.display = 'block';
+                                    challengeSystem.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }
+                        }
+                    );
+                    masteryCheck.init();
+                    
+                    // Initialize challenge system
+                    var challengeSystem = window.PenguinTwistComponents.createChallengeSystem(
+                        'challengeSystem',
+                        variableChallenges,
+                        {
+                            title: 'Practice Challenges',
+                            interpreterType: 'variables'
+                        }
+                    );
+                    challengeSystem.init();
+                    
+                    // Initially hide challenges until mastery is complete
+                    document.getElementById('challengeSystem').style.display = 'none';
+                    
+                    // Initialize dark mode
+                    var darkModeController = window.PenguinTwistComponents.setupDarkMode('darkModeToggle');
+                    darkModeController.init();
+                    
+                    console.log('All components initialized successfully');
+                    
+                } catch (error) {
+                    console.log('Error initializing components:', error);
+                    setupFallbacks();
                 }
                 
-                var fullOutput = conversationLog.concat(this.output).join('\n');
-                
-                return {
-                    success: true,
-                    output: fullOutput,
-                    variables: this.variables,
-                    conversation: conversationLog,
-                    message: fullOutput
-                };
-            } catch (error) {
-                return {
-                    success: false,
-                    output: '',
-                    variables: {},
-                    message: error.message
-                };
-            }
-        };
-        
-        this.handleInputAssignment = function(line, inputs, inputIndex) {
-            var parsed = this.parseAssignment(line);
-            var promptMatch = parsed.value.match(/input\s*\(\s*["']([^"']*)["']\s*\)/);
-            
-            if (!promptMatch) {
-                throw new Error('input() needs a question in quotes: input("Your question?")');
-            }
-            
-            var prompt = promptMatch[1];
-            if (inputIndex < inputs.length) {
-                this.variables[parsed.variable] = inputs[inputIndex];
-            }
-            
-            return { prompt: prompt };
-        };
-    }
-    
-    // Lesson 4: String Concatenation interpreter
-    function ConcatenationInterpreter(options) {
-        VariableInterpreter.call(this, options);
-        this.allowedStatements = ['print', 'assignment', 'concatenation'];
-        
-        this.handlePrint = function(line) {
-            var match = line.match(/print\s*\(\s*([^)]+)\s*\)/);
-            if (!match) {
-                throw new Error('Check your print statement syntax');
-            }
-            
-            var content = match[1].trim();
-            
-            // Handle concatenation with +
-            if (content.includes(' + ')) {
-                this.handleConcatenation(content);
-            } else if ((content.startsWith('"') && content.endsWith('"')) || 
-                      (content.startsWith("'") && content.endsWith("'"))) {
-                this.output.push(content.slice(1, -1));
-            } else if (this.variables.hasOwnProperty(content)) {
-                this.output.push(this.variables[content]);
-            } else {
-                throw new Error(PenguinTwistInterpreter.getErrorMessage('variable_not_found', content));
-            }
-        };
-        
-        this.handleConcatenation = function(content) {
-            var parts = content.split(' + ');
-            var result = '';
-            
-            for (var i = 0; i < parts.length; i++) {
-                var part = parts[i].trim();
-                if ((part.startsWith('"') && part.endsWith('"')) || 
-                    (part.startsWith("'") && part.endsWith("'"))) {
-                    result += part.slice(1, -1);
-                } else if (this.variables.hasOwnProperty(part)) {
-                    result += this.variables[part];
-                } else {
-                    throw new Error('Variable "' + part + '" not found in concatenation');
+                // Initially disable next lesson
+                var nextBtn = document.getElementById('nextLessonBtn');
+                if (nextBtn) {
+                    nextBtn.classList.add('disabled');
+                    nextBtn.style.opacity = '0.5';
+                    nextBtn.style.pointerEvents = 'none';
                 }
-            }
-            this.output.push(result);
-        };
-    }
-    
-    // Future: Data Types interpreter (placeholder)
-    function DataTypeInterpreter(options) {
-        ConcatenationInterpreter.call(this, options);
-        this.allowedStatements = ['print', 'assignment', 'concatenation', 'conversion'];
+                
+            }, 100);
+        });
         
-        // Add type conversion methods (str, int, float)
-        // This will be implemented when needed
-    }
-    
-    // Interactive playground component with enhanced memory display
-    function InteractivePlayground(containerId, interpreterType, options) {
-        this.container = document.getElementById(containerId);
-        this.interpreterType = interpreterType;
-        this.interpreter = PenguinTwistInterpreter.createInterpreter(interpreterType, options);
-        this.editor = null;
-        this.options = options || {};
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createHTML();
-            this.initializeEditor();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.createHTML = function() {
-            var memorySection = this.options.showMemory ? 
-                '<div class="memory-display">Variables will appear here...</div>' : '';
+        // Fallback functionality if shared components fail
+        function setupFallbacks() {
+            console.log('Setting up fallback functionality...');
             
-            this.container.innerHTML = [
-                '<div class="python-playground">',
-                    '<div class="playground-header">',
-                        '<span>' + (this.options.title || 'Python Practice Area') + '</span>',
-                        '<div class="playground-controls">',
-                            '<button class="btn btn-run">▶ Run Code</button>',
-                            '<button class="btn btn-reset">🔄 Reset</button>',
-                        '</div>',
-                    '</div>',
-                    '<div class="editor-container">',
-                        '<textarea class="code-editor"></textarea>',
-                    '</div>',
-                    '<div class="output-container"></div>',
-                    memorySection,
-                '</div>'
-            ].join('');
-        };
-        
-        this.initializeEditor = function() {
-            var textarea = this.container.querySelector('.code-editor');
-            if (window.CodeMirror) {
-                this.editor = CodeMirror.fromTextArea(textarea, {
-                    mode: 'python',
-                    theme: 'monokai',
-                    lineNumbers: true,
-                    indentUnit: 4,
-                    indentWithTabs: false,
-                    lineWrapping: true,
-                    fontSize: '16px'
+            // Basic dark mode toggle fallback
+            var darkModeToggle = document.getElementById('darkModeToggle');
+            if (darkModeToggle) {
+                var isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    darkModeToggle.innerHTML = '☀️ Light Mode';
+                }
+                
+                darkModeToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('dark-mode');
+                    var isNowDark = document.body.classList.contains('dark-mode');
+                    darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                    localStorage.setItem('penguintwist_darkMode', isNowDark);
                 });
-                
-                var defaultCode = this.options.defaultCode || '';
-                this.editor.setValue(defaultCode);
-                
-                // Auto-size to show all content
-                var lineCount = defaultCode.split('\n').length;
-                var minHeight = Math.max(140, (lineCount + 2) * 20);
-                this.editor.setSize(null, minHeight + 'px');
-                
-            } else {
-                // Fallback for environments without CodeMirror
-                textarea.value = this.options.defaultCode || '';
-                var lines = (this.options.defaultCode || '').split('\n').length;
-                textarea.rows = Math.max(8, lines + 2);
-                this.editor = {
-                    getValue: function() { return textarea.value; },
-                    setValue: function(value) { textarea.value = value; }
-                };
             }
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            var runBtn = this.container.querySelector('.btn-run');
-            var resetBtn = this.container.querySelector('.btn-reset');
             
-            runBtn.addEventListener('click', function() { self.run(); });
-            resetBtn.addEventListener('click', function() { self.reset(); });
-        };
-        
-        this.run = function() {
-            var code = this.editor.getValue();
-            var result = this.interpreter.executeCode(code);
-            var outputEl = this.container.querySelector('.output-container');
-            var memoryEl = this.container.querySelector('.memory-display');
+            // Show message about component loading
+            var containers = ['memoryBoxDemo', 'variableCreationPlayground', 'variablePrintPlayground', 
+                             'variablePracticePlayground', 'masteryCheck', 'challengeSystem'];
             
-            if (result.success) {
-                outputEl.innerHTML = '<div class="success">' + result.message.replace(/\n/g, '<br>') + '</div>';
-                if (memoryEl && result.variables) {
-                    this.updateMemoryDisplay(memoryEl, result.variables);
+            containers.forEach(function(containerId) {
+                var container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666; border: 1px dashed #ccc; border-radius: 8px; margin: 10px 0;">Interactive component loading... Please refresh the page if this message persists.</div>';
                 }
-            } else {
-                outputEl.innerHTML = '<div class="error">' + result.message + '</div>';
-                if (memoryEl) {
-                    memoryEl.innerHTML = 'Variables: None (error occurred)';
-                }
-            }
-        };
-        
-        this.reset = function() {
-            this.editor.setValue(this.options.defaultCode || '');
-            this.container.querySelector('.output-container').innerHTML = '';
-            var memoryEl = this.container.querySelector('.memory-display');
-            if (memoryEl) {
-                memoryEl.innerHTML = 'Variables will appear here...';
-            }
-        };
-        
-        this.updateMemoryDisplay = function(element, variables) {
-            if (!variables || Object.keys(variables).length === 0) {
-                element.innerHTML = 'Variables: None';
-                return;
-            }
-            
-            var varDisplay = Object.keys(variables).map(function(name) {
-                var value = variables[name];
-                // Show strings with quotes, numbers without
-                if (typeof value === 'string' && isNaN(value)) {
-                    return name + ' = "' + value + '"';
-                } else {
-                    return name + ' = ' + value;
-                }
-            }).join(', ');
-            
-            element.innerHTML = 'Variables: ' + varDisplay;
-        };
-    }
-    
-})();
-
-// Export for Node.js testing if available
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = window.PenguinTwistInterpreter;
-}
+            });
+        }
+    </script>
+</body>
+</html>
