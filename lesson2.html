@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lesson 2: Variables - PenguinTwist</title>
     
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
     <!-- Shared Styles -->
-    <link rel="stylesheet" href="shared/lesson-styles.css"></head>
+    <link rel="stylesheet" href="shared/lesson-styles.css">
+</head>
 <body>
     <div class="header">
         <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
@@ -47,7 +52,28 @@
                 </div>
                 
                 <!-- Visual Metaphor Component -->
-                <div id="memoryBoxDemo"></div>
+                <div id="memoryBoxDemo">
+                    <div class="storage-metaphor">
+                        <div class="metaphor-title">Variables as Memory Boxes</div>
+                        <div class="storage-diagram">
+                            <div class="storage-step">
+                                <div class="storage-box">
+                                    <div class="box-label">name</div>
+                                    <div class="box-content">"Alex"</div>
+                                    <div class="box-description">Information stored safely inside</div>
+                                </div>
+                            </div>
+                            <div class="storage-arrow">↓</div>
+                            <div class="storage-step">
+                                <div class="retrieval-box">
+                                    <div class="retrieval-action">print(name)</div>
+                                    <div class="retrieval-result">Alex</div>
+                                    <div class="retrieval-description">Retrieve and display the stored value</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="section">
@@ -76,7 +102,23 @@ age = 15</div>
             <div class="section">
                 <h3>Try Creating Variables</h3>
                 <!-- Interactive Playground Component -->
-                <div id="variableCreationPlayground"></div>
+                <div id="variableCreationPlayground">
+                    <div class="python-playground">
+                        <div class="playground-header">
+                            <span>Variable Creation Practice</span>
+                            <div class="playground-controls">
+                                <button class="btn btn-run" onclick="runPlayground1()">▶ Run Code</button>
+                                <button class="btn btn-reset" onclick="resetPlayground1()">🔄 Reset</button>
+                            </div>
+                        </div>
+                        <div class="editor-container">
+                            <textarea id="editor1">name = "Alex"
+age = 15</textarea>
+                        </div>
+                        <div class="output-container" id="output1"></div>
+                        <div class="memory-display" id="memory1">Variables will appear here...</div>
+                    </div>
+                </div>
             </div>
             
             <div class="section">
@@ -109,7 +151,25 @@ Alex
             <div class="section">
                 <h3>See Variables in Action</h3>
                 <!-- Main Practice Playground -->
-                <div id="variablePrintPlayground"></div>
+                <div id="variablePrintPlayground">
+                    <div class="python-playground">
+                        <div class="playground-header">
+                            <span>Variables and Print Practice</span>
+                            <div class="playground-controls">
+                                <button class="btn btn-run" onclick="runPlayground2()">▶ Run Code</button>
+                                <button class="btn btn-reset" onclick="resetPlayground2()">🔄 Reset</button>
+                            </div>
+                        </div>
+                        <div class="editor-container">
+                            <textarea id="editor2">name = "Alex"
+age = 15
+print(name)
+print(age)</textarea>
+                        </div>
+                        <div class="output-container" id="output2"></div>
+                        <div class="memory-display" id="memory2">Variables will appear here...</div>
+                    </div>
+                </div>
                 
                 <div class="tip">
                     <strong>Try these experiments:</strong>
@@ -123,11 +183,98 @@ Alex
             <div class="section">
                 <h3>Practice with Variables</h3>
                 <!-- Advanced Practice Playground -->
-                <div id="variablePracticePlayground"></div>
+                <div id="variablePracticePlayground">
+                    <div class="python-playground">
+                        <div class="playground-header">
+                            <span>Your Turn to Experiment</span>
+                            <div class="playground-controls">
+                                <button class="btn btn-run" onclick="runPlayground3()">▶ Run Code</button>
+                                <button class="btn btn-reset" onclick="resetPlayground3()">🔄 Reset</button>
+                            </div>
+                        </div>
+                        <div class="editor-container">
+                            <textarea id="editor3">subject = "Computer Science"
+score = 85
+print(subject)
+print(score)</textarea>
+                        </div>
+                        <div class="output-container" id="output3"></div>
+                        <div class="memory-display" id="memory3">Variables will appear here...</div>
+                    </div>
+                </div>
             </div>
             
             <!-- Mastery Check Component -->
-            <div id="masteryCheck"></div>
+            <div id="masteryCheck">
+                <div class="mastery-check">
+                    <h4>Check Your Understanding</h4>
+                    <div class="mastery-question">
+                        <p><strong>Question 1:</strong> To store "Computer Science" in a variable called subject, what code do you write?</p>
+                        <input type="text" id="answer1" class="mastery-input" placeholder='Type your answer like: variable = "value"'>
+                    </div>
+                    <div class="mastery-question">
+                        <p><strong>Question 2:</strong> What's the difference between print(age) and print("age")?</p>
+                        <input type="text" id="answer2" class="mastery-input" placeholder="Explain the difference">
+                    </div>
+                    <div class="mastery-question">
+                        <p><strong>Question 3:</strong> If you run: name = "Jamie" then print(name), what appears?</p>
+                        <input type="text" id="answer3" class="mastery-input" placeholder="What gets displayed?">
+                    </div>
+                    <button class="check-answer-btn" onclick="checkMastery()">Check Answers</button>
+                    <div id="masteryFeedback" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Challenge System Component -->
+            <div id="challengeSystem" style="display: none;">
+                <div class="practice-section">
+                    <h4>Practice Challenges</h4>
+                    <div class="practice-grid">
+                        <div class="practice-card" onclick="loadChallenge('basic')">
+                            <h5>More Practice</h5>
+                            <p>Need extra practice with variables? Try more examples.</p>
+                            <div class="difficulty-badge basic">Beginner</div>
+                        </div>
+                        <div class="practice-card" onclick="loadChallenge('creative')">
+                            <h5>Creative Challenges</h5>
+                            <p>Make your programs more interesting and personal.</p>
+                            <div class="difficulty-badge creative">Creative</div>
+                        </div>
+                        <div class="practice-card" onclick="loadChallenge('advanced')">
+                            <h5>Extension Tasks</h5>
+                            <p>Ready for something more challenging?</p>
+                            <div class="difficulty-badge advanced">Advanced</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="challenge-area" id="challengeArea" style="display: none;">
+                    <div class="challenge-header">
+                        <h4 id="challengeTitle">Challenge Task</h4>
+                        <button class="close-challenge-btn" onclick="closeChallenges()">× Close</button>
+                    </div>
+                    <div id="challengeDescription"></div>
+                    <div class="python-playground">
+                        <div class="playground-header">
+                            <span>Challenge Practice Area</span>
+                            <div class="playground-controls">
+                                <button class="btn btn-run" onclick="runChallenge()">▶ Run Code</button>
+                                <button class="btn btn-reset" onclick="resetChallenge()">🔄 Reset</button>
+                            </div>
+                        </div>
+                        <div class="editor-container">
+                            <textarea id="challengeEditor"># Write your code here</textarea>
+                        </div>
+                        <div class="output-container" id="challengeOutput"></div>
+                        <div class="memory-display" id="challengeMemory">Variables will appear here...</div>
+                    </div>
+                    <div class="challenge-navigation">
+                        <button class="nav-challenge-btn" onclick="previousChallenge()">← Previous</button>
+                        <span id="challengeCounter">1 of 3</span>
+                        <button class="nav-challenge-btn" onclick="nextChallenge()">Next →</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -141,173 +288,467 @@ Alex
         </div>
     </div>
     
-    <!-- Shared Components -->
-    <script src="shared/python-interpreter.js" onload="console.log('python-interpreter.js loaded')" onerror="console.log('python-interpreter.js failed to load')"></script>
-    <script src="shared/lesson-components.js" onload="console.log('lesson-components.js loaded')" onerror="console.log('lesson-components.js failed to load')"></script>
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     
     <script>
-        // Lesson 2 Configuration
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait for shared components to load, then initialize
-            setTimeout(function() {
-                try {
-                    // Debug: Log what's available in the global scope
-                    console.log('Available global objects:');
-                    console.log('- PenguinTwistComponents:', typeof window.PenguinTwistComponents);
-                    console.log('- PenguinTwistInterpreter:', typeof window.PenguinTwistInterpreter);
-                    
-                    if (!window.PenguinTwistComponents || !window.PenguinTwistInterpreter) {
-                        console.log('Shared components not fully loaded yet');
-                        return;
-                    }
-                    
-                    // Create interpreter using correct API
-                    var interpreter = window.PenguinTwistInterpreter.createInterpreter('variables');
-                    
-                    // Initialize visual metaphor for memory boxes
-                    var memoryBoxDemo = window.PenguinTwistComponents.createVisualMetaphor(
-                        'memoryBoxDemo', 
-                        'storage_boxes',
-                        {
-                            title: 'Variables as Memory Boxes',
-                            boxes: [
-                                { label: 'name', value: 'Empty' },
-                                { label: 'age', value: 'Empty' },
-                                { label: 'subject', value: 'Empty' }
-                            ],
-                            demoButton: true,
-                            demoScript: [
-                                { action: 'assign', box: 'name', value: '"Alex"', delay: 1000 },
-                                { action: 'assign', box: 'age', value: '15', delay: 1500 },
-                                { action: 'assign', box: 'subject', value: '"Computer Science"', delay: 1500 }
-                            ]
-                        }
-                    );
-                    if (memoryBoxDemo && memoryBoxDemo.init) {
-                        memoryBoxDemo.init();
-                    }
-                    
-                    // Initialize interactive playgrounds using correct API
-                    var playground1 = window.PenguinTwistInterpreter.createPlayground(
-                        'variableCreationPlayground',
-                        'variables',
-                        {
-                            title: 'Variable Creation Practice',
-                            defaultCode: 'name = "Alex"\nage = 15',
-                            showMemory: true,
-                            tips: ['Try changing the values', 'Create your own variables']
-                        }
-                    );
-                    
-                    var playground2 = window.PenguinTwistInterpreter.createPlayground(
-                        'variablePrintPlayground',
-                        'variables',
-                        {
-                            title: 'Variables and Print Practice',
-                            defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
-                            showMemory: true,
-                            tips: ['See how variables are used with print()']
-                        }
-                    );
-                    
-                    var playground3 = window.PenguinTwistInterpreter.createPlayground(
-                        'variablePracticePlayground',
-                        'variables',
-                        {
-                            title: 'Your Turn to Experiment',
-                            defaultCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
-                            showMemory: true,
-                            tips: ['Create variables for your own information']
-                        }
-                    );
-                    
-                    // Initialize mastery check using correct API
-                    var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
-                        'masteryCheck',
-                        [
-                            {
-                                question: 'To store "Computer Science" in a variable called subject, what code do you write?',
-                                placeholder: 'Type your answer like: variable = "value"',
-                                validateAnswer: function(answer) {
-                                    return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
-                                },
-                                hint: 'Remember: subject = "Computer Science" (with quotes and equals sign)'
-                            },
-                            {
-                                question: 'What\'s the difference between print(age) and print("age")?',
-                                placeholder: 'Explain the difference',
-                                validateAnswer: function(answer) {
-                                    var lower = answer.toLowerCase();
-                                    return lower.includes('variable') || lower.includes('stored') || 
-                                           lower.includes('value') || lower.includes('word') || 
-                                           lower.includes('text') || lower.includes('literal') ||
-                                           lower.includes('contents') || lower.includes('name');
-                                },
-                                hint: 'print(age) shows stored value, print("age") shows the word "age"'
-                            },
-                            {
-                                question: 'If you run: name = "Jamie" then print(name), what appears?',
-                                placeholder: 'What gets displayed?',
-                                validateAnswer: function(answer) {
-                                    return answer.toLowerCase().includes('jamie');
-                                },
-                                hint: 'The output would be: Jamie'
-                            }
-                        ],
-                        {
-                            title: 'Check Your Understanding',
-                            onComplete: function() {
-                                // Unlock next lesson
-                                var nextBtn = document.getElementById('nextLessonBtn');
-                                if (nextBtn) {
-                                    nextBtn.classList.remove('disabled');
-                                    nextBtn.style.opacity = '1';
-                                    nextBtn.style.pointerEvents = 'auto';
-                                }
-                            }
-                        }
-                    );
-                    if (masteryCheck && masteryCheck.init) {
-                        masteryCheck.init();
-                    }
-                    
-                    // Initialize dark mode using correct API
-                    var darkModeController = window.PenguinTwistComponents.setupDarkMode('darkModeToggle');
-                    
-                    console.log('All components initialized successfully');
-                    
-                } catch (error) {
-                    console.log('Error initializing components:', error);
-                    
-                    // Fallback dark mode toggle
-                    var darkModeToggle = document.getElementById('darkModeToggle');
-                    if (darkModeToggle) {
-                        var isDarkMode = localStorage.getItem('darkMode') === 'true';
-                        if (isDarkMode) {
-                            document.body.classList.add('dark-mode');
-                            darkModeToggle.innerHTML = '☀️ Light Mode';
-                        }
-                        
-                        darkModeToggle.addEventListener('click', function() {
-                            document.body.classList.toggle('dark-mode');
-                            var isNowDark = document.body.classList.contains('dark-mode');
-                            darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-                            localStorage.setItem('darkMode', isNowDark);
-                        });
-                    }
+        // Simple Variable Interpreter
+        class SimpleVariableInterpreter {
+            constructor() {
+                this.variables = {};
+                this.output = [];
+            }
+
+            reset() {
+                this.variables = {};
+                this.output = [];
+            }
+
+            execute(code) {
+                this.reset();
+                
+                if (!code || !code.trim()) {
+                    return { success: false, message: "Please write some code to run!" };
                 }
+
+                try {
+                    const lines = code.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0 && !line.startsWith('#'));
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        
+                        if (line.includes(' = ') && !line.includes('input(')) {
+                            this.handleAssignment(line);
+                        } else if (line.match(/^\s*print\s*\(/)) {
+                            this.handlePrint(line);
+                        } else if (line.trim()) {
+                            throw new Error('I understand assignments and print() statements in this lesson.');
+                        }
+                    }
+
+                    return {
+                        success: true,
+                        output: this.output.join('\n'),
+                        variables: this.variables,
+                        message: this.output.length === 0 ? 'Code ran successfully.' : this.output.join('\n')
+                    };
+                } catch (error) {
+                    return {
+                        success: false,
+                        output: '',
+                        variables: {},
+                        message: `💡 ${error.message}`
+                    };
+                }
+            }
+
+            handleAssignment(line) {
+                const equalIndex = line.indexOf(' = ');
+                if (equalIndex === -1) {
+                    throw new Error('Assignment needs spaces around = sign: variable = value');
+                }
+
+                const varName = line.substring(0, equalIndex).trim();
+                const value = line.substring(equalIndex + 3).trim();
+
+                if (!varName.match(/^[a-zA-Z_][a-zA-Z0-9_]*$/)) {
+                    throw new Error(`Variable name "${varName}" is not valid. Use letters, numbers, and underscores only.`);
+                }
+
+                if ((value.startsWith('"') && value.endsWith('"')) || 
+                    (value.startsWith("'") && value.endsWith("'"))) {
+                    this.variables[varName] = value.slice(1, -1);
+                } else if (!isNaN(value) && value.trim() !== '') {
+                    this.variables[varName] = value;
+                } else {
+                    throw new Error(`Text values need quotes around them: "${value}"`);
+                }
+            }
+
+            handlePrint(line) {
+                const match = line.match(/print\s*\(\s*([^)]+)\s*\)/);
+                if (!match) {
+                    throw new Error('Check your print statement syntax');
+                }
+
+                const content = match[1].trim();
+
+                if ((content.startsWith('"') && content.endsWith('"')) || 
+                    (content.startsWith("'") && content.endsWith("'"))) {
+                    this.output.push(content.slice(1, -1));
+                } else if (this.variables.hasOwnProperty(content)) {
+                    this.output.push(this.variables[content]);
+                } else {
+                    throw new Error(`Variable "${content}" not found. Make sure to create it first.`);
+                }
+            }
+        }
+
+        // Global interpreter and editors
+        const interpreter = new SimpleVariableInterpreter();
+        let editor1, editor2, editor3, challengeEditor;
+
+        // Challenge data
+        const challenges = {
+            basic: [
+                {
+                    title: "Create Your Profile",
+                    description: "Create three variables: your name, your age, and your favorite color. Then print all three.",
+                    starter: "# Create variables for your profile\n# Example:\n# name = \"Alex\"\n# age = 15\n# color = \"blue\"\n\n# Your turn - create three variables:\n\n\n# Now print them:\n\n\n",
+                    hint: "Remember: text needs quotes, numbers don't. Use print(variable_name) to show the stored value."
+                },
+                {
+                    title: "School Information", 
+                    description: "Store your school name, year group, and favorite subject in variables, then display them.",
+                    starter: "# Store school information\n# Example:\n# school = \"Greenwood High\"\n# year = 10\n# subject = \"Computer Science\"\n\n# Your turn:\n\n\n# Print your school information:\n\n\n",
+                    hint: "Follow the pattern: variable_name = \"text\" for text, variable_name = number for numbers."
+                },
+                {
+                    title: "Pet Information",
+                    description: "Create variables for a pet's name, type, and age. Print each piece of information.",
+                    starter: "# Pet information variables\n# Think about:\n# - What's the pet's name?\n# - What type of animal?\n# - How old are they?\n\n# Create your variables:\n\n\n# Show the information:\n\n\n",
+                    hint: "Pet names and types are text (use quotes), age is a number (no quotes needed)."
+                }
+            ],
+            creative: [
+                {
+                    title: "Character Profile",
+                    description: "Create a character for a story. Give them a name, superpower, and hometown. Print a profile.",
+                    starter: "# Create a superhero character\n# Example character:\n# hero_name = \"Lightning Bolt\"\n# power = \"Super Speed\"\n# city = \"Metro City\"\n\n# Create your character:\n\n\n# Print character profile:\nprint(\"Character Profile:\")\n# Add your print statements here:\n\n",
+                    hint: "Make it creative! Think of interesting names, unique powers, and exciting cities."
+                },
+                {
+                    title: "Dream Vacation",
+                    description: "Plan your dream vacation using variables for destination, activity, and duration.",
+                    starter: "# Plan your dream vacation\n# Think about:\n# - Where would you go?\n# - What would you do there?\n# - How long would you stay?\n\n# Your vacation variables:\n\n\n# Share your vacation plan:\nprint(\"My Dream Vacation:\")\n# Add your details:\n\n",
+                    hint: "Be creative with destinations and activities! Remember to use quotes for text."
+                },
+                {
+                    title: "Favorite Things",
+                    description: "Create variables for your favorite movie, food, and hobby. Present them nicely.",
+                    starter: "# Your favorite things\n# Examples:\n# movie = \"The Lion King\"\n# food = \"Pizza\"\n# hobby = \"Reading\"\n\n# Your favorites:\n\n\n# Present your favorites:\nprint(\"My Favorite Things:\")\nprint(\"Movie: \")\nprint(\"Food: \")\nprint(\"Hobby: \")\n# Complete the print statements above\n",
+                    hint: "Complete each print statement by adding your variable name after the text."
+                }
+            ],
+            advanced: [
+                {
+                    title: "Data Collection",
+                    description: "Create variables for different data types: text, numbers, and demonstrate the difference.",
+                    starter: "# Demonstrate different data types\n# Text (strings) - use quotes\nstudent_name = \"Your Name\"\nfavorite_subject = \"Your Subject\"\n\n# Numbers - no quotes needed\nage = 0  # Change this\ntest_score = 0  # Change this\n\n# Print with labels:\nprint(\"Student Information:\")\nprint(\"Name: \")\nprint(\"Subject: \")\nprint(\"Age: \")\nprint(\"Score: \")\n# Complete the print statements\n",
+                    hint: "Notice how numbers don't need quotes but text does. Complete the print statements by adding variable names."
+                },
+                {
+                    title: "Variable Experiment",
+                    description: "Show what happens when you change variable values. Create a variable, print it, change it, print again.",
+                    starter: "# Variable changing experiment\n# Create a variable\nmessage = \"Hello\"\nprint(\"First message: \")\nprint(message)\n\n# Change the variable\nmessage = \"Goodbye\"\nprint(\"Second message: \")\nprint(message)\n\n# Try your own experiment:\n# Create a variable, print it, change it, print again\n\n",
+                    hint: "This shows that variables can be updated! Try changing numbers or creating your own examples."
+                },
+                {
+                    title: "Mini Database",
+                    description: "Create a simple 'database' of information using multiple variables, then display it formatted nicely.",
+                    starter: "# Mini student database\n# Student 1 information\nstudent1_name = \"Alice\"\nstudent1_grade = 95\nstudent1_subject = \"Maths\"\n\n# Student 2 information\nstudent2_name = \"Bob\"\nstudent2_grade = 87\nstudent2_subject = \"Science\"\n\n# Display the database\nprint(\"=== Student Database ===\")\nprint(\"Student 1:\")\nprint(\"Name: \")\nprint(\"Grade: \")\nprint(\"Subject: \")\nprint(\"\")\nprint(\"Student 2:\")\n# Complete this section\n",
+                    hint: "Complete all the print statements by adding the appropriate variable names. Notice the empty print() creates a blank line."
+                }
+            ]
+        };
+
+        let currentChallengeSet = [];
+        let currentChallengeIndex = 0;
+
+        // Initialize editors when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                initializeEditors();
+                setupDarkMode();
                 
                 // Initially disable next lesson
-                var nextBtn = document.getElementById('nextLessonBtn');
+                const nextBtn = document.getElementById('nextLessonBtn');
                 if (nextBtn) {
                     nextBtn.classList.add('disabled');
                     nextBtn.style.opacity = '0.5';
                     nextBtn.style.pointerEvents = 'none';
                 }
-                
-            }, 500); // Increased delay to ensure components are fully loaded
+            }, 100);
         });
+
+        function initializeEditors() {
+            if (window.CodeMirror) {
+                // Initialize all editors
+                const editorConfigs = [
+                    { id: 'editor1', defaultCode: 'name = "Alex"\nage = 15' },
+                    { id: 'editor2', defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)' },
+                    { id: 'editor3', defaultCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)' },
+                    { id: 'challengeEditor', defaultCode: '# Write your code here' }
+                ];
+
+                editorConfigs.forEach((config, index) => {
+                    const textarea = document.getElementById(config.id);
+                    if (textarea) {
+                        const editor = CodeMirror.fromTextArea(textarea, {
+                            mode: 'python',
+                            theme: 'monokai',
+                            lineNumbers: true,
+                            indentUnit: 4,
+                            indentWithTabs: false,
+                            lineWrapping: true,
+                            fontSize: '16px'
+                        });
+                        
+                        editor.setValue(config.defaultCode);
+                        
+                        // Auto-size to content
+                        const lineCount = config.defaultCode.split('\n').length;
+                        const minHeight = Math.max(140, (lineCount + 2) * 20);
+                        editor.setSize(null, minHeight + 'px');
+                        
+                        // Store editor references
+                        if (config.id === 'editor1') editor1 = editor;
+                        else if (config.id === 'editor2') editor2 = editor;
+                        else if (config.id === 'editor3') editor3 = editor;
+                        else if (config.id === 'challengeEditor') challengeEditor = editor;
+                    }
+                });
+            } else {
+                console.log('CodeMirror not available, using fallback textareas');
+                // Fallback for basic textareas
+                editor1 = { getValue: () => document.getElementById('editor1').value, setValue: (v) => document.getElementById('editor1').value = v };
+                editor2 = { getValue: () => document.getElementById('editor2').value, setValue: (v) => document.getElementById('editor2').value = v };
+                editor3 = { getValue: () => document.getElementById('editor3').value, setValue: (v) => document.getElementById('editor3').value = v };
+                challengeEditor = { getValue: () => document.getElementById('challengeEditor').value, setValue: (v) => document.getElementById('challengeEditor').value = v };
+            }
+        }
+
+        function updateMemoryDisplay(elementId, variables) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            if (!variables || Object.keys(variables).length === 0) {
+                element.innerHTML = 'Variables: None';
+                return;
+            }
+            
+            const varDisplay = Object.keys(variables).map(name => {
+                const value = variables[name];
+                if (typeof value === 'string' && isNaN(value)) {
+                    return `${name} = "${value}"`;
+                } else {
+                    return `${name} = ${value}`;
+                }
+            }).join(', ');
+            
+            element.innerHTML = `Variables: ${varDisplay}`;
+        }
+
+        async function runPlayground(editorRef, outputId, memoryId) {
+            const outputElement = document.getElementById(outputId);
+            
+            try {
+                outputElement.innerHTML = '<div class="loading">Running your code...</div>';
+                
+                const code = editorRef.getValue();
+                
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                const result = interpreter.execute(code);
+                
+                if (result.success) {
+                    const formattedOutput = result.message.replace(/\n/g, '<br>');
+                    outputElement.innerHTML = `<div class="success">${formattedOutput}</div>`;
+                    updateMemoryDisplay(memoryId, result.variables);
+                } else {
+                    outputElement.innerHTML = `<div class="error">${result.message}</div>`;
+                    updateMemoryDisplay(memoryId, {});
+                }
+                
+            } catch (error) {
+                outputElement.innerHTML = `<div class="error">💡 Unexpected error: ${error.message}</div>`;
+                updateMemoryDisplay(memoryId, {});
+            }
+        }
+
+        function runPlayground1() { runPlayground(editor1, 'output1', 'memory1'); }
+        function runPlayground2() { runPlayground(editor2, 'output2', 'memory2'); }
+        function runPlayground3() { runPlayground(editor3, 'output3', 'memory3'); }
+        function runChallenge() { runPlayground(challengeEditor, 'challengeOutput', 'challengeMemory'); }
+
+        function resetPlayground1() { 
+            editor1.setValue('name = "Alex"\nage = 15'); 
+            document.getElementById('output1').innerHTML = '';
+            document.getElementById('memory1').innerHTML = 'Variables will appear here...';
+        }
+        function resetPlayground2() { 
+            editor2.setValue('name = "Alex"\nage = 15\nprint(name)\nprint(age)'); 
+            document.getElementById('output2').innerHTML = '';
+            document.getElementById('memory2').innerHTML = 'Variables will appear here...';
+        }
+        function resetPlayground3() { 
+            editor3.setValue('subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)'); 
+            document.getElementById('output3').innerHTML = '';
+            document.getElementById('memory3').innerHTML = 'Variables will appear here...';
+        }
+
+        function checkMastery() {
+            const answer1 = document.getElementById('answer1').value.trim();
+            const answer2 = document.getElementById('answer2').value.trim();
+            const answer3 = document.getElementById('answer3').value.trim();
+            const feedbackElement = document.getElementById('masteryFeedback');
+            
+            let correct = 0;
+            let feedback = [];
+            
+            // Check answer 1
+            if (/subject\s*=\s*["']computer science["']/i.test(answer1)) {
+                correct++;
+            } else {
+                feedback.push('Q1: Remember: subject = "Computer Science" (with quotes and equals sign)');
+            }
+            
+            // Check answer 2
+            const lower2 = answer2.toLowerCase();
+            if (lower2.includes('variable') || lower2.includes('stored') || 
+                lower2.includes('value') || lower2.includes('word') || 
+                lower2.includes('text') || lower2.includes('literal') ||
+                lower2.includes('contents') || lower2.includes('name')) {
+                correct++;
+            } else {
+                feedback.push('Q2: print(age) shows stored value, print("age") shows the word "age"');
+            }
+            
+            // Check answer 3
+            if (answer3.toLowerCase().includes('jamie')) {
+                correct++;
+            } else {
+                feedback.push('Q3: The output would be: Jamie');
+            }
+            
+            if (correct === 3) {
+                feedbackElement.innerHTML = 'Perfect! You understand completely. Ready for the next lesson!';
+                feedbackElement.className = 'feedback correct';
+                
+                // Unlock next lesson and show challenges
+                const nextBtn = document.getElementById('nextLessonBtn');
+                if (nextBtn) {
+                    nextBtn.classList.remove('disabled');
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.pointerEvents = 'auto';
+                }
+                
+                const challengeSystem = document.getElementById('challengeSystem');
+                if (challengeSystem) {
+                    challengeSystem.style.display = 'block';
+                    challengeSystem.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                feedbackElement.innerHTML = 'Keep trying:<br>• ' + feedback.join('<br>• ');
+                feedbackElement.className = 'feedback incorrect';
+            }
+            
+            feedbackElement.style.display = 'block';
+        }
+
+        function loadChallenge(difficulty) {
+            currentChallengeSet = challenges[difficulty];
+            currentChallengeIndex = 0;
+            
+            document.getElementById('challengeArea').style.display = 'block';
+            document.querySelector('.practice-section').style.display = 'none';
+            
+            loadCurrentChallenge();
+            document.getElementById('challengeArea').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function loadCurrentChallenge() {
+            const challenge = currentChallengeSet[currentChallengeIndex];
+            
+            document.getElementById('challengeTitle').textContent = challenge.title;
+            document.getElementById('challengeDescription').innerHTML = `
+                <div class="challenge-task">
+                    <strong>Task:</strong> ${challenge.description}
+                    <div class="challenge-hint"><strong>Hint:</strong> ${challenge.hint}</div>
+                </div>
+            `;
+            
+            challengeEditor.setValue(challenge.starter);
+            setTimeout(() => {
+                if (challengeEditor.refresh) challengeEditor.refresh();
+                if (challengeEditor.setCursor) challengeEditor.setCursor(challengeEditor.lineCount(), 0);
+            }, 100);
+            
+            document.getElementById('challengeOutput').innerHTML = '';
+            document.getElementById('challengeMemory').innerHTML = 'Variables will appear here...';
+            
+            document.getElementById('challengeCounter').textContent = `${currentChallengeIndex + 1} of ${currentChallengeSet.length}`;
+            
+            const prevBtn = document.querySelector('.nav-challenge-btn');
+            const nextBtn = document.querySelector('.nav-challenge-btn:last-child');
+            if (prevBtn) prevBtn.disabled = currentChallengeIndex === 0;
+            if (nextBtn) nextBtn.disabled = currentChallengeIndex === currentChallengeSet.length - 1;
+        }
+
+        function previousChallenge() {
+            if (currentChallengeIndex > 0) {
+                currentChallengeIndex--;
+                loadCurrentChallenge();
+            }
+        }
+
+        function nextChallenge() {
+            if (currentChallengeIndex < currentChallengeSet.length - 1) {
+                currentChallengeIndex++;
+                loadCurrentChallenge();
+            }
+        }
+
+        function closeChallenges() {
+            document.getElementById('challengeArea').style.display = 'none';
+            document.querySelector('.practice-section').style.display = 'block';
+        }
+
+        function resetChallenge() {
+            if (currentChallengeSet.length > 0) {
+                const challenge = currentChallengeSet[currentChallengeIndex];
+                challengeEditor.setValue(challenge.starter);
+                setTimeout(() => {
+                    if (challengeEditor.refresh) challengeEditor.refresh();
+                    if (challengeEditor.setCursor) challengeEditor.setCursor(challengeEditor.lineCount(), 0);
+                }, 100);
+                document.getElementById('challengeOutput').innerHTML = '';
+                document.getElementById('challengeMemory').innerHTML = 'Variables will appear here...';
+            }
+        }
+
+        function setupDarkMode() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const body = document.body;
+            
+            // Load saved preference
+            const isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '☀️ Light Mode';
+            }
+            
+            darkModeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                const isNowDark = body.classList.contains('dark-mode');
+                
+                darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('penguintwist_darkMode', isNowDark);
+                
+                // Update CodeMirror themes if available
+                if (window.CodeMirror) {
+                    const editors = [editor1, editor2, editor3, challengeEditor];
+                    editors.forEach(editor => {
+                        if (editor && editor.setOption) {
+                            editor.setOption('theme', isNowDark ? 'monokai' : 'default');
+                        }
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
-
