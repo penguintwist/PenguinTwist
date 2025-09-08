@@ -49,7 +49,213 @@
         this.init = function() {
             switch(this.type) {
                 case 'message_delivery':
-                    this.createMessageDeliveryMetaphor();
+                    this.createMasteryHTML = function() {
+            var questionsHTML = this.questions.map(function(question, index) {
+                return [
+                    '<div class="mastery-question">',
+                        '<p><strong>Question ' + (index + 1) + ':</strong> ' + question.question + '</p>',
+                        '<input type="text" class="mastery-input" data-question="' + index + '" placeholder="' + (question.placeholder || 'Type your answer') + '">',
+                    '</div>'
+                ].join('');
+            }).join('');
+            
+            this.container.innerHTML = [
+                '<div class="mastery-check">',
+                    '<h4>' + (this.options.title || 'Check Your Understanding') + '</h4>',
+                    questionsHTML,
+                    '<button class="check-answer-btn">Check Answers</button>',
+                    '<div class="feedback" style="display: none;"></div>',
+                '</div>'
+            ].join('');
+        };
+        
+        this.attachEventListeners = function() {
+            var self = this;
+            var button = this.container.querySelector('.check-answer-btn');
+            button.addEventListener('click', function() { self.checkAnswers(); });
+        };
+        
+        this.checkAnswers = function() {
+            var inputs = this.container.querySelectorAll('.mastery-input');
+            var answers = [];
+            var correct = 0;
+            var self = this;
+            
+            inputs.forEach(function(input, index) {
+                var answer = input.value.trim();
+                var question = self.questions[index];
+                var isCorrect = self.validateAnswer(answer, question);
+                
+                answers.push({ answer: answer, correct: isCorrect, question: question });
+                if (isCorrect) correct++;
+            });
+            
+            this.displayFeedback(correct, answers);
+            
+            if (correct === this.questions.length) {
+                this.completed = true;
+                if (this.options.onComplete) {
+                    this.options.onComplete();
+                }
+            }
+        };
+        
+        this.validateAnswer = function(answer, question) {
+            // Enhanced validation to handle function-based validators
+            if (question.validateAnswer && typeof question.validateAnswer === 'function') {
+                return question.validateAnswer(answer);
+            }
+            
+            if (question.validator && typeof question.validator === 'function') {
+                return question.validator(answer);
+            }
+            
+            // Default validation based on question type
+            if (question.type === 'code') {
+                return question.expectedPattern && question.expectedPattern.test(answer);
+            } else if (question.type === 'concept') {
+                return question.keywords && question.keywords.some(function(keyword) {
+                    return answer.toLowerCase().includes(keyword.toLowerCase());
+                });
+            }
+            
+            if (question.expectedAnswer) {
+                return answer.toLowerCase() === question.expectedAnswer.toLowerCase();
+            }
+            
+            return false;
+        };
+        
+        this.displayFeedback = function(correct, answers) {
+            var feedbackEl = this.container.querySelector('.feedback');
+            var total = this.questions.length;
+            
+            if (correct === total) {
+                feedbackEl.innerHTML = this.options.successMessage || 'Perfect! You understand completely. Ready for the next lesson!';
+                feedbackEl.className = 'feedback correct';
+            } else {
+                var feedback = 'Keep trying:<br>';
+                var self = this;
+                answers.forEach(function(answer, index) {
+                    if (!answer.correct) {
+                        var questionFeedback = 'Please review this concept';
+                        if (answer.question && answer.question.feedback) {
+                            questionFeedback = answer.question.feedback;
+                        } else if (answer.question && answer.question.hint) {
+                            questionFeedback = answer.question.hint;
+                        }
+                        feedback += '• Q' + (index + 1) + ': ' + questionFeedback + '<br>';
+                    }
+                });
+                feedbackEl.innerHTML = feedback;
+                feedbackEl.className = 'feedback incorrect';
+            }
+            
+            feedbackEl.style.display = 'block';
+        };
+        
+        this.isCompleted = function() {
+            return this.completed;
+        };
+    }
+    
+    // Dark Mode Controller - manages theme switching
+    function DarkModeController(toggleId) {
+        this.toggle = document.getElementById(toggleId);
+        this.body = document.body;
+        
+        if (!this.toggle) {
+            throw new Error('Dark mode toggle element not found: ' + toggleId);
+        }
+        
+        this.init = function() {
+            this.loadSavedPreference();
+            this.attachEventListeners();
+            return this;
+        };
+        
+        this.loadSavedPreference = function() {
+            var isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
+            if (isDarkMode) {
+                this.body.classList.add('dark-mode');
+                this.toggle.innerHTML = '☀️ Light Mode';
+            } else {
+                this.toggle.innerHTML = '🌙 Dark Mode';
+            }
+        };
+        
+        this.attachEventListeners = function() {
+            var self = this;
+            this.toggle.addEventListener('click', function() {
+                self.toggleMode();
+            });
+        };
+        
+        this.toggleMode = function() {
+            this.body.classList.toggle('dark-mode');
+            var isDarkMode = this.body.classList.contains('dark-mode');
+            
+            this.toggle.innerHTML = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
+            localStorage.setItem('penguintwist_darkMode', isDarkMode);
+            
+            // Update CodeMirror themes if present
+            this.updateCodeMirrorThemes(isDarkMode);
+        };
+        
+        this.updateCodeMirrorThemes = function(isDarkMode) {
+            if (typeof CodeMirror !== 'undefined') {
+                var editors = document.querySelectorAll('.CodeMirror');
+                editors.forEach(function(editorEl) {
+                    var editor = editorEl.CodeMirror;
+                    if (editor) {
+                        editor.setOption('theme', isDarkMode ? 'monokai' : 'default');
+                    }
+                });
+            }
+        };
+    }
+    
+    // Progress Tracker - shows lesson progression
+    function ProgressTracker(containerId, totalLessons, currentLesson) {
+        this.container = document.getElementById(containerId);
+        this.total = totalLessons;
+        this.current = currentLesson;
+        
+        if (!this.container) {
+            throw new Error('Container element not found: ' + containerId);
+        }
+        
+        this.init = function() {
+            this.createProgressHTML();
+            return this;
+        };
+        
+        this.createProgressHTML = function() {
+            var percentage = Math.round((this.current / this.total) * 100);
+            
+            this.container.innerHTML = [
+                '<div class="progress-tracker">',
+                    '<div class="progress-label">Lesson ' + this.current + ' of ' + this.total + '</div>',
+                    '<div class="progress-bar">',
+                        '<div class="progress-fill" style="width: ' + percentage + '%"></div>',
+                    '</div>',
+                    '<div class="progress-percentage">' + percentage + '% Complete</div>',
+                '</div>'
+            ].join('');
+        };
+        
+        this.updateProgress = function(newCurrent) {
+            this.current = newCurrent;
+            this.createProgressHTML();
+        };
+    }
+    
+})();
+
+// Export for Node.js testing if available
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = window.PenguinTwistComponents;
+}MessageDeliveryMetaphor();
                     break;
                 case 'storage_boxes':
                     this.createStorageBoxesMetaphor();
@@ -103,31 +309,99 @@
         };
         
         this.createStorageBoxesMetaphor = function() {
-            var variableName = this.options.variableName || 'name';
-            var variableValue = this.options.variableValue || 'Alex';
+            // Enhanced to support multiple boxes and demo functionality
+            var boxes = this.options.boxes || [
+                { label: this.options.variableName || 'name', value: this.options.variableValue || 'Alex' }
+            ];
+            
+            var self = this;
             
             this.container.innerHTML = [
                 '<div class="storage-metaphor">',
                     '<div class="metaphor-title">' + (this.options.title || 'Variables are like Labeled Storage Boxes') + '</div>',
-                    '<div class="storage-diagram">',
-                        '<div class="storage-step">',
-                            '<div class="storage-box">',
-                                '<div class="box-label">' + variableName + '</div>',
-                                '<div class="box-content">"' + variableValue + '"</div>',
-                                '<div class="box-description">Information stored safely inside</div>',
-                            '</div>',
-                        '</div>',
-                        '<div class="storage-arrow">↓</div>',
-                        '<div class="storage-step">',
-                            '<div class="retrieval-box">',
-                                '<div class="retrieval-action">print(' + variableName + ')</div>',
-                                '<div class="retrieval-result">' + variableValue + '</div>',
-                                '<div class="retrieval-description">Retrieve and display the stored value</div>',
-                            '</div>',
-                        '</div>',
+                    this.options.demoButton ? '<div class="demo-controls"><button class="demo-btn" onclick="playStorageDemo()">▶ Watch Demo</button></div>' : '',
+                    '<div class="storage-diagram" id="storageBoxes">',
+                        this.createBoxesHTML(boxes),
                     '</div>',
                 '</div>'
             ].join('');
+            
+            // Set up demo functionality if requested
+            if (this.options.demoButton && this.options.demoScript) {
+                window.playStorageDemo = function() {
+                    self.playDemo();
+                };
+            }
+        };
+        
+        this.createBoxesHTML = function(boxes) {
+            return boxes.map(function(box, index) {
+                return [
+                    '<div class="storage-step">',
+                        '<div class="storage-box" id="box_' + index + '">',
+                            '<div class="box-label">' + box.label + '</div>',
+                            '<div class="box-content">' + (box.value === 'Empty' ? '<em>Empty</em>' : '"' + box.value + '"') + '</div>',
+                            '<div class="box-description">Variable storage</div>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+            }).join('');
+        };
+        
+        this.playDemo = function() {
+            if (!this.options.demoScript) return;
+            
+            var button = this.container.querySelector('.demo-btn');
+            button.disabled = true;
+            button.textContent = '⏳ Running Demo...';
+            
+            var cumulativeTime = 0;
+            var self = this;
+            
+            this.options.demoScript.forEach(function(step, index) {
+                setTimeout(function() {
+                    if (step.action === 'assign') {
+                        var boxIndex = self.findBoxIndex(step.box);
+                        if (boxIndex !== -1) {
+                            self.animateAssignment(boxIndex, step.value);
+                        }
+                    }
+                    
+                    if (index === self.options.demoScript.length - 1) {
+                        setTimeout(function() {
+                            button.disabled = false;
+                            button.textContent = '▶ Watch Demo';
+                        }, 1000);
+                    }
+                }, cumulativeTime);
+                
+                cumulativeTime += step.delay || 1000;
+            });
+        };
+        
+        this.findBoxIndex = function(label) {
+            var boxes = this.options.boxes || [];
+            for (var i = 0; i < boxes.length; i++) {
+                if (boxes[i].label === label) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+        
+        this.animateAssignment = function(boxIndex, value) {
+            var box = document.getElementById('box_' + boxIndex);
+            if (box) {
+                box.classList.add('animated');
+                var content = box.querySelector('.box-content');
+                if (content) {
+                    content.innerHTML = '"' + value.replace(/"/g, '') + '"';
+                }
+                
+                setTimeout(function() {
+                    box.classList.remove('animated');
+                }, 1000);
+            }
         };
         
         this.createConversationFlowMetaphor = function() {
@@ -452,11 +726,13 @@
             var playgroundContainer = challengeArea.querySelector('.challenge-playground-container');
             playgroundContainer.innerHTML = '<div id="challenge-playground"></div>';
             
-            var playground = PenguinTwistInterpreter.createPlayground('challenge-playground', this.options.interpreterType || this.interpreterType || 'print', {
-                defaultCode: challenge.starter || '',
-                title: 'Challenge Practice Area'
-            });
-            playground.init();
+            if (window.PenguinTwistInterpreter) {
+                var playground = window.PenguinTwistInterpreter.createPlayground('challenge-playground', this.options.interpreterType || 'variables', {
+                    defaultCode: challenge.starter || '',
+                    title: 'Challenge Practice Area'
+                });
+                playground.init();
+            }
             
             // Update navigation
             var challengeSet = this.challenges[this.currentDifficulty];
@@ -506,200 +782,4 @@
             return this;
         };
         
-        this.createMasteryHTML = function() {
-            var questionsHTML = this.questions.map(function(question, index) {
-                return [
-                    '<div class="mastery-question">',
-                        '<p><strong>Question ' + (index + 1) + ':</strong> ' + question.question + '</p>',
-                        '<input type="text" class="mastery-input" data-question="' + index + '" placeholder="' + (question.placeholder || 'Type your answer') + '">',
-                    '</div>'
-                ].join('');
-            }).join('');
-            
-            this.container.innerHTML = [
-                '<div class="mastery-check">',
-                    '<h4>' + (this.options.title || 'Check Your Understanding') + '</h4>',
-                    questionsHTML,
-                    '<button class="check-answer-btn">Check Answers</button>',
-                    '<div class="feedback" style="display: none;"></div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            var button = this.container.querySelector('.check-answer-btn');
-            button.addEventListener('click', function() { self.checkAnswers(); });
-        };
-        
-        this.checkAnswers = function() {
-            var inputs = this.container.querySelectorAll('.mastery-input');
-            var answers = [];
-            var correct = 0;
-            var self = this;
-            
-            inputs.forEach(function(input, index) {
-                var answer = input.value.trim();
-                var question = self.questions[index];
-                var isCorrect = self.validateAnswer(answer, question);
-                
-                answers.push({ answer: answer, correct: isCorrect, question: question });
-                if (isCorrect) correct++;
-            });
-            
-            this.displayFeedback(correct, answers);
-            
-            if (correct === this.questions.length) {
-                this.completed = true;
-                if (this.options.onComplete) {
-                    this.options.onComplete();
-                }
-            }
-        };
-        
-        this.validateAnswer = function(answer, question) {
-            if (question.validator) {
-                return question.validator(answer);
-            }
-            
-            // Default validation based on question type
-            if (question.type === 'code') {
-                return question.expectedPattern.test(answer);
-            } else if (question.type === 'concept') {
-                return question.keywords.some(function(keyword) {
-                    return answer.toLowerCase().includes(keyword.toLowerCase());
-                });
-            }
-            
-            return answer.toLowerCase() === question.expectedAnswer.toLowerCase();
-        };
-        
-        this.displayFeedback = function(correct, answers) {
-            var feedbackEl = this.container.querySelector('.feedback');
-            var total = this.questions.length;
-            
-            if (correct === total) {
-                feedbackEl.innerHTML = this.options.successMessage || 'Perfect! You understand completely. Ready for the next lesson!';
-                feedbackEl.className = 'feedback correct';
-            } else {
-                var feedback = 'Keep trying:<br>';
-                answers.forEach(function(answer, index) {
-                    if (!answer.correct) {
-                        var questionFeedback = 'Please review this concept';
-                        if (answer.question && answer.question.feedback) {
-                            questionFeedback = answer.question.feedback;
-                        } else if (self.questions[index] && self.questions[index].feedback) {
-                            questionFeedback = self.questions[index].feedback;
-                        }
-                        feedback += '• Q' + (index + 1) + ': ' + questionFeedback + '<br>';
-                    }
-                });
-                feedbackEl.innerHTML = feedback;
-                feedbackEl.className = 'feedback incorrect';
-            }
-            
-            feedbackEl.style.display = 'block';
-        };
-        
-        this.isCompleted = function() {
-            return this.completed;
-        };
-    }
-    
-    // Dark Mode Controller - manages theme switching
-    function DarkModeController(toggleId) {
-        this.toggle = document.getElementById(toggleId);
-        this.body = document.body;
-        
-        if (!this.toggle) {
-            throw new Error('Dark mode toggle element not found: ' + toggleId);
-        }
-        
-        this.init = function() {
-            this.loadSavedPreference();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.loadSavedPreference = function() {
-            var isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
-            if (isDarkMode) {
-                this.body.classList.add('dark-mode');
-                this.toggle.innerHTML = '☀️ Light Mode';
-            } else {
-                this.toggle.innerHTML = '🌙 Dark Mode';
-            }
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            this.toggle.addEventListener('click', function() {
-                self.toggleMode();
-            });
-        };
-        
-        this.toggleMode = function() {
-            this.body.classList.toggle('dark-mode');
-            var isDarkMode = this.body.classList.contains('dark-mode');
-            
-            this.toggle.innerHTML = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
-            localStorage.setItem('penguintwist_darkMode', isDarkMode);
-            
-            // Update CodeMirror themes if present
-            this.updateCodeMirrorThemes(isDarkMode);
-        };
-        
-        this.updateCodeMirrorThemes = function(isDarkMode) {
-            if (typeof CodeMirror !== 'undefined') {
-                var editors = document.querySelectorAll('.CodeMirror');
-                editors.forEach(function(editorEl) {
-                    var editor = editorEl.CodeMirror;
-                    if (editor) {
-                        editor.setOption('theme', isDarkMode ? 'monokai' : 'default');
-                    }
-                });
-            }
-        };
-    }
-    
-    // Progress Tracker - shows lesson progression
-    function ProgressTracker(containerId, totalLessons, currentLesson) {
-        this.container = document.getElementById(containerId);
-        this.total = totalLessons;
-        this.current = currentLesson;
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createProgressHTML();
-            return this;
-        };
-        
-        this.createProgressHTML = function() {
-            var percentage = Math.round((this.current / this.total) * 100);
-            
-            this.container.innerHTML = [
-                '<div class="progress-tracker">',
-                    '<div class="progress-label">Lesson ' + this.current + ' of ' + this.total + '</div>',
-                    '<div class="progress-bar">',
-                        '<div class="progress-fill" style="width: ' + percentage + '%"></div>',
-                    '</div>',
-                    '<div class="progress-percentage">' + percentage + '% Complete</div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.updateProgress = function(newCurrent) {
-            this.current = newCurrent;
-            this.createProgressHTML();
-        };
-    }
-    
-})();
-
-// Export for Node.js testing if available
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = window.PenguinTwistComponents;
-}
+        this.create
