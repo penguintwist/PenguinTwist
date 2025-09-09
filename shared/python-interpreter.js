@@ -145,6 +145,11 @@
                         return false;
                     }
                     
+                    // Clean up any existing instance to prevent memory leaks
+                    if (container._playgroundInstance && container._playgroundInstance._cleanup) {
+                        container._playgroundInstance._cleanup();
+                    }
+                    
                     // Create playground structure
                     container.innerHTML = 
                         '<div class="playground-header">' +
@@ -169,6 +174,10 @@
                         '</div>';
                     
                     this.setupPlayground(container);
+                    
+                    // Store instance reference for cleanup
+                    container._playgroundInstance = this;
+                    
                     return true;
                 },
                 
@@ -188,9 +197,41 @@
                     // Set up CodeMirror if available
                     if (typeof CodeMirror !== 'undefined') {
                         try {
+                            var initialTheme = 'default'; // Always start with default
+                            
+                            // Only try dark theme if we can verify it exists
+                            if (document.body.classList.contains('dark-mode')) {
+                                // Safer theme detection - check for loaded monokai theme
+                                try {
+                                    var stylesheets = document.styleSheets;
+                                    var monokaiLoaded = false;
+                                    
+                                    for (var i = 0; i < stylesheets.length; i++) {
+                                        try {
+                                            var sheet = stylesheets[i];
+                                            var href = sheet.href;
+                                            if (href && href.indexOf('monokai') >= 0) {
+                                                monokaiLoaded = true;
+                                                break;
+                                            }
+                                        } catch (crossOriginError) {
+                                            // Cross-origin stylesheet, skip silently
+                                            continue;
+                                        }
+                                    }
+                                    
+                                    if (monokaiLoaded) {
+                                        initialTheme = 'monokai';
+                                    }
+                                } catch (stylesheetError) {
+                                    // Stylesheet access failed completely, stick with default
+                                    initialTheme = 'default';
+                                }
+                            }
+                            
                             this.editor = CodeMirror.fromTextArea(codeEditor, {
                                 mode: 'python',
-                                theme: document.body.classList.contains('dark-mode') ? 'monokai' : 'default',
+                                theme: initialTheme,
                                 lineNumbers: true,
                                 indentUnit: 4,
                                 matchBrackets: true,
@@ -258,7 +299,27 @@
                     function updateTheme() {
                         if (self.editor) {
                             var isDark = document.body.classList.contains('dark-mode');
-                            self.editor.setOption('theme', isDark ? 'monokai' : 'default');
+                            var newTheme = 'default'; // Always default to safe theme
+                            
+                            if (isDark) {
+                                // Only use monokai if we verified it's loaded during initialization
+                                var currentTheme = self.editor.getOption('theme');
+                                if (currentTheme === 'monokai') {
+                                    newTheme = 'monokai'; // Keep monokai if it was successfully set
+                                }
+                            }
+                            
+                            try {
+                                self.editor.setOption('theme', newTheme);
+                            } catch (e) {
+                                console.warn('Failed to set CodeMirror theme:', e);
+                                // Fallback to default if theme change fails
+                                try {
+                                    self.editor.setOption('theme', 'default');
+                                } catch (e2) {
+                                    // Even default failed, ignore theme changes
+                                }
+                            }
                         }
                     }
                     
