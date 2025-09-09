@@ -367,15 +367,39 @@
                 
                 // Set up challenge functionality
                 setupChallenges: function(container) {
-                    var testButtons = container.querySelectorAll('.test-challenge');
+                    var testButtons;
+                    
+                    // IE8+ compatible selector
+                    if (container.querySelectorAll) {
+                        testButtons = container.querySelectorAll('.test-challenge');
+                    } else {
+                        // Fallback for IE8
+                        var allButtons = container.getElementsByTagName('button');
+                        testButtons = [];
+                        for (var i = 0; i < allButtons.length; i++) {
+                            if (allButtons[i].className.indexOf('test-challenge') >= 0) {
+                                testButtons.push(allButtons[i]);
+                            }
+                        }
+                    }
+                    
                     var self = this;
                     
                     for (var i = 0; i < testButtons.length; i++) {
                         function setupButton(button) {
                             function testChallenge() {
-                                var challengeCard = button.parentNode.parentNode;
-                                var challengeCode = challengeCard.querySelector('.challenge-code');
-                                var feedbackDiv = challengeCard.querySelector('.challenge-feedback');
+                                var challengeCard = button.parentNode ? button.parentNode.parentNode : null;
+                                if (!challengeCard) return;
+                                
+                                var challengeCode = challengeCard.querySelector ? 
+                                    challengeCard.querySelector('.challenge-code') :
+                                    challengeCard.getElementsByClassName('challenge-code')[0];
+                                var feedbackDiv = challengeCard.querySelector ? 
+                                    challengeCard.querySelector('.challenge-feedback') :
+                                    challengeCard.getElementsByClassName('challenge-feedback')[0];
+                                
+                                if (!challengeCode || !feedbackDiv) return;
+                                
                                 var challengeId = challengeCard.getAttribute('data-challenge');
                                 
                                 // Find the corresponding challenge
@@ -383,10 +407,14 @@
                                 
                                 if (challenge && challenge.test) {
                                     var userCode = challengeCode.value;
-                                    var result = challenge.test(userCode);
-                                    
-                                    feedbackDiv.className = 'challenge-feedback ' + (result.passed ? 'success' : 'error');
-                                    feedbackDiv.innerHTML = result.message;
+                                    try {
+                                        var result = challenge.test(userCode);
+                                        feedbackDiv.className = 'challenge-feedback ' + (result.passed ? 'success' : 'error');
+                                        feedbackDiv.innerHTML = result.message;
+                                    } catch (e) {
+                                        feedbackDiv.className = 'challenge-feedback error';
+                                        feedbackDiv.innerHTML = 'Error testing code: ' + e.message;
+                                    }
                                 } else {
                                     feedbackDiv.className = 'challenge-feedback info';
                                     feedbackDiv.innerHTML = 'Great practice! Keep experimenting with variables.';
@@ -407,7 +435,15 @@
                 
                 // Helper to find challenge by ID
                 findChallengeById: function(challengeId) {
+                    if (!challengeId || !this.challenges) {
+                        return null;
+                    }
+                    
                     var parts = challengeId.split('-');
+                    if (parts.length < 3) {
+                        return null;
+                    }
+                    
                     var difficulty = parts[1];
                     var index = parseInt(parts[2]);
                     
@@ -427,6 +463,9 @@
                 return;
             }
             
+            // Find the label for text updates
+            var darkModeLabel = document.querySelector('.dark-mode-label');
+            
             // Check for saved preference (fallback for older browsers)
             var isDarkMode = false;
             try {
@@ -438,6 +477,13 @@
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
                 darkModeToggle.checked = true;
+            }
+            
+            // Update label text based on current state
+            function updateLabel() {
+                if (darkModeLabel) {
+                    darkModeLabel.textContent = darkModeToggle.checked ? '☀️ Light Mode' : '🌙 Dark Mode';
+                }
             }
             
             function toggleDarkMode() {
@@ -457,6 +503,9 @@
                     }
                 }
                 
+                // Update label text
+                updateLabel();
+                
                 // Notify components of theme change
                 if (document.createEvent) {
                     var event = document.createEvent('Event');
@@ -469,6 +518,9 @@
                     document.fireEvent('onthemeChanged', event);
                 }
             }
+            
+            // Set initial label
+            updateLabel();
             
             // Event listener with IE8+ compatibility
             if (darkModeToggle.addEventListener) {
@@ -496,18 +548,19 @@
         setupFallbacks: function() {
             console.log('Setting up component fallbacks...');
             
-            // Find containers that need components
+            // Find containers that need components - FIXED container names
             var containers = [
                 'memoryBoxDemo', 
-                'playgroundBasic', 
-                'playgroundAdvanced', 
+                'variableCreationPlayground', 
+                'variablePrintPlayground', 
+                'variablePracticePlayground', 
                 'masteryCheck',
                 'challengeSystem'
             ];
             
             for (var i = 0; i < containers.length; i++) {
                 var container = document.getElementById(containers[i]);
-                if (container && !container.innerHTML.trim()) {
+                if (container && (!container.innerHTML || container.innerHTML.trim() === '')) {
                     container.innerHTML = 
                         '<div class="fallback-message">' +
                             '<p>Interactive component loading...</p>' +
@@ -515,22 +568,40 @@
                         '</div>';
                 }
             }
+            
+            // Basic dark mode toggle fallback
+            var darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (darkModeToggle) {
+                var isDarkMode = false;
+                try {
+                    isDarkMode = localStorage.getItem('darkMode') === 'true';
+                } catch (e) {
+                    // LocalStorage not supported
+                }
+                
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    darkModeToggle.checked = true;
+                }
+                
+                function toggleDarkMode() {
+                    document.body.classList.toggle('dark-mode');
+                    var isNowDark = document.body.classList.contains('dark-mode');
+                    try {
+                        localStorage.setItem('darkMode', isNowDark.toString());
+                    } catch (e) {
+                        // LocalStorage not supported
+                    }
+                }
+                
+                if (darkModeToggle.addEventListener) {
+                    darkModeToggle.addEventListener('change', toggleDarkMode);
+                } else {
+                    darkModeToggle.attachEvent('onchange', toggleDarkMode);
+                }
+            }
         }
     };
-    
-    // Initialize dark mode when the page loads - SPEC COMPLIANT INITIALIZATION
-    if (document.addEventListener) {
-        document.addEventListener('DOMContentLoaded', function() {
-            window.PenguinTwistComponents.setupDarkMode();
-        });
-    } else {
-        // IE8 compatibility
-        document.attachEvent('onreadystatechange', function() {
-            if (document.readyState === 'complete') {
-                window.PenguinTwistComponents.setupDarkMode();
-            }
-        });
-    }
     
     // Export for testing purposes
     if (typeof module !== 'undefined' && module.exports) {
