@@ -14,7 +14,10 @@
 </head>
 <body>
     <div class="header">
-        <button id="darkModeToggle" class="dark-mode-toggle">🌙 Dark Mode</button>
+        <label class="dark-mode-toggle">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span>🌙 Dark Mode</span>
+        </label>
         <div class="container">
             <h1>Lesson 2: Variables</h1>
             <p>Give your programs memory - store and remember information</p>
@@ -135,7 +138,7 @@ Alex
             <div id="masteryCheck"></div>
             
             <!-- Challenge System Component -->
-            <div id="challengeSystem"></div>
+            <div id="challengeSystem" class="challenge-system-hidden"></div>
         </div>
     </div>
     
@@ -172,12 +175,6 @@ Alex
                     description: "Store your school name, year group, and favorite subject in variables, then display them.",
                     starter: "# Store school information\n# Example:\n# school = \"Greenwood High\"\n# year = 10\n# subject = \"Computer Science\"\n\n# Your turn:\n\n\n# Print your school information:\n\n\n",
                     hint: "Follow the pattern: variable_name = \"text\" for text, variable_name = number for numbers."
-                },
-                {
-                    title: "Pet Information",
-                    description: "Create variables for a pet's name, type, and age. Print each piece of information.",
-                    starter: "# Pet information variables\n# Think about:\n# - What's the pet's name?\n# - What type of animal?\n# - How old are they?\n\n# Create your variables:\n\n\n# Show the information:\n\n\n",
-                    hint: "Pet names and types are text (use quotes), age is a number (no quotes needed)."
                 }
             ],
             creative: [
@@ -186,12 +183,6 @@ Alex
                     description: "Create a character for a story. Give them a name, superpower, and hometown. Print a profile.",
                     starter: "# Create a superhero character\n# Example character:\n# hero_name = \"Lightning Bolt\"\n# power = \"Super Speed\"\n# city = \"Metro City\"\n\n# Create your character:\n\n\n# Print character profile:\nprint(\"Character Profile:\")\n# Add your print statements here:\n\n",
                     hint: "Make it creative! Think of interesting names, unique powers, and exciting cities."
-                },
-                {
-                    title: "Dream Vacation",
-                    description: "Plan your dream vacation using variables for destination, activity, and duration.",
-                    starter: "# Plan your dream vacation\n# Think about:\n# - Where would you go?\n# - What would you do there?\n# - How long would you stay?\n\n# Your vacation variables:\n\n\n# Share your vacation plan:\nprint(\"My Dream Vacation:\")\n# Add your details:\n\n",
-                    hint: "Be creative with destinations and activities! Remember to use quotes for text."
                 }
             ],
             advanced: [
@@ -200,24 +191,18 @@ Alex
                     description: "Create variables for different data types: text, numbers, and demonstrate the difference.",
                     starter: "# Demonstrate different data types\n# Text (strings) - use quotes\nstudent_name = \"Your Name\"\nfavorite_subject = \"Your Subject\"\n\n# Numbers - no quotes needed\nage = 0  # Change this\ntest_score = 0  # Change this\n\n# Print with labels:\nprint(\"Student Information:\")\nprint(\"Name: \")\nprint(\"Subject: \")\nprint(\"Age: \")\nprint(\"Score: \")\n# Complete the print statements\n",
                     hint: "Notice how numbers don't need quotes but text does. Complete the print statements by adding variable names."
-                },
-                {
-                    title: "Variable Experiment",
-                    description: "Show what happens when you change variable values. Create a variable, print it, change it, print again.",
-                    starter: "# Variable changing experiment\n# Create a variable\nmessage = \"Hello\"\nprint(\"First message: \")\nprint(message)\n\n# Change the variable\nmessage = \"Goodbye\"\nprint(\"Second message: \")\nprint(message)\n\n# Try your own experiment:\n# Create a variable, print it, change it, print again\n\n",
-                    hint: "This shows that variables can be updated! Try changing numbers or creating your own examples."
                 }
             ]
         };
         
-        // Initialize lesson components
+        // Initialize lesson components with SPEC COMPLIANT WRAPPER
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 try {
                     // Check if shared components are available
                     if (!window.PenguinTwistComponents || !window.PenguinTwistInterpreter) {
                         console.log('Shared components not available, setting up fallbacks...');
-                        setupFallbacks();
+                        window.PenguinTwistComponents.setupFallbacks();
                         return;
                     }
                     
@@ -299,7 +284,7 @@ Alex
                         {
                             title: 'Check Your Understanding',
                             onComplete: function() {
-                                // Unlock next lesson and show challenges
+                                // Unlock next lesson 
                                 var nextBtn = document.getElementById('nextLessonBtn');
                                 if (nextBtn) {
                                     nextBtn.classList.remove('disabled');
@@ -307,11 +292,11 @@ Alex
                                     nextBtn.style.pointerEvents = 'auto';
                                 }
                                 
-                                // Show challenge system
-                                var challengeSystem = document.getElementById('challengeSystem');
-                                if (challengeSystem) {
-                                    challengeSystem.style.display = 'block';
-                                    challengeSystem.scrollIntoView({ behavior: 'smooth' });
+                                // Show challenge system using the shared components method
+                                var challengeContainer = document.getElementById('challengeSystem');
+                                if (challengeContainer) {
+                                    challengeContainer.classList.remove('challenge-system-hidden');
+                                    challengeContainer.classList.add('unlocked');
                                 }
                             }
                         }
@@ -329,18 +314,11 @@ Alex
                     );
                     challengeSystem.init();
                     
-                    // Initially hide challenges until mastery is complete
-                    document.getElementById('challengeSystem').style.display = 'none';
-                    
-                    // Initialize dark mode
-                    var darkModeController = window.PenguinTwistComponents.setupDarkMode('darkModeToggle');
-                    darkModeController.init();
-                    
                     console.log('All components initialized successfully');
                     
                 } catch (error) {
                     console.log('Error initializing components:', error);
-                    setupFallbacks();
+                    window.PenguinTwistComponents.setupFallbacks();
                 }
                 
                 // Initially disable next lesson
@@ -354,38 +332,41 @@ Alex
             }, 100);
         });
         
-        // Fallback functionality if shared components fail
-        function setupFallbacks() {
-            console.log('Setting up fallback functionality...');
-            
-            // Basic dark mode toggle fallback
-            var darkModeToggle = document.getElementById('darkModeToggle');
-            if (darkModeToggle) {
-                var isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
-                if (isDarkMode) {
-                    document.body.classList.add('dark-mode');
-                    darkModeToggle.innerHTML = '☀️ Light Mode';
-                }
-                
-                darkModeToggle.addEventListener('click', function() {
-                    document.body.classList.toggle('dark-mode');
-                    var isNowDark = document.body.classList.contains('dark-mode');
-                    darkModeToggle.innerHTML = isNowDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-                    localStorage.setItem('penguintwist_darkMode', isNowDark);
-                });
-            }
-            
-            // Show message about component loading
-            var containers = ['memoryBoxDemo', 'variableCreationPlayground', 'variablePrintPlayground', 
-                             'variablePracticePlayground', 'masteryCheck', 'challengeSystem'];
-            
-            containers.forEach(function(containerId) {
-                var container = document.getElementById(containerId);
-                if (container) {
-                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666; border: 1px dashed #ccc; border-radius: 8px; margin: 10px 0;">Interactive component loading... Please refresh the page if this message persists.</div>';
-                }
-            });
-        }
     </script>
+    
+    <style>
+        /* Challenge system initially hidden */
+        .challenge-system-hidden {
+            display: none;
+        }
+        
+        /* Dark mode toggle styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #333;
+        }
+        
+        .dark-mode-toggle input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        body.dark-mode .dark-mode-toggle {
+            color: #fff;
+        }
+        
+        body.dark-mode .dark-mode-toggle span::before {
+            content: "☀️ Light Mode";
+        }
+        
+        body:not(.dark-mode) .dark-mode-toggle span::before {
+            content: "🌙 Dark Mode";
+        }
+        
+        .dark-mode-toggle span {
+            font-size: 0; /* Hide original text */
+        }
+    </style>
 </body>
 </html>
