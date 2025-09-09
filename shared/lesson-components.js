@@ -7,779 +7,534 @@
     
     // Main components library
     window.PenguinTwistComponents = {
-        version: '1.0.0',
         
-        // Factory methods for different component types
+        // Create visual metaphor components - SPEC COMPLIANT
         createVisualMetaphor: function(containerId, metaphorType, options) {
-            return new VisualMetaphor(containerId, metaphorType, options);
+            options = options || {};
+            
+            // Return object with init() method as required by spec
+            return {
+                containerId: containerId,
+                metaphorType: metaphorType,
+                options: options,
+                
+                init: function() {
+                    var container = document.getElementById(this.containerId);
+                    
+                    if (!container) {
+                        console.error('Container not found:', this.containerId);
+                        return false;
+                    }
+                    
+                    var html = '<div class="visual-metaphor-container">';
+                    
+                    if (this.metaphorType === 'memory_boxes') {
+                        html += this.createMemoryBoxesHTML();
+                    } else if (this.metaphorType === 'storage_boxes') {
+                        html += this.createStorageBoxesHTML();
+                    } else {
+                        html += '<div class="metaphor-placeholder">Visual metaphor: ' + this.metaphorType + '</div>';
+                    }
+                    
+                    html += '</div>';
+                    container.innerHTML = html;
+                    
+                    // Set up demo functionality if requested
+                    if (this.options.demoButton && this.options.demoScript) {
+                        this.setupDemo(container);
+                    }
+                    
+                    return true;
+                },
+                
+                // Create memory boxes visualization
+                createMemoryBoxesHTML: function() {
+                    var boxes = this.options.boxes || [
+                        { label: 'name', value: 'Empty' },
+                        { label: 'age', value: 'Empty' }
+                    ];
+                    
+                    var html = '<div class="memory-boxes-visualization">';
+                    html += '<div class="memory-explanation">';
+                    html += '<h4>' + (this.options.title || 'Variables as Memory Boxes') + '</h4>';
+                    html += '<p>Variables are like labeled boxes in your computer\'s memory:</p>';
+                    html += '</div>';
+                    
+                    html += '<div class="memory-boxes-row">';
+                    for (var i = 0; i < boxes.length; i++) {
+                        var box = boxes[i];
+                        html += '<div class="memory-box" style="border-color: ' + (box.color || '#666') + '">';
+                        html += '<div class="box-label">' + box.label + '</div>';
+                        html += '<div class="box-content">' + box.value + '</div>';
+                        html += '</div>';
+                        
+                        if (i < boxes.length - 1) {
+                            html += '<div class="box-separator"></div>';
+                        }
+                    }
+                    html += '</div>';
+                    
+                    if (this.options.demoButton) {
+                        html += '<div class="demo-controls">';
+                        html += '<button class="demo-button">Watch Demo</button>';
+                        html += '</div>';
+                    }
+                    
+                    html += '</div>';
+                    return html;
+                },
+                
+                // Create storage boxes visualization with arrow
+                createStorageBoxesHTML: function() {
+                    var variableName = this.options.variableName || 'name';
+                    var variableValue = this.options.variableValue || 'Alex';
+                    
+                    var html = '<div class="storage-visualization">';
+                    html += '<div class="storage-explanation">';
+                    html += '<h4>' + (this.options.title || 'Variable Storage & Retrieval') + '</h4>';
+                    html += '<p>When you create a variable, Python stores the value. When you print it, Python retrieves the value:</p>';
+                    html += '</div>';
+                    
+                    html += '<div class="storage-flow">';
+                    
+                    // Storage box
+                    html += '<div class="storage-box">';
+                    html += '<div class="box-label">' + variableName + '</div>';
+                    html += '<div class="box-content">"' + variableValue + '"</div>';
+                    html += '</div>';
+                    
+                    // Arrow
+                    html += '<div class="flow-arrow">→</div>';
+                    
+                    // Print output
+                    html += '<div class="print-output">';
+                    html += '<div class="output-label">print(' + variableName + ')</div>';
+                    html += '<div class="output-content">' + variableValue + '</div>';
+                    html += '</div>';
+                    
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    return html;
+                },
+                
+                // Set up demo functionality
+                setupDemo: function(container) {
+                    var demoButton = container.querySelector('.demo-button');
+                    var self = this;
+                    
+                    if (demoButton && this.options.demoScript) {
+                        function runDemo() {
+                            try {
+                                for (var i = 0; i < self.options.demoScript.length; i++) {
+                                    var step = self.options.demoScript[i];
+                                    if (step.action === 'assign') {
+                                        setTimeout(function(step) {
+                                            return function() {
+                                                var box = container.querySelector('.box-label:contains(' + step.box + ')');
+                                                if (box) {
+                                                    var content = box.parentNode.querySelector('.box-content');
+                                                    content.textContent = step.value;
+                                                    content.classList.add('updated');
+                                                }
+                                            };
+                                        }(step), step.delay || 1000);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Demo script error:', error);
+                            }
+                        }
+                        
+                        // Event listener with IE8+ compatibility
+                        if (demoButton.addEventListener) {
+                            demoButton.addEventListener('click', runDemo);
+                        } else {
+                            demoButton.attachEvent('onclick', runDemo);
+                        }
+                    }
+                }
+            };
         },
         
-        createAnimationDemo: function(containerId, demoType, options) {
-            return new AnimationDemo(containerId, demoType, options);
-        },
-        
-        createChallengeSystem: function(containerId, challenges, options) {
-            return new ChallengeSystem(containerId, challenges, options);
-        },
-        
+        // Create mastery check component - SPEC COMPLIANT
         createMasteryCheck: function(containerId, questions, options) {
-            return new MasteryCheck(containerId, questions, options);
+            options = options || {};
+            
+            // Return object with init() method as required by spec
+            return {
+                containerId: containerId,
+                questions: questions,
+                options: options,
+                
+                init: function() {
+                    var container = document.getElementById(this.containerId);
+                    
+                    if (!container) {
+                        console.error('Container not found:', this.containerId);
+                        return false;
+                    }
+                    
+                    var html = '<div class="mastery-check">';
+                    html += '<div class="mastery-header">';
+                    html += '<h3>' + (this.options.title || 'Check Understanding') + '</h3>';
+                    html += '<p>Complete these questions to unlock the next lesson:</p>';
+                    html += '</div>';
+                    
+                    // Create questions
+                    for (var i = 0; i < this.questions.length; i++) {
+                        var question = this.questions[i];
+                        html += '<div class="mastery-question" data-question="' + i + '">';
+                        html += '<p><strong>Question ' + (i + 1) + ':</strong> ' + question.question + '</p>';
+                        
+                        if (question.type === 'multiple-choice') {
+                            html += '<div class="answer-options">';
+                            for (var j = 0; j < question.options.length; j++) {
+                                html += '<label class="option-label">';
+                                html += '<input type="radio" name="question' + i + '" value="' + j + '">';
+                                html += '<span>' + question.options[j] + '</span>';
+                                html += '</label>';
+                            }
+                            html += '</div>';
+                        } else if (question.type === 'code') {
+                            html += '<div class="code-answer">';
+                            html += '<textarea class="answer-input" placeholder="' + (question.placeholder || 'Enter your Python code here...') + '"></textarea>';
+                            html += '</div>';
+                        } else {
+                            html += '<div class="text-answer">';
+                            html += '<input type="text" class="answer-input" placeholder="' + (question.placeholder || 'Enter your answer here...') + '">';
+                            html += '</div>';
+                        }
+                        
+                        html += '<div class="feedback"></div>';
+                        html += '</div>';
+                    }
+                    
+                    html += '<div class="mastery-controls">';
+                    html += '<button class="check-answers-btn">Check Answers</button>';
+                    html += '<div class="mastery-results"></div>';
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    container.innerHTML = html;
+                    
+                    // Set up event handlers
+                    this.setupMasteryCheck(container);
+                    
+                    return true;
+                },
+                
+                // Set up mastery check functionality
+                setupMasteryCheck: function(container) {
+                    var checkButton = container.querySelector('.check-answers-btn');
+                    var resultsDiv = container.querySelector('.mastery-results');
+                    var self = this;
+                    
+                    function checkAnswers() {
+                        var score = 0;
+                        var totalQuestions = self.questions.length;
+                        
+                        for (var i = 0; i < self.questions.length; i++) {
+                            var question = self.questions[i];
+                            var questionDiv = container.querySelector('[data-question="' + i + '"]');
+                            var feedbackDiv = questionDiv.querySelector('.feedback');
+                            var isCorrect = false;
+                            
+                            if (question.type === 'multiple-choice') {
+                                var selectedOption = questionDiv.querySelector('input[type="radio"]:checked');
+                                if (selectedOption) {
+                                    var selectedValue = parseInt(selectedOption.value);
+                                    isCorrect = selectedValue === question.correct;
+                                }
+                            } else {
+                                var answerInput = questionDiv.querySelector('.answer-input');
+                                var userAnswer = answerInput.value.trim();
+                                
+                                // Use custom validator if provided - SPEC COMPLIANT FLEXIBLE VALIDATION
+                                if (question.validateAnswer) {
+                                    isCorrect = question.validateAnswer(userAnswer);
+                                } else if (question.answer) {
+                                    // Simple string comparison (case-insensitive)
+                                    isCorrect = userAnswer.toLowerCase() === question.answer.toLowerCase();
+                                }
+                            }
+                            
+                            // Update feedback
+                            feedbackDiv.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+                            feedbackDiv.innerHTML = isCorrect ? 'Correct!' : (question.hint || 'Try again!');
+                            
+                            if (isCorrect) {
+                                score++;
+                            }
+                        }
+                        
+                        // Show results
+                        var passingScore = totalQuestions;
+                        var passed = score >= passingScore;
+                        resultsDiv.innerHTML = 
+                            '<div class="score-display">Score: ' + score + '/' + totalQuestions + '</div>' +
+                            '<div class="result-message ' + (passed ? 'passed' : 'failed') + '">' +
+                                (passed ? 
+                                    'Congratulations! You\'ve mastered this lesson. The next lesson is now unlocked!' :
+                                    'Keep practicing! You need ' + passingScore + ' correct answers to pass.') +
+                            '</div>';
+                        
+                        if (passed && self.options.onComplete) {
+                            self.options.onComplete();
+                        }
+                        
+                        // Unlock challenges if passed
+                        if (passed) {
+                            window.PenguinTwistComponents.unlockChallenges();
+                        }
+                    }
+                    
+                    // Event listener with IE8+ compatibility
+                    if (checkButton.addEventListener) {
+                        checkButton.addEventListener('click', checkAnswers);
+                    } else {
+                        checkButton.attachEvent('onclick', checkAnswers);
+                    }
+                }
+            };
         },
         
-        // Utility functions
-        setupDarkMode: function(toggleId) {
-            return new DarkModeController(toggleId);
+        // Create challenge system - SPEC COMPLIANT
+        createChallengeSystem: function(containerId, challenges, options) {
+            options = options || {};
+            
+            // Return object with init() method as required by spec
+            return {
+                containerId: containerId,
+                challenges: challenges,
+                options: options,
+                
+                init: function() {
+                    var container = document.getElementById(this.containerId);
+                    
+                    if (!container) {
+                        console.error('Container not found:', this.containerId);
+                        return false;
+                    }
+                    
+                    var html = '<div class="challenge-system">';
+                    html += '<div class="challenge-header">';
+                    html += '<h3>' + (this.options.title || 'Practice Challenges') + '</h3>';
+                    html += '<p>Try these additional exercises to strengthen your understanding:</p>';
+                    html += '</div>';
+                    
+                    // Create challenge sections
+                    var difficulties = ['basic', 'creative', 'advanced'];
+                    
+                    for (var i = 0; i < difficulties.length; i++) {
+                        var difficulty = difficulties[i];
+                        var challengeList = this.challenges[difficulty] || [];
+                        
+                        if (challengeList.length > 0) {
+                            html += '<div class="challenge-section">';
+                            html += '<h4>' + difficulty.charAt(0).toUpperCase() + difficulty.slice(1) + ' Challenges</h4>';
+                            html += '<div class="challenge-grid">';
+                            
+                            for (var j = 0; j < challengeList.length; j++) {
+                                var challenge = challengeList[j];
+                                var challengeId = 'challenge-' + difficulty + '-' + j;
+                                
+                                html += '<div class="challenge-card" data-challenge="' + challengeId + '">';
+                                html += '<h5>' + challenge.title + '</h5>';
+                                html += '<p>' + challenge.description + '</p>';
+                                html += '<div class="challenge-content">';
+                                html += '<textarea class="challenge-code" placeholder="Enter your solution here...">';
+                                html += (challenge.starter || '') + '</textarea>';
+                                html += '<button class="test-challenge">Test Solution</button>';
+                                html += '<div class="challenge-feedback"></div>';
+                                html += '</div>';
+                                html += '</div>';
+                            }
+                            
+                            html += '</div>';
+                            html += '</div>';
+                        }
+                    }
+                    
+                    html += '</div>';
+                    container.innerHTML = html;
+                    
+                    // Set up challenge testing
+                    this.setupChallenges(container);
+                    
+                    return true;
+                },
+                
+                // Set up challenge functionality
+                setupChallenges: function(container) {
+                    var testButtons = container.querySelectorAll('.test-challenge');
+                    var self = this;
+                    
+                    for (var i = 0; i < testButtons.length; i++) {
+                        function setupButton(button) {
+                            function testChallenge() {
+                                var challengeCard = button.parentNode.parentNode;
+                                var challengeCode = challengeCard.querySelector('.challenge-code');
+                                var feedbackDiv = challengeCard.querySelector('.challenge-feedback');
+                                var challengeId = challengeCard.getAttribute('data-challenge');
+                                
+                                // Find the corresponding challenge
+                                var challenge = self.findChallengeById(challengeId);
+                                
+                                if (challenge && challenge.test) {
+                                    var userCode = challengeCode.value;
+                                    var result = challenge.test(userCode);
+                                    
+                                    feedbackDiv.className = 'challenge-feedback ' + (result.passed ? 'success' : 'error');
+                                    feedbackDiv.innerHTML = result.message;
+                                } else {
+                                    feedbackDiv.className = 'challenge-feedback info';
+                                    feedbackDiv.innerHTML = 'Great practice! Keep experimenting with variables.';
+                                }
+                            }
+                            
+                            // Event listener with IE8+ compatibility
+                            if (button.addEventListener) {
+                                button.addEventListener('click', testChallenge);
+                            } else {
+                                button.attachEvent('onclick', testChallenge);
+                            }
+                        }
+                        
+                        setupButton(testButtons[i]);
+                    }
+                },
+                
+                // Helper to find challenge by ID
+                findChallengeById: function(challengeId) {
+                    var parts = challengeId.split('-');
+                    var difficulty = parts[1];
+                    var index = parseInt(parts[2]);
+                    
+                    if (this.challenges[difficulty] && this.challenges[difficulty][index]) {
+                        return this.challenges[difficulty][index];
+                    }
+                    return null;
+                }
+            };
         },
         
-        createProgressTracker: function(containerId, totalLessons, currentLesson) {
-            return new ProgressTracker(containerId, totalLessons, currentLesson);
+        // Dark mode setup - SPEC COMPLIANT
+        setupDarkMode: function() {
+            var darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            if (!darkModeToggle) {
+                return;
+            }
+            
+            // Check for saved preference (fallback for older browsers)
+            var isDarkMode = false;
+            try {
+                isDarkMode = localStorage.getItem('darkMode') === 'true';
+            } catch (e) {
+                // LocalStorage not supported, use default
+            }
+            
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.checked = true;
+            }
+            
+            function toggleDarkMode() {
+                if (darkModeToggle.checked) {
+                    document.body.classList.add('dark-mode');
+                    try {
+                        localStorage.setItem('darkMode', 'true');
+                    } catch (e) {
+                        // LocalStorage not supported
+                    }
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    try {
+                        localStorage.setItem('darkMode', 'false');
+                    } catch (e) {
+                        // LocalStorage not supported
+                    }
+                }
+                
+                // Notify components of theme change
+                if (document.createEvent) {
+                    var event = document.createEvent('Event');
+                    event.initEvent('themeChanged', true, true);
+                    document.dispatchEvent(event);
+                } else if (document.createEventObject) {
+                    // IE8 compatibility
+                    var event = document.createEventObject();
+                    event.eventType = 'themeChanged';
+                    document.fireEvent('onthemeChanged', event);
+                }
+            }
+            
+            // Event listener with IE8+ compatibility
+            if (darkModeToggle.addEventListener) {
+                darkModeToggle.addEventListener('change', toggleDarkMode);
+            } else {
+                darkModeToggle.attachEvent('onchange', toggleDarkMode);
+            }
+        },
+        
+        // Unlock challenges (called when mastery check is passed)
+        unlockChallenges: function() {
+            var challengeSection = document.querySelector('.challenge-system');
+            if (challengeSection) {
+                challengeSection.classList.add('unlocked');
+                if (challengeSection.scrollIntoView) {
+                    challengeSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Fallback for older browsers
+                    challengeSection.scrollIntoView();
+                }
+            }
+        },
+        
+        // Setup fallback system - SPEC REQUIRED
+        setupFallbacks: function() {
+            console.log('Setting up component fallbacks...');
+            
+            // Find containers that need components
+            var containers = [
+                'memoryBoxDemo', 
+                'playgroundBasic', 
+                'playgroundAdvanced', 
+                'masteryCheck',
+                'challengeSystem'
+            ];
+            
+            for (var i = 0; i < containers.length; i++) {
+                var container = document.getElementById(containers[i]);
+                if (container && !container.innerHTML.trim()) {
+                    container.innerHTML = 
+                        '<div class="fallback-message">' +
+                            '<p>Interactive component loading...</p>' +
+                            '<p>If this message persists, please check your connection and refresh the page.</p>' +
+                        '</div>';
+                }
+            }
         }
     };
     
-    // Visual Metaphor Component - creates rich visual explanations
-    function VisualMetaphor(containerId, metaphorType, options) {
-        this.container = document.getElementById(containerId);
-        this.type = metaphorType;
-        this.options = options || {};
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            switch(this.type) {
-                case 'message_delivery':
-                    this.createMasteryHTML = function() {
-            var questionsHTML = this.questions.map(function(question, index) {
-                return [
-                    '<div class="mastery-question">',
-                        '<p><strong>Question ' + (index + 1) + ':</strong> ' + question.question + '</p>',
-                        '<input type="text" class="mastery-input" data-question="' + index + '" placeholder="' + (question.placeholder || 'Type your answer') + '">',
-                    '</div>'
-                ].join('');
-            }).join('');
-            
-            this.container.innerHTML = [
-                '<div class="mastery-check">',
-                    '<h4>' + (this.options.title || 'Check Your Understanding') + '</h4>',
-                    questionsHTML,
-                    '<button class="check-answer-btn">Check Answers</button>',
-                    '<div class="feedback" style="display: none;"></div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            var button = this.container.querySelector('.check-answer-btn');
-            button.addEventListener('click', function() { self.checkAnswers(); });
-        };
-        
-        this.checkAnswers = function() {
-            var inputs = this.container.querySelectorAll('.mastery-input');
-            var answers = [];
-            var correct = 0;
-            var self = this;
-            
-            inputs.forEach(function(input, index) {
-                var answer = input.value.trim();
-                var question = self.questions[index];
-                var isCorrect = self.validateAnswer(answer, question);
-                
-                answers.push({ answer: answer, correct: isCorrect, question: question });
-                if (isCorrect) correct++;
-            });
-            
-            this.displayFeedback(correct, answers);
-            
-            if (correct === this.questions.length) {
-                this.completed = true;
-                if (this.options.onComplete) {
-                    this.options.onComplete();
-                }
+    // Initialize dark mode when the page loads - SPEC COMPLIANT INITIALIZATION
+    if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', function() {
+            window.PenguinTwistComponents.setupDarkMode();
+        });
+    } else {
+        // IE8 compatibility
+        document.attachEvent('onreadystatechange', function() {
+            if (document.readyState === 'complete') {
+                window.PenguinTwistComponents.setupDarkMode();
             }
-        };
-        
-        this.validateAnswer = function(answer, question) {
-            // Enhanced validation to handle function-based validators
-            if (question.validateAnswer && typeof question.validateAnswer === 'function') {
-                return question.validateAnswer(answer);
-            }
-            
-            if (question.validator && typeof question.validator === 'function') {
-                return question.validator(answer);
-            }
-            
-            // Default validation based on question type
-            if (question.type === 'code') {
-                return question.expectedPattern && question.expectedPattern.test(answer);
-            } else if (question.type === 'concept') {
-                return question.keywords && question.keywords.some(function(keyword) {
-                    return answer.toLowerCase().includes(keyword.toLowerCase());
-                });
-            }
-            
-            if (question.expectedAnswer) {
-                return answer.toLowerCase() === question.expectedAnswer.toLowerCase();
-            }
-            
-            return false;
-        };
-        
-        this.displayFeedback = function(correct, answers) {
-            var feedbackEl = this.container.querySelector('.feedback');
-            var total = this.questions.length;
-            
-            if (correct === total) {
-                feedbackEl.innerHTML = this.options.successMessage || 'Perfect! You understand completely. Ready for the next lesson!';
-                feedbackEl.className = 'feedback correct';
-            } else {
-                var feedback = 'Keep trying:<br>';
-                var self = this;
-                answers.forEach(function(answer, index) {
-                    if (!answer.correct) {
-                        var questionFeedback = 'Please review this concept';
-                        if (answer.question && answer.question.feedback) {
-                            questionFeedback = answer.question.feedback;
-                        } else if (answer.question && answer.question.hint) {
-                            questionFeedback = answer.question.hint;
-                        }
-                        feedback += '• Q' + (index + 1) + ': ' + questionFeedback + '<br>';
-                    }
-                });
-                feedbackEl.innerHTML = feedback;
-                feedbackEl.className = 'feedback incorrect';
-            }
-            
-            feedbackEl.style.display = 'block';
-        };
-        
-        this.isCompleted = function() {
-            return this.completed;
-        };
+        });
     }
     
-    // Dark Mode Controller - manages theme switching
-    function DarkModeController(toggleId) {
-        this.toggle = document.getElementById(toggleId);
-        this.body = document.body;
-        
-        if (!this.toggle) {
-            throw new Error('Dark mode toggle element not found: ' + toggleId);
-        }
-        
-        this.init = function() {
-            this.loadSavedPreference();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.loadSavedPreference = function() {
-            var isDarkMode = localStorage.getItem('penguintwist_darkMode') === 'true';
-            if (isDarkMode) {
-                this.body.classList.add('dark-mode');
-                this.toggle.innerHTML = '☀️ Light Mode';
-            } else {
-                this.toggle.innerHTML = '🌙 Dark Mode';
-            }
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            this.toggle.addEventListener('click', function() {
-                self.toggleMode();
-            });
-        };
-        
-        this.toggleMode = function() {
-            this.body.classList.toggle('dark-mode');
-            var isDarkMode = this.body.classList.contains('dark-mode');
-            
-            this.toggle.innerHTML = isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode';
-            localStorage.setItem('penguintwist_darkMode', isDarkMode);
-            
-            // Update CodeMirror themes if present
-            this.updateCodeMirrorThemes(isDarkMode);
-        };
-        
-        this.updateCodeMirrorThemes = function(isDarkMode) {
-            if (typeof CodeMirror !== 'undefined') {
-                var editors = document.querySelectorAll('.CodeMirror');
-                editors.forEach(function(editorEl) {
-                    var editor = editorEl.CodeMirror;
-                    if (editor) {
-                        editor.setOption('theme', isDarkMode ? 'monokai' : 'default');
-                    }
-                });
-            }
-        };
-    }
-    
-    // Progress Tracker - shows lesson progression
-    function ProgressTracker(containerId, totalLessons, currentLesson) {
-        this.container = document.getElementById(containerId);
-        this.total = totalLessons;
-        this.current = currentLesson;
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createProgressHTML();
-            return this;
-        };
-        
-        this.createProgressHTML = function() {
-            var percentage = Math.round((this.current / this.total) * 100);
-            
-            this.container.innerHTML = [
-                '<div class="progress-tracker">',
-                    '<div class="progress-label">Lesson ' + this.current + ' of ' + this.total + '</div>',
-                    '<div class="progress-bar">',
-                        '<div class="progress-fill" style="width: ' + percentage + '%"></div>',
-                    '</div>',
-                    '<div class="progress-percentage">' + percentage + '% Complete</div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.updateProgress = function(newCurrent) {
-            this.current = newCurrent;
-            this.createProgressHTML();
-        };
+    // Export for testing purposes
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = window.PenguinTwistComponents;
     }
     
 })();
-
-// Export for Node.js testing if available
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = window.PenguinTwistComponents;
-}MessageDeliveryMetaphor();
-                    break;
-                case 'storage_boxes':
-                    this.createStorageBoxesMetaphor();
-                    break;
-                case 'conversation_flow':
-                    this.createConversationFlowMetaphor();
-                    break;
-                case 'text_joining':
-                    this.createTextJoiningMetaphor();
-                    break;
-                default:
-                    throw new Error('Unknown metaphor type: ' + this.type);
-            }
-            return this;
-        };
-        
-        this.createMessageDeliveryMetaphor = function() {
-            this.container.innerHTML = [
-                '<div class="print-metaphor">',
-                    '<div class="metaphor-title">' + (this.options.title || 'Think of print() as a Message Delivery Service') + '</div>',
-                    '<div class="flow-diagram">',
-                        '<div class="flow-step">',
-                            '<div class="flow-box">',
-                                '<div class="flow-icon">📝</div>',
-                                '<div class="flow-label">1. You Write</div>',
-                                '<div class="flow-description">You write your message in quotes</div>',
-                                '<div class="code-sample">print("Hello!")</div>',
-                            '</div>',
-                        '</div>',
-                        '<div class="flow-arrow">→</div>',
-                        '<div class="flow-step">',
-                            '<div class="flow-box">',
-                                '<div class="flow-icon">🐍</div>',
-                                '<div class="flow-label">2. Python Reads</div>',
-                                '<div class="flow-description">Python finds your message and prepares to deliver it</div>',
-                                '<div class="message-box">Hello!</div>',
-                            '</div>',
-                        '</div>',
-                        '<div class="flow-arrow">→</div>',
-                        '<div class="flow-step">',
-                            '<div class="flow-box">',
-                                '<div class="flow-icon">🖥️</div>',
-                                '<div class="flow-label">3. Screen Shows</div>',
-                                '<div class="flow-description">Your message appears on the screen</div>',
-                                '<div class="output-sample">Hello!</div>',
-                            '</div>',
-                        '</div>',
-                    '</div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.createStorageBoxesMetaphor = function() {
-            // Enhanced to support multiple boxes and demo functionality
-            var boxes = this.options.boxes || [
-                { label: this.options.variableName || 'name', value: this.options.variableValue || 'Alex' }
-            ];
-            
-            var self = this;
-            
-            this.container.innerHTML = [
-                '<div class="storage-metaphor">',
-                    '<div class="metaphor-title">' + (this.options.title || 'Variables are like Labeled Storage Boxes') + '</div>',
-                    this.options.demoButton ? '<div class="demo-controls"><button class="demo-btn" onclick="playStorageDemo()">▶ Watch Demo</button></div>' : '',
-                    '<div class="storage-diagram" id="storageBoxes">',
-                        this.createBoxesHTML(boxes),
-                    '</div>',
-                '</div>'
-            ].join('');
-            
-            // Set up demo functionality if requested
-            if (this.options.demoButton && this.options.demoScript) {
-                window.playStorageDemo = function() {
-                    self.playDemo();
-                };
-            }
-        };
-        
-        this.createBoxesHTML = function(boxes) {
-            return boxes.map(function(box, index) {
-                return [
-                    '<div class="storage-step">',
-                        '<div class="storage-box" id="box_' + index + '">',
-                            '<div class="box-label">' + box.label + '</div>',
-                            '<div class="box-content">' + (box.value === 'Empty' ? '<em>Empty</em>' : '"' + box.value + '"') + '</div>',
-                            '<div class="box-description">Variable storage</div>',
-                        '</div>',
-                    '</div>'
-                ].join('');
-            }).join('');
-        };
-        
-        this.playDemo = function() {
-            if (!this.options.demoScript) return;
-            
-            var button = this.container.querySelector('.demo-btn');
-            button.disabled = true;
-            button.textContent = '⏳ Running Demo...';
-            
-            var cumulativeTime = 0;
-            var self = this;
-            
-            this.options.demoScript.forEach(function(step, index) {
-                setTimeout(function() {
-                    if (step.action === 'assign') {
-                        var boxIndex = self.findBoxIndex(step.box);
-                        if (boxIndex !== -1) {
-                            self.animateAssignment(boxIndex, step.value);
-                        }
-                    }
-                    
-                    if (index === self.options.demoScript.length - 1) {
-                        setTimeout(function() {
-                            button.disabled = false;
-                            button.textContent = '▶ Watch Demo';
-                        }, 1000);
-                    }
-                }, cumulativeTime);
-                
-                cumulativeTime += step.delay || 1000;
-            });
-        };
-        
-        this.findBoxIndex = function(label) {
-            var boxes = this.options.boxes || [];
-            for (var i = 0; i < boxes.length; i++) {
-                if (boxes[i].label === label) {
-                    return i;
-                }
-            }
-            return -1;
-        };
-        
-        this.animateAssignment = function(boxIndex, value) {
-            var box = document.getElementById('box_' + boxIndex);
-            if (box) {
-                box.classList.add('animated');
-                var content = box.querySelector('.box-content');
-                if (content) {
-                    content.innerHTML = '"' + value.replace(/"/g, '') + '"';
-                }
-                
-                setTimeout(function() {
-                    box.classList.remove('animated');
-                }, 1000);
-            }
-        };
-        
-        this.createConversationFlowMetaphor = function() {
-            this.container.innerHTML = [
-                '<div class="conversation-metaphor">',
-                    '<div class="metaphor-title">' + (this.options.title || 'input() Creates a Conversation') + '</div>',
-                    '<div class="conversation-diagram">',
-                        '<div class="conversation-bubble computer">',
-                            '<div class="bubble-content">What is your name?</div>',
-                            '<div class="bubble-label">Computer asks</div>',
-                        '</div>',
-                        '<div class="conversation-arrow">→</div>',
-                        '<div class="conversation-bubble user">',
-                            '<div class="bubble-content">Alex</div>',
-                            '<div class="bubble-label">You respond</div>',
-                        '</div>',
-                        '<div class="conversation-arrow">→</div>',
-                        '<div class="conversation-bubble computer">',
-                            '<div class="bubble-content">Hello Alex!</div>',
-                            '<div class="bubble-label">Computer uses your answer</div>',
-                        '</div>',
-                    '</div>',
-                '</div>'
-            ].join('');
-        };
-        
-        this.createTextJoiningMetaphor = function() {
-            this.container.innerHTML = [
-                '<div class="joining-metaphor">',
-                    '<div class="metaphor-title">' + (this.options.title || 'String Concatenation is like Joining Train Cars') + '</div>',
-                    '<div class="joining-diagram">',
-                        '<div class="train-car">',
-                            '<div class="car-content">"Hello"</div>',
-                            '<div class="car-label">First piece</div>',
-                        '</div>',
-                        '<div class="train-connector">+</div>',
-                        '<div class="train-car">',
-                            '<div class="car-content">" "</div>',
-                            '<div class="car-label">Space</div>',
-                        '</div>',
-                        '<div class="train-connector">+</div>',
-                        '<div class="train-car">',
-                            '<div class="car-content">name</div>',
-                            '<div class="car-label">Variable</div>',
-                        '</div>',
-                        '<div class="joining-arrow">→</div>',
-                        '<div class="joined-result">',
-                            '<div class="result-content">"Hello Alex"</div>',
-                            '<div class="result-label">Combined result</div>',
-                        '</div>',
-                    '</div>',
-                '</div>'
-            ].join('');
-        };
-    }
-    
-    // Animation Demo Component - creates interactive step-by-step demonstrations
-    function AnimationDemo(containerId, demoType, options) {
-        this.container = document.getElementById(containerId);
-        this.type = demoType;
-        this.options = options || {};
-        this.currentStep = 0;
-        this.isPlaying = false;
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createDemoStructure();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.createDemoStructure = function() {
-            this.container.innerHTML = [
-                '<div class="animation-demo">',
-                    '<div class="demo-controls">',
-                        '<button class="demo-btn">▶ ' + (this.options.buttonText || 'Watch Demo') + '</button>',
-                    '</div>',
-                    '<div class="execution-steps" id="' + this.container.id + '_steps">',
-                        // Steps will be populated based on demo type
-                    '</div>',
-                '</div>'
-            ].join('');
-            
-            this.populateSteps();
-        };
-        
-        this.populateSteps = function() {
-            var stepsContainer = document.getElementById(this.container.id + '_steps');
-            var steps = this.getStepsForType();
-            
-            stepsContainer.innerHTML = steps.map(function(step, index) {
-                return [
-                    '<div class="step" id="step_' + index + '">',
-                        '<div class="step-number">' + (index + 1) + '</div>',
-                        '<div class="step-title">' + step.title + '</div>',
-                        '<div class="step-description">' + step.description + '</div>',
-                    '</div>'
-                ].join('');
-            }).join('');
-        };
-        
-        this.getStepsForType = function() {
-            switch(this.type) {
-                case 'print_execution':
-                    return [
-                        { title: 'Code Written', description: 'You type: print("Hello, World!")' },
-                        { title: 'Python Reads', description: 'Python interprets your code and finds the print statement' },
-                        { title: 'Message Extracted', description: 'Python takes the text from between the quotes' },
-                        { title: 'Output Displayed', description: 'The message appears on your screen: Hello, World!' }
-                    ];
-                case 'variable_assignment':
-                    return [
-                        { title: 'Variable Created', description: 'Python creates a storage box labeled "name"' },
-                        { title: 'Value Stored', description: 'The text "Alex" is placed inside the box' },
-                        { title: 'Variable Used', description: 'print(name) retrieves the stored value' },
-                        { title: 'Output Shown', description: 'Alex appears on the screen' }
-                    ];
-                case 'input_process':
-                    return [
-                        { title: 'Prompt Displayed', description: 'Computer shows: "What is your name?"' },
-                        { title: 'Waiting for Input', description: 'Program pauses and waits for your response' },
-                        { title: 'Input Received', description: 'You type your answer and press Enter' },
-                        { title: 'Value Stored', description: 'Your answer is saved in the variable' }
-                    ];
-                case 'concatenation_process':
-                    return [
-                        { title: 'Parts Identified', description: 'Python finds each piece to join: "Hello", " ", name' },
-                        { title: 'Values Retrieved', description: 'Variable values are looked up: name = "Alex"' },
-                        { title: 'Joining Process', description: 'All pieces are combined left to right' },
-                        { title: 'Result Created', description: 'Final text "Hello Alex" is formed and displayed' }
-                    ];
-                default:
-                    return [];
-            }
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            var button = this.container.querySelector('.demo-btn');
-            button.addEventListener('click', function() { self.playDemo(); });
-        };
-        
-        this.playDemo = function() {
-            if (this.isPlaying) return;
-            
-            this.isPlaying = true;
-            this.currentStep = 0;
-            var button = this.container.querySelector('.demo-btn');
-            var steps = this.container.querySelectorAll('.step');
-            
-            button.disabled = true;
-            button.textContent = '⏳ Running Demo...';
-            
-            // Reset all steps
-            steps.forEach(function(step) { step.classList.remove('active'); });
-            
-            // Animate steps with smart timing
-            var stepTimings = this.getTimingsForType();
-            var cumulativeTime = 0;
-            var self = this;
-            
-            steps.forEach(function(step, index) {
-                setTimeout(function() {
-                    step.classList.add('active');
-                    
-                    if (index === steps.length - 1) {
-                        setTimeout(function() {
-                            button.disabled = false;
-                            button.textContent = '▶ ' + (self.options.buttonText || 'Watch Demo');
-                            self.isPlaying = false;
-                            
-                            setTimeout(function() {
-                                steps.forEach(function(s) { s.classList.remove('active'); });
-                            }, 3000);
-                        }, 500);
-                    }
-                }, cumulativeTime);
-                
-                cumulativeTime += stepTimings[index] || 3000;
-            });
-        };
-        
-        this.getTimingsForType = function() {
-            switch(this.type) {
-                case 'print_execution':
-                    return [3000, 5000, 5000, 4000];
-                case 'variable_assignment':
-                    return [4000, 4000, 4000, 3000];
-                case 'input_process':
-                    return [3000, 4000, 3000, 3000];
-                case 'concatenation_process':
-                    return [4000, 4000, 5000, 3000];
-                default:
-                    return [3000, 3000, 3000, 3000];
-            }
-        };
-    }
-    
-    // Challenge System Component - creates tiered practice challenges
-    function ChallengeSystem(containerId, challenges, options) {
-        this.container = document.getElementById(containerId);
-        this.challenges = challenges;
-        this.options = options || {};
-        this.currentDifficulty = null;
-        this.currentChallengeIndex = 0;
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createChallengeSelector();
-            this.createChallengeArea();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.createChallengeSelector = function() {
-            var selectorHTML = [
-                '<div class="practice-section">',
-                    '<h4>' + (this.options.title || 'Additional Practice') + '</h4>',
-                    '<div class="practice-grid">'
-            ];
-            
-            var difficulties = Object.keys(this.challenges);
-            difficulties.forEach(function(difficulty) {
-                var difficultyInfo = {
-                    basic: { label: 'More Practice', description: 'Need extra practice? Try more examples.', badge: 'Beginner' },
-                    creative: { label: 'Creative Challenges', description: 'Make your programs more interesting and personal.', badge: 'Creative' },
-                    advanced: { label: 'Extension Tasks', description: 'Ready for something more challenging?', badge: 'Advanced' }
-                };
-                
-                var info = difficultyInfo[difficulty] || { label: difficulty, description: '', badge: difficulty };
-                
-                selectorHTML.push([
-                    '<div class="practice-card" data-difficulty="' + difficulty + '">',
-                        '<h5>' + info.label + '</h5>',
-                        '<p>' + info.description + '</p>',
-                        '<div class="difficulty-badge ' + difficulty + '">' + info.badge + '</div>',
-                    '</div>'
-                ].join(''));
-            });
-            
-            selectorHTML.push('</div></div>');
-            this.container.innerHTML = selectorHTML.join('');
-        };
-        
-        this.createChallengeArea = function() {
-            var challengeAreaHTML = [
-                '<div class="challenge-area" style="display: none;">',
-                    '<div class="challenge-header">',
-                        '<h4 class="challenge-title">Challenge Task</h4>',
-                        '<button class="close-challenge-btn">× Close</button>',
-                    '</div>',
-                    '<div class="challenge-description"></div>',
-                    '<div class="challenge-playground-container"></div>',
-                    '<div class="challenge-navigation">',
-                        '<button class="nav-challenge-btn prev-btn">← Previous</button>',
-                        '<span class="challenge-counter">1 of 3</span>',
-                        '<button class="nav-challenge-btn next-btn">Next →</button>',
-                    '</div>',
-                '</div>'
-            ].join('');
-            
-            this.container.insertAdjacentHTML('beforeend', challengeAreaHTML);
-        };
-        
-        this.attachEventListeners = function() {
-            var self = this;
-            
-            // Practice card clicks
-            this.container.addEventListener('click', function(e) {
-                var card = e.target.closest('.practice-card');
-                if (card) {
-                    var difficulty = card.getAttribute('data-difficulty');
-                    self.loadDifficulty(difficulty);
-                }
-                
-                // Challenge navigation
-                if (e.target.classList.contains('close-challenge-btn')) {
-                    self.closeChallengeArea();
-                }
-                if (e.target.classList.contains('prev-btn')) {
-                    self.previousChallenge();
-                }
-                if (e.target.classList.contains('next-btn')) {
-                    self.nextChallenge();
-                }
-            });
-        };
-        
-        this.loadDifficulty = function(difficulty) {
-            this.currentDifficulty = difficulty;
-            this.currentChallengeIndex = 0;
-            
-            var practiceSection = this.container.querySelector('.practice-section');
-            var challengeArea = this.container.querySelector('.challenge-area');
-            
-            practiceSection.style.display = 'none';
-            challengeArea.style.display = 'block';
-            
-            this.loadCurrentChallenge();
-            challengeArea.scrollIntoView({ behavior: 'smooth' });
-        };
-        
-        this.loadCurrentChallenge = function() {
-            var challenge = this.challenges[this.currentDifficulty][this.currentChallengeIndex];
-            var challengeArea = this.container.querySelector('.challenge-area');
-            
-            challengeArea.querySelector('.challenge-title').textContent = challenge.title;
-            challengeArea.querySelector('.challenge-description').innerHTML = [
-                '<div class="challenge-task">',
-                    '<strong>Task:</strong> ' + challenge.description,
-                    challenge.hint ? '<div class="challenge-hint"><strong>Hint:</strong> ' + challenge.hint + '</div>' : '',
-                '</div>'
-            ].join('');
-            
-            // Create playground for this challenge
-            var playgroundContainer = challengeArea.querySelector('.challenge-playground-container');
-            playgroundContainer.innerHTML = '<div id="challenge-playground"></div>';
-            
-            if (window.PenguinTwistInterpreter) {
-                var playground = window.PenguinTwistInterpreter.createPlayground('challenge-playground', this.options.interpreterType || 'variables', {
-                    defaultCode: challenge.starter || '',
-                    title: 'Challenge Practice Area'
-                });
-                playground.init();
-            }
-            
-            // Update navigation
-            var challengeSet = this.challenges[this.currentDifficulty];
-            challengeArea.querySelector('.challenge-counter').textContent = (this.currentChallengeIndex + 1) + ' of ' + challengeSet.length;
-            challengeArea.querySelector('.prev-btn').disabled = this.currentChallengeIndex === 0;
-            challengeArea.querySelector('.next-btn').disabled = this.currentChallengeIndex === challengeSet.length - 1;
-        };
-        
-        this.previousChallenge = function() {
-            if (this.currentChallengeIndex > 0) {
-                this.currentChallengeIndex--;
-                this.loadCurrentChallenge();
-            }
-        };
-        
-        this.nextChallenge = function() {
-            var challengeSet = this.challenges[this.currentDifficulty];
-            if (this.currentChallengeIndex < challengeSet.length - 1) {
-                this.currentChallengeIndex++;
-                this.loadCurrentChallenge();
-            }
-        };
-        
-        this.closeChallengeArea = function() {
-            var practiceSection = this.container.querySelector('.practice-section');
-            var challengeArea = this.container.querySelector('.challenge-area');
-            
-            challengeArea.style.display = 'none';
-            practiceSection.style.display = 'block';
-        };
-    }
-    
-    // Mastery Check Component - creates interactive assessment questions
-    function MasteryCheck(containerId, questions, options) {
-        this.container = document.getElementById(containerId);
-        this.questions = questions;
-        this.options = options || {};
-        this.completed = false;
-        
-        if (!this.container) {
-            throw new Error('Container element not found: ' + containerId);
-        }
-        
-        this.init = function() {
-            this.createMasteryHTML();
-            this.attachEventListeners();
-            return this;
-        };
-        
-        this.create
