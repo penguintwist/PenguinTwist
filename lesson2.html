@@ -1,4 +1,44 @@
-<!DOCTYPE html>
+/* Challenge feedback styling - FIXED missing classes */
+        .challenge-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 4px solid #ccc;
+            background-color: #f9f9f9;
+        }
+        
+        .challenge-feedback.success {
+            color: #2e7d32;
+            background-color: #e8f5e8;
+            border-left-color: #4caf50;
+        }
+        
+        .challenge-feedback.error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .challenge-feedback.info {
+            color: #1976d2;
+            background-color: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        body.dark-mode .challenge-feedback {
+            background-color: #2a2a2a;
+            color: #ccc;
+        }
+        
+        body.dark-mode .challenge-feedback.success {
+            background-color: #1b2e1b;
+            color: #81c784;
+        }
+        
+        body.dark-mode .challenge-feedback.error {
+            background-color: #2d1b1b;
+            color: #f48fb1;
+        }<!DOCTYPE html>
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
@@ -308,11 +348,13 @@ Alex
                         'challengeSystem',
                         variableChallenges,
                         {
-                            title: 'Practice Challenges',
-                            interpreterType: 'variables'
+                            title: 'Practice Challenges'
                         }
                     );
                     challengeSystem.init();
+                    
+                    // Setup dark mode manually (since we removed automatic initialization)
+                    window.PenguinTwistComponents.setupDarkMode();
                     
                     console.log('All components initialized successfully');
                     
@@ -332,10 +374,168 @@ Alex
             }, 100);
         });
         
+        // Cleanup on page unload to prevent memory leaks - ENHANCED
+        function cleanup() {
+            // Clean up challenge system instances
+            var challengeContainer = document.getElementById('challengeSystem');
+            if (challengeContainer && challengeContainer._challengeSystemInstance) {
+                challengeContainer._challengeSystemInstance.cleanup();
+            }
+            
+            // Clean up playground instances
+            var playgroundContainers = [
+                'variableCreationPlayground',
+                'variablePrintPlayground', 
+                'variablePracticePlayground'
+            ];
+            
+            for (var i = 0; i < playgroundContainers.length; i++) {
+                var container = document.getElementById(playgroundContainers[i]);
+                if (container && container._playgroundInstance && container._playgroundInstance._cleanup) {
+                    container._playgroundInstance._cleanup();
+                }
+            }
+        }
+        
+        if (window.addEventListener) {
+            window.addEventListener('beforeunload', cleanup);
+            // Also cleanup on page hide for mobile browsers
+            window.addEventListener('pagehide', cleanup);
+        } else if (window.attachEvent) {
+            // IE8 compatibility
+            window.attachEvent('onbeforeunload', cleanup);
+        }
+        
     </script>
     
     <style>
         /* Challenge system initially hidden */
+        .challenge-system-hidden {
+            display: none;
+        }
+        
+        /* Dark mode toggle styling - simplified and reliable */
+        .dark-mode-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        #dark-mode-toggle {
+            margin-right: 8px;
+        }
+        
+        .dark-mode-label {
+            cursor: pointer;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        body.dark-mode .dark-mode-label {
+            color: #fff;
+        }
+        
+        /* Error and feedback styling */
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 4px solid #d32f2f;
+        }
+        
+        body.dark-mode .error {
+            background-color: #2d1b1b;
+            color: #f48fb1;
+        }
+        
+        .feedback {
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 8px;
+            border-left: 4px solid #ccc;
+        }
+        
+        .feedback.correct {
+            color: #2e7d32;
+            background-color: #e8f5e8;
+            border-left-color: #4caf50;
+        }
+        
+        .feedback.incorrect {
+            color: #d32f2f;
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        body.dark-mode .feedback.correct {
+            background-color: #1b2e1b;
+            color: #81c784;
+        }
+        
+        body.dark-mode .feedback.incorrect {
+            background-color: #2d1b1b;
+            color: #f48fb1;
+        }
+        
+        /* Challenge feedback styling */
+        .challenge-feedback {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 4px solid #ccc;
+        }
+        
+        .challenge-feedback.success {
+            color: #2e7d32;
+            background-color: #e8f5e8;
+            border-left-color: #4caf50;
+        }
+        
+        .challenge-feedback.error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .challenge-feedback.info {
+            color: #1976d2;
+            background-color: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        body.dark-mode .challenge-feedback.success {
+            background-color: #1b2e1b;
+            color: #81c784;
+        }
+        
+        body.dark-mode .challenge-feedback.error {
+            background-color: #2d1b1b;
+            color: #f48fb1;
+        }
+        
+        body.dark-mode .challenge-feedback.info {
+            background-color: #1b2a3d;
+            color: #64b5f6;
+        }
+        
+        /* Fallback message styling */
+        .fallback-message {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        
+        body.dark-mode .fallback-message {
+            background-color: #2a2a2a;
+            color: #ccc;
+            border-color: #555;
+        }
+    </style> system initially hidden */
         .challenge-system-hidden {
             display: none;
         }
