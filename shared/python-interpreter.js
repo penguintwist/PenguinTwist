@@ -17,10 +17,11 @@
             
             try {
                 const lines = code.split('\n');
-                for (const line of lines) {
-                    const trimmed = line.trim();
+                for (let i = 0; i < lines.length; i++) {
+                    const trimmed = lines[i].trim();
                     if (trimmed && !trimmed.startsWith('#')) {
-                        this.executeLine(trimmed, output);
+                        // Pass the line index for glow effects
+                        this.executeLine(trimmed, output, i);
                     }
                 }
             } catch (error) {
@@ -34,11 +35,11 @@
             };
         }
         
-        executeLine(line, output) {
+        executeLine(line, output, lineIndex = -1) {
             if (line.startsWith('print(')) {
                 this.handlePrint(line, output);
             } else if (line.includes('=') && !line.includes('==')) {
-                this.handleAssignment(line);
+                this.handleAssignment(line, lineIndex);
             } else if (line.trim() !== '') {
                 throw new Error(`Invalid syntax: ${line}`);
             }
@@ -55,7 +56,7 @@
             output.push(String(value));
         }
         
-        handleAssignment(line) {
+        handleAssignment(line, lineIndex = -1) {
             const [varName, ...valueParts] = line.split('=');
             if (valueParts.length === 0) {
                 throw new Error('Invalid assignment');
@@ -69,6 +70,9 @@
             }
             
             this.variables[name] = this.getValue(value);
+            
+            // Trigger glow effect for this variable assignment
+            this.showVariableGlow(name, lineIndex);
         }
         
         getValue(expr) {
@@ -108,6 +112,40 @@
                 return message + ' Remember to use quotes for text: "hello"';
             }
             return message;
+        }
+        
+        // NEW METHOD: Show glow effect for variable connections
+        showVariableGlow(varName, lineIndex = -1) {
+            // Small delay to let the DOM update with new variables first
+            setTimeout(() => {
+                // Find the code line (if we have a line index)
+                let codeLineElement = null;
+                if (lineIndex >= 0) {
+                    // Try to find code lines in the editor
+                    const codeEditor = document.querySelector('.code-editor');
+                    if (codeEditor) {
+                        // For textarea, we can't highlight individual lines easily
+                        // But we can still highlight the variable in the variables panel
+                    }
+                }
+                
+                // Find the variable in the variables display panel
+                const variableElements = document.querySelectorAll('.variable-item');
+                const matchingVar = Array.from(variableElements).find(el => {
+                    const nameSpan = el.querySelector('.var-name');
+                    return nameSpan && nameSpan.textContent.trim() === varName;
+                });
+                
+                if (matchingVar) {
+                    // Add glow effect to the variable panel item
+                    matchingVar.classList.add('glow-active');
+                    
+                    // Remove the glow effect after animation completes
+                    setTimeout(() => {
+                        matchingVar.classList.remove('glow-active');
+                    }, 1500);
+                }
+            }, 100);
         }
     }
     
