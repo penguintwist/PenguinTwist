@@ -54,8 +54,18 @@
                     </div>
                 </div>
                 
-                <!-- Visual Metaphor Component -->
+                <!-- Memory Visualization Component -->
                 <div id="memoryBoxDemo"></div>
+            </div>
+            
+            <div class="section">
+                <h3>How Variable Assignment Works</h3>
+                <div class="theory">
+                    <p>Understanding the step-by-step process helps you see exactly what happens when you create a variable:</p>
+                </div>
+                
+                <!-- Assignment Demo Component -->
+                <div id="assignmentDemo"></div>
             </div>
             
             <div class="section">
@@ -82,8 +92,15 @@ age = 15</div>
             </div>
             
             <div class="section">
-                <h3>Try Creating Variables</h3>
-                <div id="variableCreationPlayground"></div>
+                <h3>Storage and Retrieval Process</h3>
+                
+                <!-- Visual Metaphor Component -->
+                <div id="storageFlow"></div>
+            </div>
+            
+            <div class="section">
+                <h3>Try It Yourself</h3>
+                <div id="variablePracticePlayground"></div>
             </div>
             
             <div class="section">
@@ -114,7 +131,7 @@ Alex
             </div>
             
             <div class="section">
-                <h3>See Variables in Action</h3>
+                <h3>Practice with Variables and Print</h3>
                 <div id="variablePrintPlayground"></div>
                 
                 <div class="tip">
@@ -124,11 +141,6 @@ Alex
                     <br>• Try storing a number without quotes
                     <br>• What happens if you forget the quotes around text?
                 </div>
-            </div>
-            
-            <div class="section">
-                <h3>Practice with Variables</h3>
-                <div id="variablePracticePlayground"></div>
             </div>
             
             <div id="masteryCheck"></div>
@@ -155,7 +167,7 @@ Alex
     <script src="shared/lesson-components.js"></script>
     
     <script>
-        // Challenge data with simple, reliable validation
+        // Challenge data with reliable validation
         var challenges = {
             basic: [
                 {
@@ -211,7 +223,7 @@ Alex
             ]
         };
 
-        // Simple initialization without complex error handling
+        // ES5 compatible initialization following technical integration spec
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 try {
@@ -225,20 +237,39 @@ Alex
                     // Initialize dark mode
                     window.PenguinTwistComponents.setupDarkMode();
 
-                    // Create visual metaphor
-                    var visualDemo = window.PenguinTwistComponents.createVisualMetaphor(
-                        'memoryBoxDemo', 
+                    // Create memory visualization
+                    var memoryDemo = window.PenguinTwistComponents.createMemoryVisualization(
+                        'memoryBoxDemo',
+                        {
+                            title: 'Think of Variables as Memory Boxes',
+                            boxes: [
+                                { label: 'name', value: 'Empty' },
+                                { label: 'age', value: 'Empty' },
+                                { label: 'pet', value: 'Empty' }
+                            ],
+                            showButton: true
+                        }
+                    );
+                    memoryDemo.init();
+
+                    // Create assignment demo
+                    var assignmentDemo = window.PenguinTwistComponents.createAssignmentDemo('assignmentDemo');
+                    assignmentDemo.init();
+
+                    // Create storage flow visual metaphor
+                    var storageFlow = window.PenguinTwistComponents.createVisualMetaphor(
+                        'storageFlow', 
                         'storage_boxes',
                         {
                             variableName: 'name',
                             variableValue: 'Alex'
                         }
                     );
-                    visualDemo.init();
+                    storageFlow.init();
 
-                    // Create playgrounds
+                    // Create playgrounds using IDE-style design
                     var playground1 = window.PenguinTwistInterpreter.createPlayground(
-                        'variableCreationPlayground',
+                        'variablePracticePlayground',
                         'variables',
                         {
                             title: 'Variable Creation Practice',
@@ -258,17 +289,6 @@ Alex
                         }
                     );
                     playground2.init();
-
-                    var playground3 = window.PenguinTwistInterpreter.createPlayground(
-                        'variablePracticePlayground',
-                        'variables',
-                        {
-                            title: 'Your Turn to Experiment',
-                            defaultCode: 'subject = "Computer Science"\nscore = 85\nprint(subject)\nprint(score)',
-                            showMemory: true
-                        }
-                    );
-                    playground3.init();
 
                     // Create mastery check
                     var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
@@ -345,19 +365,19 @@ Alex
         }
 
         function setupBasicFallbacks() {
-            var containers = ['memoryBoxDemo', 'variableCreationPlayground', 
-                             'variablePrintPlayground', 'variablePracticePlayground', 
+            var containers = ['memoryBoxDemo', 'assignmentDemo', 'storageFlow',
+                             'variablePracticePlayground', 'variablePrintPlayground', 
                              'masteryCheck', 'challengeSystem'];
             
-            containers.forEach(function(id) {
-                var element = document.getElementById(id);
+            for (var i = 0; i < containers.length; i++) {
+                var element = document.getElementById(containers[i]);
                 if (element) {
                     element.innerHTML = '<div class="fallback-message">' +
                         '<p>Interactive component loading...</p>' +
                         '<p>Please refresh if this message persists.</p>' +
                         '</div>';
                 }
-            });
+            }
 
             // Basic dark mode fallback
             var toggle = document.getElementById('dark-mode-toggle');
