@@ -12,54 +12,25 @@
     <!-- Shared Styles -->
     <link rel="stylesheet" href="shared/lesson-styles.css">
     
-    <style>
-        /* Updated Dark Mode Toggle Styles */
-        .dark-mode-container {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 12px;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 2;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        
-        .dark-mode-container:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .dark-mode-label {
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            user-select: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            cursor: pointer;
-        }
-        
-        /* Hide the checkbox completely */
-        #dark-mode-toggle {
-            display: none;
-        }
-    </style>
+    <!-- Debug Logger (REMOVE THIS LINE WHEN READY FOR PRODUCTION) -->
+    <script src="debug-integration.js"></script>
 </head>
 <body>
     <div class="header">
         <div class="dark-mode-container" id="dark-mode-container">
-            <input type="checkbox" id="dark-mode-toggle" style="display: none;">
-            <label for="dark-mode-toggle" class="dark-mode-label" id="dark-mode-label">🌙 Dark Mode</label>
+            <input type="checkbox" id="dark-mode-toggle">
+            <label for="dark-mode-toggle" class="dark-mode-label">🌙 Dark Mode</label>
         </div>
         <div class="container">
             <h1>Lesson 2: Variables</h1>
             <p>Give your programs memory - store and remember information</p>
         </div>
     </div>
+    
+    <!-- Debug Button (REMOVE THIS WHEN READY FOR PRODUCTION) -->
+    <button onclick="PenguinDebug.openLogger()" style="position: fixed; top: 10px; left: 10px; z-index: 9999; background: #06b6d4; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 11px;">
+        🐧 Open Debug Logger
+    </button>
     
     <div class="nav-back">
         <div class="container">
@@ -83,7 +54,6 @@
                 <div class="theory">
                     <p>Think of variables as labeled boxes in a warehouse. Each box has:</p>
                     <p>• A <strong>name</strong> (the label on the box)</p>
-                    <p>• A <strong>value</strong> (what's stored inside the box)</p>
                     <p>• A <strong>location</strong> (where Python can find it in memory)</p>
                     
                     <div class="tip">
@@ -204,6 +174,11 @@ Alex
     <script src="shared/lesson-components.js"></script>
     
     <script>
+        // Log page start
+        PenguinDebug.info('Lesson 2 page loading started');
+        PenguinDebug.info('User Agent: ' + navigator.userAgent);
+        PenguinDebug.info('Screen: ' + screen.width + 'x' + screen.height);
+
         // Challenge data with reliable validation
         var challenges = {
             basic: [
@@ -260,190 +235,228 @@ Alex
             ]
         };
 
-        // Updated dark mode functionality
-        function setupDarkMode() {
-            var container = document.getElementById('dark-mode-container');
-            var toggle = document.getElementById('dark-mode-toggle');
-            var label = document.getElementById('dark-mode-label');
+        // ES5 compatible initialization with detailed logging
+        document.addEventListener('DOMContentLoaded', function() {
+            PenguinDebug.info('DOM Content Loaded event fired');
             
-            if (!container || !toggle || !label) return;
-            
-            // Load saved preference
-            var isDark = localStorage.getItem('darkMode') === 'true';
-            if (isDark) {
-                document.body.classList.add('dark-mode');
-                toggle.checked = true;
-                label.textContent = '☀️ Light Mode';
-            }
-            
-            // Click handler for the entire container
-            container.addEventListener('click', function(e) {
-                e.preventDefault();
-                toggle.checked = !toggle.checked;
+            setTimeout(function() {
+                PenguinDebug.info('Starting component initialization (100ms delay)');
                 
                 try {
-                    if (toggle.checked) {
-                        document.body.classList.add('dark-mode');
-                        localStorage.setItem('darkMode', 'true');
-                        label.textContent = '☀️ Light Mode';
-                    } else {
-                        document.body.classList.remove('dark-mode');
-                        localStorage.setItem('darkMode', 'false');
-                        label.textContent = '🌙 Dark Mode';
-                    }
-                    
-                    // Notify other components
-                    var event = document.createEvent('CustomEvent');
-                    event.initEvent('themeChanged', true, true);
-                    document.dispatchEvent(event);
-                } catch (e) {
-                    console.warn('Could not save dark mode preference:', e);
-                }
-            });
-        }
-
-        // ES5 compatible initialization following technical integration spec
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                try {
                     // Check if components exist
-                    if (!window.PenguinTwistComponents || !window.PenguinTwistInterpreter) {
-                        console.log('Components not loaded, using fallbacks');
+                    var hasComponents = !!window.PenguinTwistComponents;
+                    var hasInterpreter = !!window.PenguinTwistInterpreter;
+                    
+                    PenguinDebug.info('Components availability check', {
+                        PenguinTwistComponents: hasComponents,
+                        PenguinTwistInterpreter: hasInterpreter
+                    });
+
+                    if (!hasComponents || !hasInterpreter) {
+                        PenguinDebug.error('Required components not loaded, using fallbacks');
                         setupBasicFallbacks();
                         return;
                     }
 
-                    // Initialize dark mode
-                    window.PenguinTwistComponents.setupDarkMode();
+                    // Initialize dark mode first
+                    PenguinDebug.component('Initializing dark mode system');
+                    
+                    try {
+                        window.PenguinTwistComponents.setupDarkMode();
+                        PenguinDebug.success('Dark mode system initialized successfully');
+                    } catch (darkModeError) {
+                        PenguinDebug.logError(darkModeError, 'Dark mode initialization');
+                    }
 
                     // Create memory visualization
-                    var memoryDemo = window.PenguinTwistComponents.createMemoryVisualization(
-                        'memoryBoxDemo',
-                        {
-                            title: 'Think of Variables as Memory Boxes',
-                            boxes: [
-                                { label: 'name', value: 'Empty' },
-                                { label: 'age', value: 'Empty' },
-                                { label: 'pet', value: 'Empty' }
-                            ],
-                            showButton: true
-                        }
-                    );
-                    memoryDemo.init();
+                    PenguinDebug.component('Creating memory visualization component');
+                    
+                    try {
+                        var memoryDemo = window.PenguinTwistComponents.createMemoryVisualization(
+                            'memoryBoxDemo',
+                            {
+                                title: 'Think of Variables as Memory Boxes',
+                                boxes: [
+                                    { label: 'name', value: 'Empty' },
+                                    { label: 'age', value: 'Empty' },
+                                    { label: 'pet', value: 'Empty' }
+                                ],
+                                showButton: true
+                            }
+                        );
+                        var memorySuccess = memoryDemo.init();
+                        PenguinDebug.logComponentInit('MemoryVisualization', 'memoryBoxDemo', memorySuccess);
+                    } catch (memoryError) {
+                        PenguinDebug.logError(memoryError, 'Memory visualization creation');
+                    }
 
                     // Create assignment demo
-                    var assignmentDemo = window.PenguinTwistComponents.createAssignmentDemo('assignmentDemo');
-                    assignmentDemo.init();
+                    PenguinDebug.component('Creating assignment demo component');
+                    
+                    try {
+                        var assignmentDemo = window.PenguinTwistComponents.createAssignmentDemo('assignmentDemo');
+                        var assignmentSuccess = assignmentDemo.init();
+                        PenguinDebug.logComponentInit('AssignmentDemo', 'assignmentDemo', assignmentSuccess);
+                    } catch (assignmentError) {
+                        PenguinDebug.logError(assignmentError, 'Assignment demo creation');
+                    }
 
                     // Create storage flow visual metaphor
-                    var storageFlow = window.PenguinTwistComponents.createVisualMetaphor(
-                        'storageFlow', 
-                        'storage_boxes',
-                        {
-                            variableName: 'name',
-                            variableValue: 'Alex'
-                        }
-                    );
-                    storageFlow.init();
+                    PenguinDebug.component('Creating storage flow visual metaphor');
+                    
+                    try {
+                        var storageFlow = window.PenguinTwistComponents.createVisualMetaphor(
+                            'storageFlow', 
+                            'storage_boxes',
+                            {
+                                variableName: 'name',
+                                variableValue: 'Alex'
+                            }
+                        );
+                        var storageSuccess = storageFlow.init();
+                        PenguinDebug.logComponentInit('StorageFlow', 'storageFlow', storageSuccess);
+                    } catch (storageError) {
+                        PenguinDebug.logError(storageError, 'Storage flow creation');
+                    }
 
                     // Create playgrounds using IDE-style design
-                    var playground1 = window.PenguinTwistInterpreter.createPlayground(
-                        'variablePracticePlayground',
-                        'variables',
-                        {
-                            title: 'Variable Creation Practice',
-                            defaultCode: 'name = "Alex"\nage = 15',
-                            showMemory: true
-                        }
-                    );
-                    playground1.init();
+                    PenguinDebug.component('Creating practice playground');
+                    
+                    try {
+                        var playground1 = window.PenguinTwistInterpreter.createPlayground(
+                            'variablePracticePlayground',
+                            'variables',
+                            {
+                                title: 'Variable Creation Practice',
+                                defaultCode: 'name = "Alex"\nage = 15',
+                                showMemory: true
+                            }
+                        );
+                        var playground1Success = playground1.init();
+                        PenguinDebug.logComponentInit('PracticePlayground', 'variablePracticePlayground', playground1Success);
+                    } catch (playground1Error) {
+                        PenguinDebug.logError(playground1Error, 'Practice playground creation');
+                    }
 
-                    var playground2 = window.PenguinTwistInterpreter.createPlayground(
-                        'variablePrintPlayground',
-                        'variables',
-                        {
-                            title: 'Variables and Print Practice',
-                            defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
-                            showMemory: true
-                        }
-                    );
-                    playground2.init();
+                    PenguinDebug.component('Creating print playground');
+                    
+                    try {
+                        var playground2 = window.PenguinTwistInterpreter.createPlayground(
+                            'variablePrintPlayground',
+                            'variables',
+                            {
+                                title: 'Variables and Print Practice',
+                                defaultCode: 'name = "Alex"\nage = 15\nprint(name)\nprint(age)',
+                                showMemory: true
+                            }
+                        );
+                        var playground2Success = playground2.init();
+                        PenguinDebug.logComponentInit('PrintPlayground', 'variablePrintPlayground', playground2Success);
+                    } catch (playground2Error) {
+                        PenguinDebug.logError(playground2Error, 'Print playground creation');
+                    }
 
                     // Create mastery check
-                    var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
-                        'masteryCheck',
-                        [
-                            {
-                                question: 'To store "Computer Science" in a variable called subject, what code do you write?',
-                                placeholder: 'Type your answer here',
-                                validateAnswer: function(answer) {
-                                    return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                    PenguinDebug.component('Creating mastery check component');
+                    
+                    try {
+                        var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
+                            'masteryCheck',
+                            [
+                                {
+                                    question: 'To store "Computer Science" in a variable called subject, what code do you write?',
+                                    placeholder: 'Type your answer here',
+                                    validateAnswer: function(answer) {
+                                        return /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                                    },
+                                    hint: 'Remember: subject = "Computer Science"'
                                 },
-                                hint: 'Remember: subject = "Computer Science"'
-                            },
-                            {
-                                question: 'Create a variable called "hobby" that stores your favorite hobby.',
-                                placeholder: 'Type your code here',
-                                validateAnswer: function(answer) {
-                                    return /hobby\s*=\s*["'][^"']+["']/i.test(answer.trim());
+                                {
+                                    question: 'Create a variable called "hobby" that stores your favorite hobby.',
+                                    placeholder: 'Type your code here',
+                                    validateAnswer: function(answer) {
+                                        return /hobby\s*=\s*["'][^"']+["']/i.test(answer.trim());
+                                    },
+                                    hint: 'Use: hobby = "your hobby here"'
                                 },
-                                hint: 'Use: hobby = "your hobby here"'
-                            },
+                                {
+                                    question: 'If you run: name = "Jamie" then print(name), what appears on screen?',
+                                    placeholder: 'What gets displayed?',
+                                    validateAnswer: function(answer) {
+                                        return answer.toLowerCase().includes('jamie');
+                                    },
+                                    hint: 'The output would be: Jamie'
+                                }
+                            ],
                             {
-                                question: 'If you run: name = "Jamie" then print(name), what appears on screen?',
-                                placeholder: 'What gets displayed?',
-                                validateAnswer: function(answer) {
-                                    return answer.toLowerCase().includes('jamie');
-                                },
-                                hint: 'The output would be: Jamie'
+                                title: 'Check Your Understanding',
+                                onComplete: function() {
+                                    PenguinDebug.success('Mastery check completed successfully');
+                                    unlockNextLesson();
+                                    showChallenges();
+                                }
                             }
-                        ],
-                        {
-                            title: 'Check Your Understanding',
-                            onComplete: function() {
-                                unlockNextLesson();
-                                showChallenges();
-                            }
-                        }
-                    );
-                    masteryCheck.init();
+                        );
+                        var masterySuccess = masteryCheck.init();
+                        PenguinDebug.logComponentInit('MasteryCheck', 'masteryCheck', masterySuccess);
+                    } catch (masteryError) {
+                        PenguinDebug.logError(masteryError, 'Mastery check creation');
+                    }
 
                     // Create challenge system
-                    var challengeSystem = window.PenguinTwistComponents.createChallengeSystem(
-                        'challengeSystem',
-                        challenges,
-                        {
-                            title: 'Practice Challenges'
-                        }
-                    );
-                    challengeSystem.init();
+                    PenguinDebug.component('Creating challenge system');
+                    
+                    try {
+                        var challengeSystem = window.PenguinTwistComponents.createChallengeSystem(
+                            'challengeSystem',
+                            challenges,
+                            {
+                                title: 'Practice Challenges'
+                            }
+                        );
+                        var challengeSuccess = challengeSystem.init();
+                        PenguinDebug.logComponentInit('ChallengeSystem', 'challengeSystem', challengeSuccess);
+                    } catch (challengeError) {
+                        PenguinDebug.logError(challengeError, 'Challenge system creation');
+                    }
+
+                    PenguinDebug.success('All components initialized successfully!');
 
                 } catch (error) {
-                    console.log('Component initialization failed:', error);
+                    PenguinDebug.logError(error, 'Component initialization failed');
                     setupBasicFallbacks();
                 }
             }, 100);
         });
 
         function unlockNextLesson() {
+            PenguinDebug.event('unlockNextLesson called');
             var nextBtn = document.getElementById('nextLessonBtn');
             if (nextBtn) {
                 nextBtn.classList.remove('disabled');
                 nextBtn.style.opacity = '1';
                 nextBtn.style.pointerEvents = 'auto';
+                PenguinDebug.success('Next lesson unlocked');
+            } else {
+                PenguinDebug.error('Next lesson button not found');
             }
         }
 
         function showChallenges() {
+            PenguinDebug.event('showChallenges called');
             var challengeDiv = document.getElementById('challengeSystem');
             if (challengeDiv) {
                 challengeDiv.classList.remove('challenge-system-hidden');
                 challengeDiv.classList.add('unlocked');
                 challengeDiv.scrollIntoView({ behavior: 'smooth' });
+                PenguinDebug.success('Challenges shown and scrolled into view');
+            } else {
+                PenguinDebug.error('Challenge system div not found');
             }
         }
 
         function setupBasicFallbacks() {
+            PenguinDebug.warn('Setting up basic fallbacks');
             var containers = ['memoryBoxDemo', 'assignmentDemo', 'storageFlow',
                              'variablePracticePlayground', 'variablePrintPlayground', 
                              'masteryCheck', 'challengeSystem'];
@@ -455,9 +468,20 @@ Alex
                         '<p>Interactive component loading...</p>' +
                         '<p>Please refresh if this message persists.</p>' +
                         '</div>';
+                    PenguinDebug.warn('Fallback applied to: ' + containers[i]);
+                } else {
+                    PenguinDebug.error('Container not found: ' + containers[i]);
                 }
             }
         }
+
+        // Log when dark mode is used
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.dark-mode-container')) {
+                var isDark = document.body.classList.contains('dark-mode');
+                PenguinDebug.logDarkMode('toggled', !isDark);
+            }
+        });
     </script>
 </body>
 </html>
