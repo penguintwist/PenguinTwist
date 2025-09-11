@@ -51,43 +51,26 @@
             font-size: 11px;
         }
         
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-        }
-        
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ef4444;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-indicator.connected {
-            background: #10b981;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .session-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 10px;
         }
         
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
         
         .control-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             transition: background 0.2s;
         }
         
@@ -97,28 +80,31 @@
         
         .filters {
             background: rgba(30, 41, 59, 0.8);
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-bottom: 1px solid rgba(103, 232, 249, 0.3);
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
         
         .filter-label {
             color: #94a3b8;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
+            margin-right: 5px;
         }
         
         .filter-btn {
             background: rgba(6, 182, 212, 0.2);
             border: none;
             color: #67e8f9;
-            padding: 5px 10px;
-            border-radius: 12px;
+            padding: 4px 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 9px;
             transition: all 0.2s;
+            margin: 2px;
         }
         
         .filter-btn.active {
@@ -127,19 +113,28 @@
         }
         
         .logs-container {
-            height: calc(100vh - 120px);
+            height: calc(100vh - 140px);
             overflow-y: auto;
-            padding: 10px;
+            padding: 8px;
+        }
+        
+        .session-separator {
+            border-top: 2px dashed #374151;
+            margin: 15px 0;
+            padding: 10px 0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 10px;
         }
         
         .log-entry {
-            margin-bottom: 8px;
-            padding: 10px 12px;
-            border-left: 4px solid #06b6d4;
+            margin-bottom: 6px;
+            padding: 8px 10px;
+            border-left: 3px solid #06b6d4;
             background: rgba(30, 41, 59, 0.6);
-            border-radius: 0 8px 8px 0;
-            font-size: 11px;
-            line-height: 1.4;
+            border-radius: 0 6px 6px 0;
+            font-size: 10px;
+            line-height: 1.3;
             transition: all 0.2s;
         }
         
@@ -150,46 +145,50 @@
         .log-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
+            gap: 8px;
+            margin-bottom: 4px;
         }
         
         .log-timestamp {
             color: #64748b;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: normal;
+            min-width: 70px;
         }
         
         .log-level {
             font-weight: bold;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 70px;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 8px;
+            min-width: 60px;
             text-align: center;
         }
         
         .log-source {
             color: #94a3b8;
-            font-size: 9px;
+            font-size: 8px;
             font-style: italic;
+            flex: 1;
         }
         
         .log-message {
             color: #e2e8f0;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            word-break: break-word;
         }
         
         .log-details {
             background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 9px;
             color: #94a3b8;
             white-space: pre-wrap;
-            max-height: 150px;
+            max-height: 120px;
             overflow-y: auto;
             border-left: 2px solid rgba(6, 182, 212, 0.3);
+            margin-top: 4px;
         }
         
         /* Level-specific styles */
@@ -201,6 +200,7 @@
         .log-entry[data-level="COMPONENT"] { border-left-color: #8b5cf6; }
         .log-entry[data-level="EVENT"] { border-left-color: #06b6d4; }
         .log-entry[data-level="API"] { border-left-color: #f97316; }
+        .log-entry[data-level="SYSTEM"] { border-left-color: #ec4899; }
         
         .level-ERROR { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
         .level-WARN { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
@@ -210,29 +210,30 @@
         .level-COMPONENT { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
         .level-EVENT { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
         .level-API { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+        .level-SYSTEM { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }
         
         .empty-state {
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px;
             color: #64748b;
         }
         
         .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 36px;
+            margin-bottom: 15px;
         }
         
         .auto-scroll-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 15px;
+            right: 15px;
             background: linear-gradient(135deg, #06b6d4, #8b5cf6);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
+            padding: 8px 12px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
             transition: transform 0.2s;
@@ -245,6 +246,32 @@
         .auto-scroll-toggle.disabled {
             background: rgba(107, 114, 128, 0.8);
         }
+        
+        .summary-stats {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 8px 12px;
+            margin: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            font-size: 9px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 8px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 8px;
+        }
     </style>
 </head>
 <body>
@@ -253,16 +280,14 @@
             🐧 PenguinTwist Debug Logger
         </div>
         <div class="status">
+            <div class="session-info" id="sessionInfo">Session #1</div>
             <div class="log-count" id="logCount">0 logs</div>
-            <div class="connection-status">
-                <div class="status-indicator" id="statusIndicator"></div>
-                <span id="statusText">Waiting for connection...</span>
-            </div>
         </div>
         <div class="controls">
-            <button class="control-btn" onclick="clearLogs()">Clear</button>
-            <button class="control-btn" onclick="exportLogs()">Export</button>
-            <button class="control-btn" onclick="window.close()">Close</button>
+            <button class="control-btn" onclick="showSummary()">📊 Summary</button>
+            <button class="control-btn" onclick="clearLogs()">🗑️ Clear</button>
+            <button class="control-btn" onclick="exportLogs()">💾 Export</button>
+            <button class="control-btn" onclick="location.reload()">🔄 Refresh</button>
         </div>
     </div>
     
@@ -274,13 +299,14 @@
         <button class="filter-btn" onclick="filterLogs('COMPONENT')" data-level="COMPONENT">Components</button>
         <button class="filter-btn" onclick="filterLogs('EVENT')" data-level="EVENT">Events</button>
         <button class="filter-btn" onclick="filterLogs('SUCCESS')" data-level="SUCCESS">Success</button>
+        <button class="filter-btn" onclick="filterLogs('SYSTEM')" data-level="SYSTEM">System</button>
     </div>
     
     <div class="logs-container" id="logsContainer">
         <div class="empty-state">
             <div class="icon">🔍</div>
-            <h3>Waiting for logs...</h3>
-            <p>Debug information will appear here when the main lesson page sends data.</p>
+            <h3>Loading previous logs...</h3>
+            <p>Debug information from previous sessions will appear here.</p>
         </div>
     </div>
     
@@ -292,7 +318,8 @@
         let logs = [];
         let currentFilter = 'all';
         let autoScroll = true;
-        let isConnected = false;
+        let sessionId = Date.now();
+        let currentSession = 1;
         
         const levelConfig = {
             ERROR: { icon: '❌', color: '#ef4444' },
@@ -302,55 +329,104 @@
             DEBUG: { icon: '🔍', color: '#6b7280' },
             COMPONENT: { icon: '🧩', color: '#8b5cf6' },
             EVENT: { icon: '⚡', color: '#06b6d4' },
-            API: { icon: '🔗', color: '#f97316' }
+            API: { icon: '🔗', color: '#f97316' },
+            SYSTEM: { icon: '🖥️', color: '#ec4899' }
         };
         
-        // Listen for messages from parent window
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStoredLogs();
+            addSystemLog('Debug logger started');
+            startHeartbeat();
+        });
+        
+        function loadStoredLogs() {
+            try {
+                const storedLogs = localStorage.getItem('penguinDebugLogs');
+                const storedSession = localStorage.getItem('penguinDebugSession');
+                
+                if (storedLogs) {
+                    logs = JSON.parse(storedLogs);
+                    currentSession = parseInt(storedSession || '1') + 1;
+                    localStorage.setItem('penguinDebugSession', currentSession.toString());
+                    
+                    document.getElementById('sessionInfo').textContent = `Session #${currentSession}`;
+                    
+                    if (logs.length > 0) {
+                        addSessionSeparator();
+                        refreshLogDisplay();
+                        removeEmptyState();
+                    }
+                }
+            } catch (e) {
+                addSystemLog('Error loading stored logs: ' + e.message);
+            }
+        }
+        
+        function saveLogsToStorage() {
+            try {
+                // Keep only the last 500 logs to prevent localStorage overflow
+                const logsToSave = logs.slice(-500);
+                localStorage.setItem('penguinDebugLogs', JSON.stringify(logsToSave));
+            } catch (e) {
+                console.warn('Could not save logs to localStorage:', e);
+            }
+        }
+        
+        function addSessionSeparator() {
+            const container = document.getElementById('logsContainer');
+            const separator = document.createElement('div');
+            separator.className = 'session-separator';
+            separator.innerHTML = `
+                ──────────────────────────────────────<br>
+                Session #${currentSession} started at ${new Date().toLocaleTimeString()}
+            `;
+            container.appendChild(separator);
+        }
+        
+        function addSystemLog(message) {
+            const logEntry = {
+                timestamp: new Date().toISOString().substr(11, 12),
+                level: 'SYSTEM',
+                message: message,
+                details: null,
+                source: 'debug-logger',
+                session: currentSession,
+                id: 'system_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5)
+            };
+            
+            addLog(logEntry);
+        }
+        
+        // Listen for messages from lesson pages
         window.addEventListener('message', function(event) {
             if (event.data && event.data.type === 'PENGUIN_DEBUG_LOG') {
-                if (!isConnected) {
-                    setConnectionStatus(true);
-                }
+                event.data.log.session = currentSession;
                 addLog(event.data.log);
+                removeEmptyState();
             } else if (event.data && event.data.type === 'PENGUIN_DEBUG_PING') {
-                // Respond to ping to establish connection
                 event.source.postMessage({ type: 'PENGUIN_DEBUG_PONG' }, event.origin);
-                setConnectionStatus(true);
             }
         });
         
-        function setConnectionStatus(connected) {
-            isConnected = connected;
-            const indicator = document.getElementById('statusIndicator');
-            const text = document.getElementById('statusText');
-            
-            if (connected) {
-                indicator.classList.add('connected');
-                text.textContent = 'Connected to lesson page';
-                
-                // Remove empty state if it exists
-                const emptyState = document.querySelector('.empty-state');
-                if (emptyState) {
-                    emptyState.remove();
+        function startHeartbeat() {
+            // Broadcast ping every 3 seconds to maintain connection
+            setInterval(() => {
+                try {
+                    if (window.opener && !window.opener.closed) {
+                        window.opener.postMessage({ type: 'PENGUIN_DEBUG_PING' }, '*');
+                    }
+                } catch (e) {
+                    // Ignore cross-origin errors
                 }
-            } else {
-                indicator.classList.remove('connected');
-                text.textContent = 'Disconnected';
-            }
+            }, 3000);
         }
         
         function addLog(logEntry) {
             logs.push(logEntry);
-            
-            // Keep only the latest 1000 logs
-            if (logs.length > 1000) {
-                logs = logs.slice(-1000);
-                refreshLogDisplay();
-                return;
-            }
-            
             renderLog(logEntry);
             updateLogCount();
+            saveLogsToStorage();
             
             if (autoScroll) {
                 scrollToBottom();
@@ -364,6 +440,7 @@
             const logElement = document.createElement('div');
             logElement.className = 'log-entry';
             logElement.setAttribute('data-level', logEntry.level);
+            logElement.setAttribute('data-session', logEntry.session || 'unknown');
             
             let html = `
                 <div class="log-header">
@@ -393,10 +470,18 @@
         
         function refreshLogDisplay() {
             const container = document.getElementById('logsContainer');
-            container.innerHTML = '';
+            const existingLogs = container.querySelectorAll('.log-entry');
+            existingLogs.forEach(log => log.remove());
             
             logs.forEach(log => renderLog(log));
             updateLogCount();
+        }
+        
+        function removeEmptyState() {
+            const emptyState = document.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
         }
         
         function filterLogs(level) {
@@ -419,10 +504,65 @@
             });
         }
         
+        function showSummary() {
+            const stats = {
+                total: logs.length,
+                errors: logs.filter(l => l.level === 'ERROR').length,
+                warnings: logs.filter(l => l.level === 'WARN').length,
+                components: logs.filter(l => l.level === 'COMPONENT').length,
+                events: logs.filter(l => l.level === 'EVENT').length,
+                currentSession: logs.filter(l => l.session === currentSession).length
+            };
+            
+            const container = document.getElementById('logsContainer');
+            const summaryElement = document.createElement('div');
+            summaryElement.className = 'summary-stats';
+            summaryElement.innerHTML = `
+                <div class="stat-item">
+                    <div class="stat-value">${stats.total}</div>
+                    <div class="stat-label">Total Logs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #fca5a5">${stats.errors}</div>
+                    <div class="stat-label">Errors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #fbbf24">${stats.warnings}</div>
+                    <div class="stat-label">Warnings</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #c4b5fd">${stats.components}</div>
+                    <div class="stat-label">Components</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #67e8f9">${stats.events}</div>
+                    <div class="stat-label">Events</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" style="color: #6ee7b7">${stats.currentSession}</div>
+                    <div class="stat-label">This Session</div>
+                </div>
+            `;
+            
+            container.insertBefore(summaryElement, container.firstChild);
+            
+            // Remove summary after 10 seconds
+            setTimeout(() => {
+                if (summaryElement.parentNode) {
+                    summaryElement.remove();
+                }
+            }, 10000);
+        }
+        
         function clearLogs() {
-            logs = [];
-            document.getElementById('logsContainer').innerHTML = '';
-            updateLogCount();
+            if (confirm('Clear all logs including stored history?')) {
+                logs = [];
+                localStorage.removeItem('penguinDebugLogs');
+                localStorage.removeItem('penguinDebugSession');
+                document.getElementById('logsContainer').innerHTML = '';
+                updateLogCount();
+                addSystemLog('All logs cleared');
+            }
         }
         
         function exportLogs() {
@@ -430,7 +570,14 @@
                 timestamp: new Date().toISOString(),
                 userAgent: navigator.userAgent,
                 url: window.location.href,
+                currentSession: currentSession,
                 totalLogs: logs.length,
+                summary: {
+                    errors: logs.filter(l => l.level === 'ERROR').length,
+                    warnings: logs.filter(l => l.level === 'WARN').length,
+                    components: logs.filter(l => l.level === 'COMPONENT').length,
+                    events: logs.filter(l => l.level === 'EVENT').length
+                },
                 logs: logs
             };
             
@@ -439,12 +586,15 @@
             
             const link = document.createElement('a');
             link.href = URL.createObjectURL(dataBlob);
-            link.download = `penguintwist-debug-${new Date().toISOString().substr(0, 19).replace(/:/g, '-')}.json`;
+            link.download = `penguintwist-debug-session${currentSession}-${new Date().toISOString().substr(0, 19).replace(/:/g, '-')}.json`;
             link.click();
+            
+            addSystemLog('Debug logs exported');
         }
         
         function updateLogCount() {
-            document.getElementById('logCount').textContent = `${logs.length} logs`;
+            const currentSessionLogs = logs.filter(l => l.session === currentSession).length;
+            document.getElementById('logCount').textContent = `${logs.length} total (${currentSessionLogs} this session)`;
         }
         
         function toggleAutoScroll() {
@@ -471,18 +621,6 @@
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // Send ping to parent to establish connection
-        if (window.opener) {
-            window.opener.postMessage({ type: 'PENGUIN_DEBUG_PING' }, '*');
-        }
-        
-        // Periodic ping to maintain connection
-        setInterval(() => {
-            if (window.opener) {
-                window.opener.postMessage({ type: 'PENGUIN_DEBUG_PING' }, '*');
-            }
-        }, 5000);
     </script>
 </body>
 </html>
