@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenguinTwist Debug Logger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            font-size: 12px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .title {
+            font-weight: bold;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .log-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.connected {
+            background: #10b981;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .filters {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 10px 20px;
+            border-bottom: 1px solid rgba(103, 232, 249, 0.3);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-label {
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .filter-btn {
+            background: rgba(6, 182, 212, 0.2);
+            border: none;
+            color: #67e8f9;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: #06b6d4;
+            color: white;
+        }
+        
+        .logs-container {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 10px 12px;
+            border-left: 4px solid #06b6d4;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 0 8px 8px 0;
+            font-size: 11px;
+            line-height: 1.4;
+            transition: all 0.2s;
+        }
+        
+        .log-entry:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        
+        .log-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .log-timestamp {
+            color: #64748b;
+            font-size: 9px;
+            font-weight: normal;
+        }
+        
+        .log-level {
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .log-source {
+            color: #94a3b8;
+            font-size: 9px;
+            font-style: italic;
+        }
+        
+        .log-message {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+        
+        .log-details {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #94a3b8;
+            white-space: pre-wrap;
+            max-height: 150px;
+            overflow-y: auto;
+            border-left: 2px solid rgba(6, 182, 212, 0.3);
+        }
+        
+        /* Level-specific styles */
+        .log-entry[data-level="ERROR"] { border-left-color: #ef4444; }
+        .log-entry[data-level="WARN"] { border-left-color: #f59e0b; }
+        .log-entry[data-level="INFO"] { border-left-color: #3b82f6; }
+        .log-entry[data-level="SUCCESS"] { border-left-color: #10b981; }
+        .log-entry[data-level="DEBUG"] { border-left-color: #6b7280; }
+        .log-entry[data-level="COMPONENT"] { border-left-color: #8b5cf6; }
+        .log-entry[data-level="EVENT"] { border-left-color: #06b6d4; }
+        .log-entry[data-level="API"] { border-left-color: #f97316; }
+        
+        .level-ERROR { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .level-WARN { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .level-INFO { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        .level-SUCCESS { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .level-DEBUG { background: rgba(107, 114, 128, 0.2); color: #d1d5db; }
+        .level-COMPONENT { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; }
+        .level-EVENT { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+        .level-API { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+        }
+        
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .auto-scroll-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .auto-scroll-toggle:hover {
+            transform: translateY(-2px);
+        }
+        
+        .auto-scroll-toggle.disabled {
+            background: rgba(107, 114, 128, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">
+            🐧 PenguinTwist Debug Logger
+        </div>
+        <div class="status">
+            <div class="log-count" id="logCount">0 logs</div>
+            <div class="connection-status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Waiting for connection...</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="control-btn" onclick="clearLogs()">Clear</button>
+            <button class="control-btn" onclick="exportLogs()">Export</button>
+            <button class="control-btn" onclick="window.close()">Close</button>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-btn active" onclick="filterLogs('all')" data-level="all">All</button>
+        <button class="filter-btn" onclick="filterLogs('ERROR')" data-level="ERROR">Errors</button>
+        <button class="filter-btn" onclick="filterLogs('WARN')" data-level="WARN">Warnings</button>
+        <button class="filter-btn" onclick="filterLogs('COMPONENT')" data-level="COMPONENT">Components</button>
+        <button class="filter-btn" onclick="filterLogs('EVENT')" data-level="EVENT">Events</button>
+        <button class="filter-btn" onclick="filterLogs('SUCCESS')" data-level="SUCCESS">Success</button>
+    </div>
+    
+    <div class="logs-container" id="logsContainer">
+        <div class="empty-state">
+            <div class="icon">🔍</div>
+            <h3>Waiting for logs...</h3>
+            <p>Debug information will appear here when the main lesson page sends data.</p>
+        </div>
+    </div>
+    
+    <button class="auto-scroll-toggle" id="autoScrollToggle" onclick="toggleAutoScroll()">
+        📍 Auto Scroll: ON
+    </button>
+
+    <script>
+        let logs = [];
+        let currentFilter = 'all';
+        let autoScroll = true;
+        let isConnected = false;
+        
+        const levelConfig = {
+            ERROR: { icon: '❌', color: '#ef4444' },
+            WARN: { icon: '⚠️', color: '#f59e0b' },
+            INFO: { icon: 'ℹ️', color: '#3b82f6' },
+            SUCCESS: { icon: '✅', color: '#10b981' },
+            DEBUG: { icon: '🔍', color: '#6b7280' },
+            COMPONENT: { icon: '🧩', color: '#8b5cf6' },
+            EVENT: { icon: '⚡', color: '#06b6d4' },
+            API: { icon: '🔗', color: '#f97316' }
+        };
+        
+        // Listen for messages from parent window
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'PENGUIN_DEBUG_LOG') {
+                if (!isConnected) {
+                    setConnectionStatus(true);
+                }
+                addLog(event.data.log);
+            } else if (event.data && event.data.type === 'PENGUIN_DEBUG_PING') {
+                // Respond to ping to establish connection
+                event.source.postMessage({ type: 'PENGUIN_DEBUG_PONG' }, event.origin);
+                setConnectionStatus(true);
+            }
+        });
+        
+        function setConnectionStatus(connected) {
+            isConnected = connected;
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            if (connected) {
+                indicator.classList.add('connected');
+                text.textContent = 'Connected to lesson page';
+                
+                // Remove empty state if it exists
+                const emptyState = document.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+            } else {
+                indicator.classList.remove('connected');
+                text.textContent = 'Disconnected';
+            }
+        }
+        
+        function addLog(logEntry) {
+            logs.push(logEntry);
+            
+            // Keep only the latest 1000 logs
+            if (logs.length > 1000) {
+                logs = logs.slice(-1000);
+                refreshLogDisplay();
+                return;
+            }
+            
+            renderLog(logEntry);
+            updateLogCount();
+            
+            if (autoScroll) {
+                scrollToBottom();
+            }
+        }
+        
+        function renderLog(logEntry) {
+            const container = document.getElementById('logsContainer');
+            const levelInfo = levelConfig[logEntry.level] || levelConfig.DEBUG;
+            
+            const logElement = document.createElement('div');
+            logElement.className = 'log-entry';
+            logElement.setAttribute('data-level', logEntry.level);
+            
+            let html = `
+                <div class="log-header">
+                    <span class="log-timestamp">${logEntry.timestamp}</span>
+                    <span class="log-level level-${logEntry.level}">${levelInfo.icon} ${logEntry.level}</span>
+                    <span class="log-source">${logEntry.source || 'Unknown'}</span>
+                </div>
+                <div class="log-message">${escapeHtml(logEntry.message)}</div>
+            `;
+            
+            if (logEntry.details) {
+                const detailsStr = typeof logEntry.details === 'object' 
+                    ? JSON.stringify(logEntry.details, null, 2)
+                    : String(logEntry.details);
+                html += `<div class="log-details">${escapeHtml(detailsStr)}</div>`;
+            }
+            
+            logElement.innerHTML = html;
+            
+            // Apply current filter
+            if (currentFilter !== 'all' && logEntry.level !== currentFilter) {
+                logElement.style.display = 'none';
+            }
+            
+            container.appendChild(logElement);
+        }
+        
+        function refreshLogDisplay() {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = '';
+            
+            logs.forEach(log => renderLog(log));
+            updateLogCount();
+        }
+        
+        function filterLogs(level) {
+            currentFilter = level;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-level="${level}"]`).classList.add('active');
+            
+            // Show/hide logs
+            document.querySelectorAll('.log-entry').forEach(entry => {
+                const entryLevel = entry.getAttribute('data-level');
+                if (level === 'all' || entryLevel === level) {
+                    entry.style.display = 'block';
+                } else {
+                    entry.style.display = 'none';
+                }
+            });
+        }
+        
+        function clearLogs() {
+            logs = [];
+            document.getElementById('logsContainer').innerHTML = '';
+            updateLogCount();
+        }
+        
+        function exportLogs() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                totalLogs: logs.length,
+                logs: logs
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `penguintwist-debug-${new Date().toISOString().substr(0, 19).replace(/:/g, '-')}.json`;
+            link.click();
+        }
+        
+        function updateLogCount() {
+            document.getElementById('logCount').textContent = `${logs.length} logs`;
+        }
+        
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            const button = document.getElementById('autoScrollToggle');
+            
+            if (autoScroll) {
+                button.textContent = '📍 Auto Scroll: ON';
+                button.classList.remove('disabled');
+                scrollToBottom();
+            } else {
+                button.textContent = '📍 Auto Scroll: OFF';
+                button.classList.add('disabled');
+            }
+        }
+        
+        function scrollToBottom() {
+            const container = document.getElementById('logsContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Send ping to parent to establish connection
+        if (window.opener) {
+            window.opener.postMessage({ type: 'PENGUIN_DEBUG_PING' }, '*');
+        }
+        
+        // Periodic ping to maintain connection
+        setInterval(() => {
+            if (window.opener) {
+                window.opener.postMessage({ type: 'PENGUIN_DEBUG_PING' }, '*');
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
