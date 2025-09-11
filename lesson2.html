@@ -11,12 +11,49 @@
     
     <!-- Shared Styles -->
     <link rel="stylesheet" href="shared/lesson-styles.css">
+    
+    <style>
+        /* Updated Dark Mode Toggle Styles */
+        .dark-mode-container {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 2;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .dark-mode-container:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark-mode-label {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            user-select: none;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        /* Hide the checkbox completely */
+        #dark-mode-toggle {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
-        <div class="dark-mode-container">
-            <input type="checkbox" id="dark-mode-toggle">
-            <label for="dark-mode-toggle" class="dark-mode-label">🌙 Dark Mode</label>
+        <div class="dark-mode-container" id="dark-mode-container">
+            <input type="checkbox" id="dark-mode-toggle" style="display: none;">
+            <label for="dark-mode-toggle" class="dark-mode-label" id="dark-mode-label">🌙 Dark Mode</label>
         </div>
         <div class="container">
             <h1>Lesson 2: Variables</h1>
@@ -223,6 +260,48 @@ Alex
             ]
         };
 
+        // Updated dark mode functionality
+        function setupDarkMode() {
+            var container = document.getElementById('dark-mode-container');
+            var toggle = document.getElementById('dark-mode-toggle');
+            var label = document.getElementById('dark-mode-label');
+            
+            if (!container || !toggle || !label) return;
+            
+            // Load saved preference
+            var isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                toggle.checked = true;
+                label.textContent = '☀️ Light Mode';
+            }
+            
+            // Click handler for the entire container
+            container.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggle.checked = !toggle.checked;
+                
+                try {
+                    if (toggle.checked) {
+                        document.body.classList.add('dark-mode');
+                        localStorage.setItem('darkMode', 'true');
+                        label.textContent = '☀️ Light Mode';
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                        localStorage.setItem('darkMode', 'false');
+                        label.textContent = '🌙 Dark Mode';
+                    }
+                    
+                    // Notify other components
+                    var event = document.createEvent('CustomEvent');
+                    event.initEvent('themeChanged', true, true);
+                    document.dispatchEvent(event);
+                } catch (e) {
+                    console.warn('Could not save dark mode preference:', e);
+                }
+            });
+        }
+
         // ES5 compatible initialization following technical integration spec
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
@@ -377,22 +456,6 @@ Alex
                         '<p>Please refresh if this message persists.</p>' +
                         '</div>';
                 }
-            }
-
-            // Basic dark mode fallback
-            var toggle = document.getElementById('dark-mode-toggle');
-            var label = document.querySelector('.dark-mode-label');
-            
-            if (toggle && label) {
-                toggle.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.body.className = 'dark-mode';
-                        label.textContent = '☀️ Light Mode';
-                    } else {
-                        document.body.className = '';
-                        label.textContent = '🌙 Dark Mode';
-                    }
-                });
             }
         }
     </script>
