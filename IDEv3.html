@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python IDE - Lessons 1-10</title>
+    <title>Python IDE - Enhanced with List Support</title>
     
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -196,6 +196,11 @@
             background: #5a5030;
         }
         
+        .memory-item.list {
+            border-color: #64b5f6;
+            background: #37474f;
+        }
+        
         .memory-item.new {
             animation: memoryHighlight 1s ease-in-out;
         }
@@ -273,7 +278,7 @@
         <div class="header">
             <h1>Python IDE</h1>
             <p>Educational Python interpreter with memory tracking</p>
-            <span class="lesson-badge">✅ Lessons 1-10 Ready</span>
+            <span class="lesson-badge">✅ Enhanced with List Support</span>
         </div>
         
         <div class="python-playground">
@@ -286,31 +291,53 @@
                 </div>
             </div>
             <div class="editor-container">
-                <textarea id="editor"># Lesson 10: Logical Operators (and, or, not)
-# Try combining conditions with logical operators!
+                <textarea id="editor"># List operations are now supported!
+numbers = [1, 2, 3]
+print("Original list:", numbers)
 
-age = 16
-has_permission = True
-is_weekend = False
+# Append a new element
+numbers.append(4)
+print("After appending 4:", numbers)
 
-# Using 'and' - both conditions must be True
-if age >= 13 and age <= 19:
-    print("You are a teenager")
+# Append multiple elements one by one
+numbers.append(5)
+numbers.append(6)
+print("After appending 5 and 6:", numbers)
 
-# Using 'or' - at least one condition must be True
-if is_weekend or has_permission:
-    print("You can go to the party!")
+# Append different data types
+numbers.append("seven")
+print("After appending a string:", numbers)
 
-# Using 'not' - reverses the boolean value
-if not is_weekend:
-    print("It's a school day")
+# You can also create an empty list and append to it
+empty_list = []
+empty_list.append("first")
+empty_list.append("second")
+print("Empty list after appending:", empty_list)
 
-# Store boolean results in variables
-is_teenager = age >= 13 and age <= 19
-print("Is teenager:", is_teenager)</textarea>
+# Try your own list operations below!</textarea>
             </div>
             <div class="output-container" id="output"></div>
             <div class="memory-tracker" id="memoryTracker"></div>
+        </div>
+
+        <div class="info-panel">
+            <h3>List Operations Now Supported!</h3>
+            <p>Your Python IDE now supports the <code>.append()</code> method for lists. Try these examples:</p>
+            
+            <div class="tip">
+                <strong>Try these examples:</strong><br>
+                <code>numbers = [1, 2, 3]</code><br>
+                <code>numbers.append(4)</code><br>
+                <code>print(numbers)  # Output: [1, 2, 3, 4]</code>
+            </div>
+            
+            <p>You can also create empty lists and append items to them:</p>
+            <div class="tip">
+                <code>shopping_list = []</code><br>
+                <code>shopping_list.append("apples")</code><br>
+                <code>shopping_list.append("bread")</code><br>
+                <code>print(shopping_list)  # Output: ['apples', 'bread']</code>
+            </div>
         </div>
     </div>
     
@@ -321,30 +348,32 @@ print("Is teenager:", is_teenager)</textarea>
     <script>
         let editor;
         
-        const defaultCode = `# Lesson 10: Logical Operators (and, or, not)
-# Try combining conditions with logical operators!
+        const defaultCode = `# List operations are now supported!
+numbers = [1, 2, 3]
+print("Original list:", numbers)
 
-age = 16
-has_permission = True
-is_weekend = False
+# Append a new element
+numbers.append(4)
+print("After appending 4:", numbers)
 
-# Using 'and' - both conditions must be True
-if age >= 13 and age <= 19:
-    print("You are a teenager")
+# Append multiple elements one by one
+numbers.append(5)
+numbers.append(6)
+print("After appending 5 and 6:", numbers)
 
-# Using 'or' - at least one condition must be True
-if is_weekend or has_permission:
-    print("You can go to the party!")
+# Append different data types
+numbers.append("seven")
+print("After appending a string:", numbers)
 
-# Using 'not' - reverses the boolean value
-if not is_weekend:
-    print("It's a school day")
+# You can also create an empty list and append to it
+empty_list = []
+empty_list.append("first")
+empty_list.append("second")
+print("Empty list after appending:", empty_list)
 
-# Store boolean results in variables
-is_teenager = age >= 13 and age <= 19
-print("Is teenager:", is_teenager)`;
+# Try your own list operations below!`;
 
-        // Enhanced Educational Python Interpreter with Lessons 1-10
+        // Enhanced Educational Python Interpreter with List Support
         class EducationalPythonInterpreter {
             constructor(options = {}) {
                 this.output = [];
@@ -528,7 +557,7 @@ print("Is teenager:", is_teenager)`;
                 }
             }
             
-            // NEW: Evaluate logical expressions with and, or, not
+            // Evaluate logical expressions with and, or, not
             evaluateLogicalExpression(expr) {
                 expr = expr.trim();
                 
@@ -559,7 +588,7 @@ print("Is teenager:", is_teenager)`;
                 return this.evaluateSimpleExpression(expr);
             }
             
-            // NEW: Split expression by operator, respecting parentheses
+            // Split expression by operator, respecting parentheses
             splitByOperator(expr, operator) {
                 const parts = [];
                 let current = '';
@@ -605,7 +634,7 @@ print("Is teenager:", is_teenager)`;
                 return parts.length > 0 ? parts : [expr];
             }
             
-            // ENHANCED: Handle boolean values and comparisons
+            // Handle boolean values and comparisons
             evaluateSimpleExpression(expr) {
                 // Check for comparison operators
                 const compOps = ['==', '!=', '>=', '<=', '>', '<'];
@@ -631,7 +660,7 @@ print("Is teenager:", is_teenager)`;
                 return this.toBool(value);
             }
             
-            // NEW: Convert to boolean using Python truthiness
+            // Convert to boolean using Python truthiness
             toBool(value) {
                 if (value === true || value === 'True') return true;
                 if (value === false || value === 'False') return false;
@@ -650,6 +679,10 @@ print("Is teenager:", is_teenager)`;
                 else if (line.includes('input(')) {
                     throw new Error(`'input()' function requires user interaction and cannot be simulated in this environment yet.`);
                 }
+                // NEW: Handle list method calls
+                else if (line.includes('.append(')) {
+                    this.handleListAppend(line);
+                }
                 // Variable assignment (including those with comparison operators)
                 else if (line.includes('=')) {
                     // Check if it's an assignment (has = but not inside a string)
@@ -665,7 +698,35 @@ print("Is teenager:", is_teenager)`;
                 }
             }
             
-            // ENHANCED: Handle assignment with logical expressions
+            // NEW: Handle list append operations
+            handleListAppend(line) {
+                const match = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\.append\s*\(\s*(.+)\s*\)$/);
+                if (!match) {
+                    throw new Error(`Invalid append syntax: ${line}`);
+                }
+                
+                const listName = match[1];
+                const valueToAppend = match[2].trim();
+                
+                if (!this.variables.hasOwnProperty(listName)) {
+                    throw new Error(`Variable '${listName}' is not defined`);
+                }
+                
+                const list = this.variables[listName];
+                if (!Array.isArray(list)) {
+                    throw new Error(`'${listName}' is not a list`);
+                }
+                
+                // Evaluate the value to append
+                const evaluatedValue = this.evaluateValue(valueToAppend);
+                
+                // Append the value to the list
+                list.push(evaluatedValue);
+                
+                this.log(`Appended ${evaluatedValue} to list ${listName}`);
+            }
+            
+            // Handle assignment with logical expressions
             handleAssignment(line) {
                 const match = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$/);
                 if (!match) {
@@ -737,18 +798,18 @@ print("Is teenager:", is_teenager)`;
                 }
             }
             
-            // NEW: Check if expression contains logical operators
+            // Check if expression contains logical operators
             isLogicalExpression(expr) {
                 return expr.includes(' and ') || expr.includes(' or ') || expr.startsWith('not ');
             }
             
-            // NEW: Check if expression contains comparison operators
+            // Check if expression contains comparison operators
             isComparisonExpression(expr) {
                 const compOps = ['==', '!=', '>=', '<=', '>', '<'];
                 return compOps.some(op => expr.includes(op));
             }
             
-            // ENHANCED: Evaluate values including booleans
+            // Evaluate values including booleans
             evaluateValue(expr) {
                 expr = expr.trim();
                 
@@ -820,6 +881,8 @@ print("Is teenager:", is_teenager)`;
                                 outputParts.push(value ? 'True' : 'False');
                             } else if (value === null) {
                                 outputParts.push('None');
+                            } else if (Array.isArray(value)) {
+                                outputParts.push(JSON.stringify(value).replace(/"/g, "'"));
                             } else {
                                 outputParts.push(value);
                             }
@@ -871,7 +934,7 @@ print("Is teenager:", is_teenager)`;
                 return args;
             }
             
-            // NEW: Parse list literals
+            // Parse list literals
             parseList(expr) {
                 // Remove brackets
                 const content = expr.slice(1, -1).trim();
@@ -991,7 +1054,7 @@ print("Is teenager:", is_teenager)`;
                 return elements;
             }
             
-            // ENHANCED: Display with boolean highlighting
+            // Display with boolean highlighting
             getVariablesDisplay() {
                 if (Object.keys(this.variables).length === 0) {
                     return '';
@@ -1008,6 +1071,9 @@ print("Is teenager:", is_teenager)`;
                         } else if (value === null) {
                             displayValue = 'None';
                             className += ' boolean';
+                        } else if (Array.isArray(value)) {
+                            displayValue = JSON.stringify(value).replace(/"/g, "'");
+                            className += ' list';
                         } else if (typeof value === 'string') {
                             displayValue = `"${value}"`;
                         } else {
