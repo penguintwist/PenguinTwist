@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenguinTwist Python IDE - Full Python 3</title>
+    
+    <!-- Brython -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            color: #333;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .lesson-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1.5rem;
+        }
+        
+        .python-playground {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .playground-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .playground-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-run {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-run:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #545b62;
+            transform: translateY(-1px);
+        }
+        
+        .btn-clear {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .CodeMirror {
+            height: 400px;
+            font-size: 14px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+        
+        .output-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            height: 250px;
+            overflow-y: auto;
+            border-top: 2px solid #667eea;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .output-container:empty::before {
+            content: "Click 'Run Code' to see your output here...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .memory-tracker {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 12px;
+            border-top: 1px solid #333;
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .memory-tracker:empty::before {
+            content: "Variables will appear here when you run code...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .memory-tracker-title {
+            color: #81c784;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+        
+        .memory-item {
+            display: inline-block;
+            background: #4a5568;
+            border: 1px solid #81c784;
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            margin: 0.2rem;
+            font-size: 11px;
+        }
+        
+        .memory-item.function {
+            border-color: #e91e63;
+            background: #4a1e3a;
+        }
+        
+        .memory-item.list {
+            border-color: #64b5f6;
+            background: #37474f;
+        }
+        
+        .memory-item.dict {
+            border-color: #ff9800;
+            background: #4a3a1f;
+        }
+        
+        .memory-item.bool {
+            border-color: #ffd93d;
+            background: #5a5030;
+        }
+        
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-panel h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .example-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .example-list li {
+            background: #f8f9fa;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .example-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+        
+        .example-list li strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        .example-list li code {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            line-height: 1.5;
+        }
+        
+        .success {
+            color: #28a745;
+            line-height: 1.5;
+        }
+        
+        .input-prompt {
+            color: #ffc107;
+            font-style: italic;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .side-panel {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .playground-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body onload="brython()">
+    <div class="container">
+        <div class="header">
+            <h1>🐧 PenguinTwist Python IDE</h1>
+            <p class="subtitle">Full Python 3 Support with Brython</p>
+            <span class="lesson-badge">✨ All 25 Lessons Supported!</span>
+        </div>
+        
+        <div class="main-content">
+            <div class="python-playground">
+                <div class="playground-header">
+                    <span>Python Code Editor</span>
+                    <div class="playground-controls">
+                        <button class="btn btn-run" id="runBtn" onclick="runPythonCode()">▶ Run Code</button>
+                        <button class="btn btn-reset" onclick="resetCode()">🔄 Reset</button>
+                        <button class="btn btn-clear" onclick="clearOutput()">🗑️ Clear Output</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="editor"># Welcome to PenguinTwist Python IDE!
+# Full Python 3 support - all features work!
+
+# Lesson 11-12: Lists and methods
+numbers = [1, 2, 3, 4, 5]
+numbers.append(6)
+numbers.remove(3)
+last = numbers.pop()
+print(f"Numbers: {numbers}, Popped: {last}")
+
+# Lesson 13-16: Loops
+for num in numbers:
+    print(f"Double of {num} is {num * 2}")
+
+# Lesson 17-20: Functions
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))
+
+# Lesson 21-25: Advanced features
+data = {"name": "Alice", "age": 25}
+print(f"Student: {data['name']}, Age: {data['age']}")
+
+# Try anything - it all works!</textarea>
+                </div>
+                <div class="output-container" id="output"></div>
+                <div class="memory-tracker" id="memoryTracker"></div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="info-panel">
+                    <h3>📚 Quick Examples</h3>
+                    <ul class="example-list">
+                        <li onclick="loadExample('lists')">
+                            <strong>Lists & Methods</strong>
+                            <code>append(), remove(), pop(), len()</code>
+                        </li>
+                        <li onclick="loadExample('loops')">
+                            <strong>For & While Loops</strong>
+                            <code>for, while, range(), break, continue</code>
+                        </li>
+                        <li onclick="loadExample('functions')">
+                            <strong>Functions</strong>
+                            <code>def, return, parameters, scope</code>
+                        </li>
+                        <li onclick="loadExample('conditions')">
+                            <strong>Conditionals</strong>
+                            <code>if, elif, else, and, or, not</code>
+                        </li>
+                        <li onclick="loadExample('dictionaries')">
+                            <strong>Dictionaries</strong>
+                            <code>dict, keys(), values(), items()</code>
+                        </li>
+                        <li onclick="loadExample('files')">
+                            <strong>String Operations</strong>
+                            <code>split(), join(), format(), f-strings</code>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-panel">
+                    <h3>✨ Features</h3>
+                    <ul style="margin-left: 1.5rem; color: #666; font-size: 14px;">
+                        <li>Full Python 3 syntax support</li>
+                        <li>All built-in functions work</li>
+                        <li>List comprehensions</li>
+                        <li>Dictionary operations</li>
+                        <li>String formatting & f-strings</li>
+                        <li>Error handling (try/except)</li>
+                        <li>Lambda functions</li>
+                        <li>And much more!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <!-- Python code that runs in Brython -->
+    <script type="text/python">
+from browser import document, window, html
+import sys
+import io
+import traceback
+import json
+
+class OutputCapture:
+    def __init__(self, output_element):
+        self.output_element = output_element
+        self.content = []
+    
+    def write(self, text):
+        self.content.append(str(text))
+        # Update the output element immediately
+        self.output_element.text = ''.join(self.content)
+    
+    def flush(self):
+        pass
+    
+    def clear(self):
+        self.content = []
+        self.output_element.text = ''
+
+def get_variables(local_vars):
+    """Extract user-defined variables from locals, excluding built-ins"""
+    excluded = {'__builtins__', '__name__', '__doc__', '__package__', 
+                '__loader__', '__spec__', '__annotations__', '__cached__',
+                'sys', 'io', 'document', 'window', 'html', 'traceback', 'json',
+                'OutputCapture', 'get_variables', 'run_code', 'output_capture'}
+    
+    variables = {}
+    for name, value in local_vars.items():
+        if not name.startswith('_') and name not in excluded:
+            variables[name] = value
+    return variables
+
+def format_value(value):
+    """Format a value for display"""
+    if callable(value):
+        return f"<function {value.__name__}>"
+    elif isinstance(value, list):
+        if len(value) > 10:
+            return f"[{', '.join(map(str, value[:10]))}, ... ({len(value)} items)]"
+        return str(value)
+    elif isinstance(value, dict):
+        if len(value) > 5:
+            items = list(value.items())[:5]
+            return "{" + ", ".join(f"{k}: {v}" for k, v in items) + f", ... ({len(value)} items)" + "}"
+        return str(value)
+    elif isinstance(value, str):
+        if len(value) > 50:
+            return f'"{value[:50]}..."'
+        return f'"{value}"'
+    else:
+        return str(value)
+
+def get_type_class(value):
+    """Get CSS class based on value type"""
+    if callable(value):
+        return "function"
+    elif isinstance(value, list):
+        return "list"
+    elif isinstance(value, dict):
+        return "dict"
+    elif isinstance(value, bool):
+        return "bool"
+    return ""
+
+# Initialize output capture
+output_element = document["output"]
+output_capture = OutputCapture(output_element)
+
+def run_code():
+    code = window.editor.getValue()
+    output_element = document["output"]
+    memory_element = document["memoryTracker"]
+    
+    # Clear previous output
+    output_capture.clear()
+    
+    # Redirect stdout
+    old_stdout = sys.stdout
+    sys.stdout = output_capture
+    
+    # Create a local namespace for execution
+    local_namespace = {}
+    
+    try:
+        # Execute the code
+        exec(code, {"__builtins__": __builtins__}, local_namespace)
+        
+        # Get variables (excluding our internal ones)
+        variables = get_variables(local_namespace)
+        
+        # Update memory tracker
+        if variables:
+            memory_html = '<div class="memory-tracker-title">📦 Variables:</div>'
+            for name, value in variables.items():
+                type_class = get_type_class(value)
+                formatted_value = format_value(value)
+                memory_html += f'<span class="memory-item {type_class}">{name} = {formatted_value}</span>'
+            memory_element.html = memory_html
+        else:
+            memory_element.html = ''
+        
+        # If no output was produced, show success message
+        if not output_capture.content:
+            output_element.html = '<div class="success">Code executed successfully (no output)</div>'
+            
+    except Exception as e:
+        # Format error message
+        error_type = type(e).__name__
+        error_msg = str(e)
+        
+        # Get traceback
+        tb = traceback.format_exc()
+        
+        # Find the line number in user code
+        lines = tb.split('\n')
+        for line in lines:
+            if 'File "<string>"' in line:
+                # Extract line number
+                import re
+                match = re.search(r'line (\d+)', line)
+                if match:
+                    line_num = match.group(1)
+                    error_msg = f"Line {line_num}: {error_msg}"
+                    break
+        
+        output_element.html = f'<div class="error">{error_type}: {error_msg}</div>'
+        
+    finally:
+        sys.stdout = old_stdout
+
+# Make the function available to JavaScript
+window.runPythonCode = run_code
+    </script>
+    
+    <!-- Regular JavaScript -->
+    <script>
+        let editor;
+        
+        const examples = {
+            lists: `# Lists and List Methods
+fruits = ["apple", "banana", "orange"]
+print("Original list:", fruits)
+
+# Append items
+fruits.append("grape")
+fruits.append("mango")
+print("After appending:", fruits)
+
+# Remove an item
+fruits.remove("banana")
+print("After removing banana:", fruits)
+
+# Pop the last item
+last_fruit = fruits.pop()
+print(f"Popped {last_fruit}, list is now:", fruits)
+
+# Pop at specific index
+first_fruit = fruits.pop(0)
+print(f"Popped {first_fruit} from index 0")
+
+# List operations
+numbers = [1, 2, 3, 4, 5]
+print(f"Sum: {sum(numbers)}")
+print(f"Max: {max(numbers)}")
+print(f"Min: {min(numbers)}")
+print(f"Length: {len(numbers)}")
+
+# List slicing
+print("First 3:", numbers[:3])
+print("Last 2:", numbers[-2:])`,
+
+            loops: `# For Loops
+print("For loop with list:")
+colors = ["red", "green", "blue"]
+for color in colors:
+    print(f"  Color: {color}")
+
+print("\\nFor loop with range:")
+for i in range(5):
+    print(f"  Count: {i}")
+
+print("\\nFor loop with enumerate:")
+for index, color in enumerate(colors):
+    print(f"  {index}: {color}")
+
+# While loop
+print("\\nWhile loop:")
+count = 0
+while count < 5:
+    print(f"  Count is {count}")
+    count += 1
+
+# Break and continue
+print("\\nBreak and continue:")
+for i in range(10):
+    if i == 3:
+        continue  # Skip 3
+    if i == 7:
+        break     # Stop at 7
+    print(f"  {i}")`,
+
+            functions: `# Function definitions
+def greet(name):
+    """Simple greeting function"""
+    return f"Hello, {name}!"
+
+def add(a, b):
+    """Add two numbers"""
+    return a + b
+
+def calculate_area(length, width=10):
+    """Calculate area with default width"""
+    return length * width
+
+# Using functions
+print(greet("Alice"))
+print(greet("Bob"))
+
+result = add(5, 3)
+print(f"5 + 3 = {result}")
+
+# Default parameters
+print(f"Area (5 x 10): {calculate_area(5)}")
+print(f"Area (5 x 20): {calculate_area(5, 20)}")
+
+# Function with multiple returns
+def get_stats(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+data = [10, 20, 30, 40, 50]
+minimum, maximum, average = get_stats(data)
+print(f"Min: {minimum}, Max: {maximum}, Avg: {average}")
+
+# Lambda functions
+square = lambda x: x ** 2
+print(f"Square of 7: {square(7)}")`,
+
+            conditions: `# If/elif/else statements
+age = 18
+has_license = True
+
+print(f"Age: {age}, Has License: {has_license}")
+
+# Simple if
+if age >= 18:
+    print("You are an adult")
+
+# If-else
+if age >= 21:
+    print("You can drink in the US")
+else:
+    print("You cannot drink in the US")
+
+# If-elif-else
+if age < 13:
+    category = "child"
+elif age < 18:
+    category = "teenager"
+elif age < 65:
+    category = "adult"
+else:
+    category = "senior"
+
+print(f"Category: {category}")
+
+# Logical operators
+if age >= 16 and has_license:
+    print("You can drive")
+
+if age < 18 or not has_license:
+    print("Check driving requirements")
+
+# Nested conditions
+score = 85
+if score >= 60:
+    print("Passed!")
+    if score >= 90:
+        print("Grade: A")
+    elif score >= 80:
+        print("Grade: B")
+    elif score >= 70:
+        print("Grade: C")
+    else:
+        print("Grade: D")
+else:
+    print("Failed")`,
+
+            dictionaries: `# Dictionaries
+student = {
+    "name": "Alice",
+    "age": 20,
+    "grades": [85, 90, 78],
+    "active": True
+}
+
+print("Student dictionary:", student)
+print(f"Name: {student['name']}")
+print(f"Age: {student['age']}")
+
+# Adding/updating values
+student["email"] = "alice@example.com"
+student["age"] = 21
+print("After updates:", student)
+
+# Dictionary methods
+print(f"Keys: {list(student.keys())}")
+print(f"Values: {list(student.values())}")
+
+# Iterating over dictionary
+print("\\nIterating over items:")
+for key, value in student.items():
+    print(f"  {key}: {value}")
+
+# Nested dictionaries
+classroom = {
+    "student1": {"name": "Bob", "grade": 85},
+    "student2": {"name": "Carol", "grade": 92},
+    "student3": {"name": "Dave", "grade": 78}
+}
+
+print("\\nClassroom grades:")
+for student_id, info in classroom.items():
+    print(f"  {info['name']}: {info['grade']}")
+
+# Dictionary comprehension
+squares = {x: x**2 for x in range(5)}
+print(f"\\nSquares: {squares}")`,
+
+            files: `# String operations
+text = "Python Programming is Fun"
+print(f"Original: '{text}'")
+
+# String methods
+print(f"Uppercase: {text.upper()}")
+print(f"Lowercase: {text.lower()}")
+print(f"Title case: {text.title()}")
+print(f"Length: {len(text)}")
+
+# Split and join
+words = text.split()
+print(f"Words: {words}")
+rejoined = "-".join(words)
+print(f"Joined with dash: {rejoined}")
+
+# String formatting
+name = "Alice"
+age = 25
+height = 5.6
+
+# Old style
+print("Old: %s is %d years old" % (name, age))
+
+# Format method
+print("Format: {} is {} years old".format(name, age))
+
+# F-strings (recommended)
+print(f"F-string: {name} is {age} years old and {height:.1f} feet tall")
+
+# String slicing
+email = "user@example.com"
+username = email[:email.index('@')]
+domain = email[email.index('@')+1:]
+print(f"Email: {email}")
+print(f"Username: {username}")
+print(f"Domain: {domain}")
+
+# List comprehension with strings
+sentence = "hello world"
+vowel_count = sum(1 for char in sentence if char in 'aeiou')
+print(f"Vowels in '{sentence}': {vowel_count}")`
+        };
+        
+        function initializeEditor() {
+            const textarea = document.getElementById('editor');
+            editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                fontSize: '14px'
+            });
+        }
+        
+        function loadExample(exampleName) {
+            if (examples[exampleName]) {
+                editor.setValue(examples[exampleName]);
+                clearOutput();
+            }
+        }
+        
+        function resetCode() {
+            editor.setValue(`# Welcome to PenguinTwist Python IDE!
+# Full Python 3 support - all features work!
+
+# Lesson 11-12: Lists and methods
+numbers = [1, 2, 3, 4, 5]
+numbers.append(6)
+numbers.remove(3)
+last = numbers.pop()
+print(f"Numbers: {numbers}, Popped: {last}")
+
+# Lesson 13-16: Loops
+for num in numbers:
+    print(f"Double of {num} is {num * 2}")
+
+# Lesson 17-20: Functions
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))
+
+# Lesson 21-25: Advanced features
+data = {"name": "Alice", "age": 25}
+print(f"Student: {data['name']}, Age: {data['age']}")
+
+# Try anything - it all works!`);
+            clearOutput();
+        }
+        
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('memoryTracker').innerHTML = '';
+        }
+        
+        function runPythonCode() {
+            const runBtn = document.getElementById('runBtn');
+            runBtn.disabled = true;
+            runBtn.textContent = 'Running...';
+            
+            // Clear output first
+            document.getElementById('output').innerHTML = '<div style="color: #ffc107;">Running your code...</div>';
+            
+            // Small delay for visual feedback
+            setTimeout(() => {
+                try {
+                    window.runPythonCode();
+                } catch (error) {
+                    document.getElementById('output').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                } finally {
+                    runBtn.disabled = false;
+                    runBtn.textContent = '▶ Run Code';
+                }
+            }, 100);
+        }
+        
+        // Initialize editor when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+        });
+        
+        // Allow Ctrl+Enter to run code
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                runPythonCode();
+            }
+        });
+    </script>
+</body>
+</html>
