@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenguinTwist Python IDE - Skulpt Edition</title>
+    
+    <!-- Skulpt -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt-stdlib.js"></script>
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            color: #333;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .lesson-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1.5rem;
+        }
+        
+        .python-playground {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .playground-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .playground-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .btn-run {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-run:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .btn-stop {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-stop:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+        
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #545b62;
+            transform: translateY(-1px);
+        }
+        
+        .btn-clear {
+            background: #fd7e14;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background: #e56910;
+            transform: translateY(-1px);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.6;
+        }
+        
+        .CodeMirror {
+            height: 400px;
+            font-size: 14px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+        
+        .output-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            height: 250px;
+            overflow-y: auto;
+            border-top: 2px solid #667eea;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .output-container:empty::before {
+            content: "Click 'Run Code' to see your output here...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .memory-tracker {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 12px;
+            border-top: 1px solid #333;
+            min-height: 80px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .memory-tracker:empty::before {
+            content: "Variables will appear here when you run code...";
+            color: #666;
+            font-style: italic;
+        }
+        
+        .memory-tracker-title {
+            color: #81c784;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+        
+        .memory-item {
+            display: inline-block;
+            background: #4a5568;
+            border: 1px solid #81c784;
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            margin: 0.2rem;
+            font-size: 11px;
+        }
+        
+        .memory-item.function {
+            border-color: #e91e63;
+            background: #4a1e3a;
+        }
+        
+        .memory-item.list {
+            border-color: #64b5f6;
+            background: #37474f;
+        }
+        
+        .memory-item.dict {
+            border-color: #ff9800;
+            background: #4a3a1f;
+        }
+        
+        .memory-item.bool {
+            border-color: #ffd93d;
+            background: #5a5030;
+        }
+        
+        .memory-item.module {
+            border-color: #9c27b0;
+            background: #3a1a4a;
+        }
+        
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-panel h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        
+        .example-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .example-list li {
+            background: #f8f9fa;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .example-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+            border-color: #667eea;
+        }
+        
+        .example-list li strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        .example-list li code {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            line-height: 1.5;
+        }
+        
+        .success {
+            color: #28a745;
+            line-height: 1.5;
+        }
+        
+        .input-container {
+            background: #2a2a2a;
+            border: 1px solid #667eea;
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .input-prompt {
+            color: #ffc107;
+            font-style: italic;
+            margin-right: 0.5rem;
+        }
+        
+        .input-field {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            width: calc(100% - 100px);
+        }
+        
+        .input-submit {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .side-panel {
+                order: -1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .playground-controls {
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐧 PenguinTwist Python IDE</h1>
+            <p class="subtitle">Powered by Skulpt - Python in Your Browser</p>
+            <span class="lesson-badge">✨ All Core Python Features Supported!</span>
+        </div>
+        
+        <div class="main-content">
+            <div class="python-playground">
+                <div class="playground-header">
+                    <span>Python Code Editor</span>
+                    <div class="playground-controls">
+                        <button class="btn btn-run" id="runBtn" onclick="runCode()">▶ Run</button>
+                        <button class="btn btn-stop" id="stopBtn" onclick="stopCode()" style="display: none;">⏹ Stop</button>
+                        <button class="btn btn-reset" onclick="resetCode()">🔄 Reset</button>
+                        <button class="btn btn-clear" onclick="clearOutput()">🗑️ Clear</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="editor"># Welcome to PenguinTwist Python IDE!
+# Powered by Skulpt - Most Python features work!
+
+# Lesson 11-12: Lists and methods
+numbers = [1, 2, 3, 4, 5]
+numbers.append(6)
+numbers.remove(3)
+last = numbers.pop()
+print("Numbers:", numbers, "Popped:", last)
+
+# Lesson 13-16: Loops
+print("\nLoop examples:")
+for num in numbers[:3]:
+    print("  Double of", num, "is", num * 2)
+
+# While loop
+count = 0
+while count < 3:
+    print("  Count:", count)
+    count += 1
+
+# Lesson 17-20: Functions
+def greet(name):
+    return "Hello, " + name + "!"
+
+print("\n" + greet("World"))
+
+# Lesson 21-25: Dictionaries
+student = {"name": "Alice", "age": 20, "grade": "A"}
+print("\nStudent:", student["name"])
+print("Age:", student["age"])
+print("Grade:", student["grade"])
+
+# String operations
+text = "Python Programming"
+print("\nText:", text)
+print("Uppercase:", text.upper())
+print("Length:", len(text))
+
+# Try your own code below!</textarea>
+                </div>
+                <div class="output-container" id="output"></div>
+                <div class="memory-tracker" id="memoryTracker"></div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="info-panel">
+                    <h3>📚 Quick Examples</h3>
+                    <ul class="example-list">
+                        <li onclick="loadExample('lists')">
+                            <strong>Lists & Methods</strong>
+                            <code>append(), remove(), pop(), len()</code>
+                        </li>
+                        <li onclick="loadExample('loops')">
+                            <strong>For & While Loops</strong>
+                            <code>for, while, range(), break, continue</code>
+                        </li>
+                        <li onclick="loadExample('functions')">
+                            <strong>Functions</strong>
+                            <code>def, return, parameters</code>
+                        </li>
+                        <li onclick="loadExample('conditions')">
+                            <strong>Conditionals</strong>
+                            <code>if, elif, else, and, or, not</code>
+                        </li>
+                        <li onclick="loadExample('dictionaries')">
+                            <strong>Dictionaries</strong>
+                            <code>dict, keys(), values(), items()</code>
+                        </li>
+                        <li onclick="loadExample('algorithms')">
+                            <strong>Algorithms</strong>
+                            <code>sorting, searching, counting</code>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="info-panel">
+                    <h3>✨ Skulpt Features</h3>
+                    <ul style="margin-left: 1.5rem; color: #666; font-size: 14px;">
+                        <li>Python 2.7 syntax (mostly)</li>
+                        <li>Lists, tuples, dictionaries</li>
+                        <li>Functions and classes</li>
+                        <li>For/while loops</li>
+                        <li>String operations</li>
+                        <li>Math operations</li>
+                        <li>Input() function works!</li>
+                        <li>Turtle graphics available</li>
+                    </ul>
+                    
+                    <div style="margin-top: 1rem; padding: 0.8rem; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
+                        <strong style="color: #856404;">Note:</strong>
+                        <span style="color: #856404; font-size: 13px;">Some Python 3 features like f-strings aren't supported. Use .format() or % formatting instead.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    
+    <script>
+        let editor;
+        let isRunning = false;
+        let myPromise = null;
+        
+        const examples = {
+            lists: `# Lists and List Methods
+fruits = ["apple", "banana", "orange"]
+print("Original list:", fruits)
+
+# Append items
+fruits.append("grape")
+fruits.append("mango")
+print("After appending:", fruits)
+
+# Remove an item
+fruits.remove("banana")
+print("After removing banana:", fruits)
+
+# Pop the last item
+last_fruit = fruits.pop()
+print("Popped", last_fruit, "- list is now:", fruits)
+
+# Pop at specific index
+first_fruit = fruits.pop(0)
+print("Popped", first_fruit, "from index 0")
+
+# List operations
+numbers = [1, 2, 3, 4, 5]
+print("\\nNumbers:", numbers)
+print("Sum:", sum(numbers))
+print("Max:", max(numbers))
+print("Min:", min(numbers))
+print("Length:", len(numbers))
+
+# List slicing
+print("First 3:", numbers[:3])
+print("Last 2:", numbers[-2:])
+print("Reversed:", numbers[::-1])
+
+# List comprehension
+squares = [x**2 for x in range(5)]
+print("Squares:", squares)`,
+
+            loops: `# For Loops
+print("For loop with list:")
+colors = ["red", "green", "blue"]
+for color in colors:
+    print("  Color:", color)
+
+print("\\nFor loop with range:")
+for i in range(5):
+    print("  Count:", i)
+
+print("\\nFor loop with enumerate:")
+for index, color in enumerate(colors):
+    print("  " + str(index) + ":", color)
+
+# While loop
+print("\\nWhile loop:")
+count = 0
+while count < 5:
+    print("  Count is", count)
+    count += 1
+
+# Break and continue
+print("\\nBreak and continue:")
+for i in range(10):
+    if i == 3:
+        continue  # Skip 3
+    if i == 7:
+        break     # Stop at 7
+    print("  Number:", i)
+
+# Nested loops
+print("\\nMultiplication table:")
+for i in range(1, 4):
+    for j in range(1, 4):
+        print(i, "x", j, "=", i*j, end="  ")
+    print()  # New line`,
+
+            functions: `# Function definitions
+def greet(name):
+    """Simple greeting function"""
+    return "Hello, " + name + "!"
+
+def add(a, b):
+    """Add two numbers"""
+    return a + b
+
+def calculate_area(length, width=10):
+    """Calculate area with default width"""
+    return length * width
+
+# Using functions
+print(greet("Alice"))
+print(greet("Bob"))
+
+result = add(5, 3)
+print("5 + 3 =", result)
+
+# Default parameters
+print("Area (5 x 10):", calculate_area(5))
+print("Area (5 x 20):", calculate_area(5, 20))
+
+# Function with multiple returns
+def get_stats(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+data = [10, 20, 30, 40, 50]
+minimum, maximum, average = get_stats(data)
+print("\\nStatistics for", data)
+print("Min:", minimum, "Max:", maximum, "Avg:", average)
+
+# Recursive function
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+print("\\nFactorial of 5:", factorial(5))`,
+
+            conditions: `# If/elif/else statements
+age = 18
+has_license = True
+
+print("Age:", age, "Has License:", has_license)
+
+# Simple if
+if age >= 18:
+    print("You are an adult")
+
+# If-else
+if age >= 21:
+    print("You can drink in the US")
+else:
+    print("You cannot drink in the US")
+
+# If-elif-else
+if age < 13:
+    category = "child"
+elif age < 18:
+    category = "teenager"
+elif age < 65:
+    category = "adult"
+else:
+    category = "senior"
+
+print("Category:", category)
+
+# Logical operators
+if age >= 16 and has_license:
+    print("You can drive")
+
+if age < 18 or not has_license:
+    print("Check driving requirements")
+
+# Nested conditions
+score = 85
+print("\\nScore:", score)
+if score >= 60:
+    print("Passed!")
+    if score >= 90:
+        grade = "A"
+    elif score >= 80:
+        grade = "B"
+    elif score >= 70:
+        grade = "C"
+    else:
+        grade = "D"
+    print("Grade:", grade)
+else:
+    print("Failed")
+
+# Ternary-like expression
+status = "adult" if age >= 18 else "minor"
+print("Status:", status)`,
+
+            dictionaries: `# Dictionaries
+student = {
+    "name": "Alice",
+    "age": 20,
+    "grades": [85, 90, 78],
+    "active": True
+}
+
+print("Student dictionary:", student)
+print("Name:", student["name"])
+print("Age:", student["age"])
+print("Grades:", student["grades"])
+
+# Adding/updating values
+student["email"] = "alice@example.com"
+student["age"] = 21
+print("\\nAfter updates:", student)
+
+# Dictionary methods
+print("\\nKeys:", list(student.keys()))
+print("Values:", list(student.values()))
+
+# Check if key exists
+if "name" in student:
+    print("Name found:", student["name"])
+
+# Get with default
+gpa = student.get("gpa", 0.0)
+print("GPA:", gpa)
+
+# Iterating over dictionary
+print("\\nIterating over items:")
+for key, value in student.items():
+    print("  " + str(key) + ":", value)
+
+# Nested dictionaries
+classroom = {
+    "student1": {"name": "Bob", "grade": 85},
+    "student2": {"name": "Carol", "grade": 92},
+    "student3": {"name": "Dave", "grade": 78}
+}
+
+print("\\nClassroom grades:")
+total = 0
+for student_id, info in classroom.items():
+    print("  " + info["name"] + ":", info["grade"])
+    total += info["grade"]
+print("Average:", total / len(classroom))`,
+
+            algorithms: `# Common Algorithms
+
+# 1. Linear Search
+def linear_search(arr, target):
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i
+    return -1
+
+numbers = [64, 34, 25, 12, 22, 11, 90]
+target = 22
+result = linear_search(numbers, target)
+print("Linear Search for", target, ":")
+if result != -1:
+    print("  Found at index", result)
+else:
+    print("  Not found")
+
+# 2. Bubble Sort
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+
+data = [64, 34, 25, 12, 22, 11, 90]
+print("\\nOriginal:", data)
+sorted_data = bubble_sort(data[:])  # Copy the list
+print("Sorted:", sorted_data)
+
+# 3. Find Maximum
+def find_max(arr):
+    if not arr:
+        return None
+    max_val = arr[0]
+    for num in arr:
+        if num > max_val:
+            max_val = num
+    return max_val
+
+print("\\nMaximum value:", find_max(numbers))
+
+# 4. Count Occurrences
+def count_occurrences(arr, value):
+    count = 0
+    for item in arr:
+        if item == value:
+            count += 1
+    return count
+
+test_list = [1, 2, 3, 2, 2, 4, 2, 5]
+print("\\nOccurrences of 2 in", test_list, ":", count_occurrences(test_list, 2))
+
+# 5. Reverse a List
+def reverse_list(arr):
+    reversed_arr = []
+    for i in range(len(arr) - 1, -1, -1):
+        reversed_arr.append(arr[i])
+    return reversed_arr
+
+original = [1, 2, 3, 4, 5]
+print("\\nOriginal:", original)
+print("Reversed:", reverse_list(original))
+
+# 6. Check Palindrome
+def is_palindrome(s):
+    s = s.lower().replace(" ", "")
+    return s == s[::-1]
+
+test_words = ["racecar", "hello", "A man a plan a canal Panama"]
+print("\\nPalindrome check:")
+for word in test_words:
+    print("  '" + word + "':", is_palindrome(word))`
+        };
+        
+        function initializeEditor() {
+            const textarea = document.getElementById('editor');
+            editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                fontSize: '14px'
+            });
+        }
+        
+        function loadExample(exampleName) {
+            if (examples[exampleName]) {
+                editor.setValue(examples[exampleName]);
+                clearOutput();
+            }
+        }
+        
+        function resetCode() {
+            editor.setValue(`# Welcome to PenguinTwist Python IDE!
+# Powered by Skulpt - Most Python features work!
+
+# Lesson 11-12: Lists and methods
+numbers = [1, 2, 3, 4, 5]
+numbers.append(6)
+numbers.remove(3)
+last = numbers.pop()
+print("Numbers:", numbers, "Popped:", last)
+
+# Lesson 13-16: Loops
+print("\\nLoop examples:")
+for num in numbers[:3]:
+    print("  Double of", num, "is", num * 2)
+
+# While loop
+count = 0
+while count < 3:
+    print("  Count:", count)
+    count += 1
+
+# Lesson 17-20: Functions
+def greet(name):
+    return "Hello, " + name + "!"
+
+print("\\n" + greet("World"))
+
+# Lesson 21-25: Dictionaries
+student = {"name": "Alice", "age": 20, "grade": "A"}
+print("\\nStudent:", student["name"])
+print("Age:", student["age"])
+print("Grade:", student["grade"])
+
+# String operations
+text = "Python Programming"
+print("\\nText:", text)
+print("Uppercase:", text.upper())
+print("Length:", len(text))
+
+# Try your own code below!`);
+            clearOutput();
+        }
+        
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('memoryTracker').innerHTML = '';
+        }
+        
+        function builtinRead(x) {
+            if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+                throw "File not found: '" + x + "'";
+            return Sk.builtinFiles["files"][x];
+        }
+        
+        function outputHandler(text) {
+            const output = document.getElementById('output');
+            output.innerHTML += text.replace(/\n/g, '<br>');
+        }
+        
+        function inputHandler(prompt) {
+            // Create a promise that will be resolved when user submits input
+            return new Promise((resolve) => {
+                const output = document.getElementById('output');
+                
+                // Add prompt and input field
+                const inputDiv = document.createElement('div');
+                inputDiv.className = 'input-container';
+                inputDiv.innerHTML = `
+                    <span class="input-prompt">${prompt}</span>
+                    <input type="text" class="input-field" id="userInput" autofocus>
+                    <button class="input-submit" onclick="submitInput()">Enter</button>
+                `;
+                output.appendChild(inputDiv);
+                
+                // Scroll to bottom
+                output.scrollTop = output.scrollHeight;
+                
+                // Focus the input field
+                setTimeout(() => {
+                    const inputField = document.getElementById('userInput');
+                    if (inputField) {
+                        inputField.focus();
+                        
+                        // Handle Enter key
+                        inputField.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                submitInput();
+                            }
+                        });
+                    }
+                }, 50);
+                
+                // Store resolve function globally so submitInput can access it
+                window.currentInputResolve = resolve;
+            });
+        }
+        
+        function submitInput() {
+            const inputField = document.getElementById('userInput');
+            if (inputField && window.currentInputResolve) {
+                const value = inputField.value;
+                
+                // Remove the input container and show the value
+                const inputContainer = inputField.closest('.input-container');
+                if (inputContainer) {
+                    inputContainer.innerHTML = `<span style="color: #ffc107;">${inputContainer.querySelector('.input-prompt').textContent}</span>${value}<br>`;
+                }
+                
+                // Resolve the promise with the input value
+                window.currentInputResolve(value);
+                window.currentInputResolve = null;
+            }
+        }
+        
+        function extractVariables(code) {
+            // This is a simple extraction - just looks for variable assignments
+            const variables = {};
+            const lines = code.split('\n');
+            
+            // Pattern to match variable assignments
+            const assignmentPattern = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$/;
+            
+            for (let line of lines) {
+                const trimmed = line.trim();
+                if (trimmed && !trimmed.startsWith('#')) {
+                    const match = trimmed.match(assignmentPattern);
+                    if (match) {
+                        const varName = match[1];
+                        const value = match[2].trim();
+                        
+                        // Try to parse the value for display
+                        if (value.startsWith('[') && value.endsWith(']')) {
+                            variables[varName] = {type: 'list', value: value};
+                        } else if (value.startsWith('{') && value.endsWith('}')) {
+                            variables[varName] = {type: 'dict', value: value};
+                        } else if (value === 'True' || value === 'False') {
+                            variables[varName] = {type: 'bool', value: value};
+                        } else if (value.startsWith('def ')) {
+                            variables[varName] = {type: 'function', value: '<function>'};
+                        } else if (/^-?\d+(\.\d+)?$/.test(value)) {
+                            variables[varName] = {type: 'number', value: value};
+                        } else if ((value.startsWith('"') && value.endsWith('"')) || 
+                                 (value.startsWith("'") && value.endsWith("'"))) {
+                            variables[varName] = {type: 'string', value: value};
+                        } else {
+                            variables[varName] = {type: 'other', value: value};
+                        }
+                    }
+                }
+            }
+            
+            return variables;
+        }
+        
+        function updateMemoryTracker(code) {
+            const memoryElement = document.getElementById('memoryTracker');
+            const variables = extractVariables(code);
+            
+            if (Object.keys(variables).length > 0) {
+                let html = '<div class="memory-tracker-title">📦 Variables (approximate):</div>';
+                
+                for (let [name, info] of Object.entries(variables)) {
+                    let className = 'memory-item';
+                    if (info.type === 'list') className += ' list';
+                    else if (info.type === 'dict') className += ' dict';
+                    else if (info.type === 'bool') className += ' bool';
+                    else if (info.type === 'function') className += ' function';
+                    
+                    html += `<span class="${className}">${name} = ${info.value}</span>`;
+                }
+                
+                memoryElement.innerHTML = html;
+            } else {
+                memoryElement.innerHTML = '';
+            }
+        }
+        
+        async function runCode() {
+            const prog = editor.getValue();
+            const output = document.getElementById('output');
+            const runBtn = document.getElementById('runBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            output.innerHTML = '<div style="color: #ffc107;">Running your code...</div>';
+            runBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+            isRunning = true;
+            
+            // Configure Skulpt
+            Sk.pre = "output";
+            Sk.configure({
+                output: outputHandler,
+                read: builtinRead,
+                inputfun: inputHandler,
+                inputfunTakesPrompt: true,
+                execLimit: 10000,
+                retainglobals: false
+            });
+            
+            myPromise = Sk.misceval.asyncToPromise(function() {
+                return Sk.importMainWithBody("<stdin>", false, prog, true);
+            });
+            
+            myPromise.then(function(mod) {
+                // Success
+                output.innerHTML = output.innerHTML.replace('<div style="color: #ffc107;">Running your code...</div>', '');
+                
+                if (output.innerHTML.trim() === '') {
+                    output.innerHTML = '<div class="success">Code executed successfully (no output)</div>';
+                }
+                
+                // Update memory tracker with a simple parse
+                updateMemoryTracker(prog);
+                
+            }, function(err) {
+                // Error
+                output.innerHTML = '';
+                
+                // Format the error message
+                let errorMsg = err.toString();
+                
+                // Try to extract line number from error
+                const lineMatch = errorMsg.match(/line (\d+)/);
+                if (lineMatch) {
+                    errorMsg = `Line ${lineMatch[1]}: ${errorMsg}`;
+                }
+                
+                output.innerHTML = `<div class="error">${errorMsg}</div>`;
+            }).finally(() => {
+                isRunning = false;
+                runBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+            });
+        }
+        
+        function stopCode() {
+            if (myPromise && isRunning) {
+                // Skulpt doesn't have a direct way to stop execution
+                // but we can reload the page as a last resort
+                if (confirm("Stop execution? This will clear the output.")) {
+                    clearOutput();
+                    isRunning = false;
+                    document.getElementById('runBtn').style.display = 'inline-block';
+                    document.getElementById('stopBtn').style.display = 'none';
+                }
+            }
+        }
+        
+        // Initialize editor when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+        });
+        
+        // Allow Ctrl+Enter to run code
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                if (!isRunning) {
+                    runCode();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
