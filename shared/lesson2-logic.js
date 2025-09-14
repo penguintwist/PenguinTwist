@@ -162,6 +162,9 @@
     function initializeChallenges() {
         console.log('🏆 Initializing challenge playgrounds...');
         
+        // Add consistent styling for challenge playgrounds
+        addChallengePlaygroundStyles();
+        
         for (var challengeId in challengeConfigs) {
             if (challengeConfigs.hasOwnProperty(challengeId)) {
                 var config = challengeConfigs[challengeId];
