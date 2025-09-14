@@ -212,8 +212,7 @@ Computer Science</div>
         challengeDiv.className = 'challenge-system unlocked';
         
         // Force override all possible hiding CSS
-        challengeDiv.style.cssText = 'display: block !important; opacity: 1 !important; transform: translateY(0) !important; max-height: none !important; overflow: visible !important; margin: 40px 0 !important; visibility: visible !important;';
-        
+        challengeDiv.style.cssText = 'display: block !important; opacity: 1 !important; transform: translateY(0) !important; max-height: none !important; overflow: visible !important; margin: 40px 0 !important; visibility: visible !important; min-height: 500px !important; height: auto !important;';        
                // Scroll to view - NEW VERSION
 setTimeout(function() {
     // Scroll to the challenge div more aggressively
@@ -589,5 +588,6 @@ console.log('✅ Challenges force-shown with nuclear CSS override');
     </script>
 </body>
 </html>
+
 
 
