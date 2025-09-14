@@ -82,10 +82,10 @@
             
             // Load Skulpt dynamically if not already loaded
             var skulptScript = document.createElement('script');
-            skulptScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt.min.js';
+            skulptScript.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt.min.js';
             skulptScript.onload = function() {
                 var skulptStdlib = document.createElement('script');
-                skulptStdlib.src = 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt-stdlib.js';
+                skulptStdlib.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt-stdlib.js';
                 skulptStdlib.onload = function() {
                     clearTimeout(loadingTimeout);
                     isSkultLoaded = true;
