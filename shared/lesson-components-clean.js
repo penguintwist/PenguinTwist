@@ -282,6 +282,9 @@
         createMemoryVisualization: function(containerId, options) {
             return new MemoryVisualization(containerId, options);
         },
+        createAssignmentDemo: function(containerId, options) {
+            return new AssignmentDemo(containerId, options);
+        },
         createMasteryCheck: function(containerId, questions, options) {
             return new MasteryCheck(containerId, questions, options);
         },
