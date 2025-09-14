@@ -1135,21 +1135,29 @@ body.dark-mode .feedback.incorrect {
     color: #fca5a5;
 }
 
-/* Challenge System */
+/* Challenge System - Fixed spacing issue */
 .challenge-system {
     margin: 40px 0;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.5s ease;
+    max-height: 0;
+    overflow: hidden;
 }
 
 .challenge-system.unlocked {
     opacity: 1;
     transform: translateY(0);
+    max-height: none;
+    overflow: visible;
 }
 
 .challenge-system-hidden {
-    display: none;
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    max-height: 0 !important;
 }
 
 .challenge-header {
