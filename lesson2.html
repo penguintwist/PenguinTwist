@@ -204,17 +204,28 @@ Computer Science</div>
         };
 
         window.showChallenges = function() {
-            console.log('Showing challenges...');
-            var challengeDiv = document.getElementById('challengeSystem');
-            if (challengeDiv) {
-                challengeDiv.classList.remove('challenge-system-hidden');
-                challengeDiv.classList.add('unlocked');
-                challengeDiv.scrollIntoView({ behavior: 'smooth' });
-                console.log('✅ Challenges shown successfully');
-            } else {
-                console.error('❌ Challenge system not found');
-            }
-        };
+    console.log('Showing challenges...');
+    var challengeDiv = document.getElementById('challengeSystem');
+    if (challengeDiv) {
+        // Nuclear option - completely reset all CSS
+        challengeDiv.removeAttribute('class');
+        challengeDiv.className = 'challenge-system unlocked';
+        
+        // Force override all possible hiding CSS
+        challengeDiv.style.cssText = 'display: block !important; opacity: 1 !important; transform: translateY(0) !important; max-height: none !important; overflow: visible !important; margin: 40px 0 !important; visibility: visible !important;';
+        
+        // Scroll to view
+        setTimeout(function() {
+            challengeDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+        
+        console.log('✅ Challenges force-shown with nuclear CSS override');
+        console.log('Challenge div final classes:', challengeDiv.className);
+        console.log('Challenge div final style:', challengeDiv.style.cssText);
+    } else {
+        console.error('❌ Challenge system not found');
+    }
+};
 
         // Challenge data with reliable validation
         var challenges = {
@@ -571,3 +582,4 @@ Computer Science</div>
     </script>
 </body>
 </html>
+
