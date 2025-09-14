@@ -1,5 +1,5 @@
-// shared/python-interpreter.js
-// Enhanced Python interpreter with Skulpt integration (ES5 Compatible)
+// shared/python-interpreter-clean.js
+// Streamlined Python interpreter with Skulpt (ES5 Compatible)
 
 (function() {
     'use strict';
@@ -7,10 +7,9 @@
     // Global state
     var isSkultLoaded = false;
     var loadingTimeout = null;
-    var currentInput = null;
     var inputResolver = null;
     
-    // Beginner-friendly error message mapping
+    // Friendly error messages
     var errorMessages = {
         'NameError': function(msg) {
             var varName = msg.match(/'([^']+)'/);
@@ -54,7 +53,6 @@
             return errorMessages[errorType](errorStr);
         }
         
-        // Generic friendly message for unknown errors
         return 'Something went wrong with your code. Check for:\n' +
                '• Spelling mistakes\n' +
                '• Missing quotes around text\n' +
@@ -63,45 +61,44 @@
     
     function loadSkult() {
         return new Promise(function(resolve, reject) {
-            if (isSkultLoaded) {
-                resolve();
-                return;
-            }
-            
-            // Check if Skulpt is already loaded
-            if (window.Sk && window.Sk.pre) {
+            if (isSkultLoaded || (window.Sk && window.Sk.pre)) {
                 isSkultLoaded = true;
                 resolve();
                 return;
             }
             
-            // Set timeout for slow networks
             loadingTimeout = setTimeout(function() {
                 reject(new Error('Skulpt loading timed out after 10 seconds'));
             }, 10000);
             
-            // Load Skulpt dynamically if not already loaded
-            var skulptScript = document.createElement('script');
-            skulptScript.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt.min.js';
-            skulptScript.onload = function() {
-                var skulptStdlib = document.createElement('script');
-                skulptStdlib.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt-stdlib.js';
-                skulptStdlib.onload = function() {
-                    clearTimeout(loadingTimeout);
-                    isSkultLoaded = true;
-                    resolve();
+            // Load Skulpt if not already loaded
+            if (!window.Sk) {
+                var skulptScript = document.createElement('script');
+                skulptScript.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt.min.js';
+                skulptScript.onload = function() {
+                    var skulptStdlib = document.createElement('script');
+                    skulptStdlib.src = 'https://unpkg.com/skulpt@0.11.1/dist/skulpt-stdlib.js';
+                    skulptStdlib.onload = function() {
+                        clearTimeout(loadingTimeout);
+                        isSkultLoaded = true;
+                        resolve();
+                    };
+                    skulptStdlib.onerror = function() {
+                        clearTimeout(loadingTimeout);
+                        reject(new Error('Failed to load Skulpt standard library'));
+                    };
+                    document.head.appendChild(skulptStdlib);
                 };
-                skulptStdlib.onerror = function() {
+                skulptScript.onerror = function() {
                     clearTimeout(loadingTimeout);
-                    reject(new Error('Failed to load Skulpt standard library'));
+                    reject(new Error('Failed to load Skulpt'));
                 };
-                document.head.appendChild(skulptStdlib);
-            };
-            skulptScript.onerror = function() {
+                document.head.appendChild(skulptScript);
+            } else {
                 clearTimeout(loadingTimeout);
-                reject(new Error('Failed to load Skulpt'));
-            };
-            document.head.appendChild(skulptScript);
+                isSkultLoaded = true;
+                resolve();
+            }
         });
     }
     
@@ -139,10 +136,8 @@
                 outputElement.appendChild(inputDiv);
                 outputElement.scrollTop = outputElement.scrollHeight;
                 
-                // Store resolver globally for submit function
                 inputResolver = resolve;
                 
-                // Focus input and handle Enter key
                 setTimeout(function() {
                     var inputField = document.getElementById('pythonInput');
                     if (inputField) {
@@ -165,7 +160,6 @@
             var value = inputField.value;
             var container = inputField.closest('.input-container');
             
-            // Replace input with the entered value
             if (container) {
                 container.innerHTML = container.querySelector('.input-prompt').textContent + value;
             }
@@ -176,7 +170,6 @@
     };
     
     function extractVariables(code) {
-        // Simple variable extraction for display
         var variables = {};
         var lines = code.split('\n');
         var assignmentPattern = /^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)$/;
@@ -189,7 +182,6 @@
                     var varName = match[1];
                     var value = match[2].trim();
                     
-                    // Classify variable type for styling
                     var type = 'other';
                     if (value.startsWith('[') && value.endsWith(']')) {
                         type = 'list';
@@ -249,32 +241,18 @@
         '</div>';
     }
     
-    function showFallback(element) {
-        if (!element) return;
-        element.innerHTML = '<div class="error-fallback">' +
-            '<h4>Having trouble loading Python?</h4>' +
-            '<p>This sometimes happens on school networks. Try:</p>' +
-            '<ul>' +
-                '<li>Refreshing the page (F5)</li>' +
-                '<li>Checking your internet connection</li>' +
-                '<li>Asking your teacher for help</li>' +
-            '</ul>' +
-        '</div>';
-    }
-    
-    // Enhanced Python Playground Component
-    function EnhancedPythonPlayground(containerId, type, options) {
+    // Python Playground Component
+    function PythonPlayground(containerId, options) {
         this.containerId = containerId;
-        this.type = type;
         this.options = options || {};
         this.isRunning = false;
         this.editor = null;
     }
     
-    EnhancedPythonPlayground.prototype.init = function() {
+    PythonPlayground.prototype.init = function() {
         var container = document.getElementById(this.containerId);
         if (!container) {
-            console.error('Enhanced Python playground container not found: ' + this.containerId);
+            console.error('Python playground container not found: ' + this.containerId);
             return false;
         }
         
@@ -285,7 +263,7 @@
         return true;
     };
     
-    EnhancedPythonPlayground.prototype.createHTML = function() {
+    PythonPlayground.prototype.createHTML = function() {
         var title = this.options.title || 'Python Playground';
         var defaultCode = this.options.defaultCode || '# Write your Python code here\nprint("Hello, World!")';
         
@@ -319,11 +297,10 @@
         return html;
     };
     
-    EnhancedPythonPlayground.prototype.setupEditor = function(container) {
-        var self = this;
+    PythonPlayground.prototype.setupEditor = function(container) {
         var textarea = container.querySelector('.code-editor');
         
-        // Try to use CodeMirror if available, fallback to textarea
+        // Try to use CodeMirror if available
         if (window.CodeMirror) {
             this.editor = window.CodeMirror.fromTextArea(textarea, {
                 mode: 'python',
@@ -334,6 +311,7 @@
                 lineWrapping: true
             });
         } else {
+            // Fallback to textarea
             console.warn('CodeMirror not available, using fallback textarea');
             this.editor = {
                 getValue: function() { return textarea.value; },
@@ -342,7 +320,7 @@
         }
     };
     
-    EnhancedPythonPlayground.prototype.setupEvents = function(container) {
+    PythonPlayground.prototype.setupEvents = function(container) {
         var self = this;
         
         // Make instance available globally for button clicks
@@ -357,7 +335,7 @@
         });
     };
     
-    EnhancedPythonPlayground.prototype.runCode = function() {
+    PythonPlayground.prototype.runCode = function() {
         var self = this;
         if (this.isRunning) return;
         
@@ -375,66 +353,69 @@
         
         var code = this.editor.getValue();
         
-        // Show loading state immediately
         showLoadingState(outputElement, '🐧 Starting Python engine...');
         
         loadSkult().then(function() {
-            showLoadingState(outputElement, '📚 Loading Python libraries...');
+            showLoadingState(outputElement, '▶️ Running your code...');
             
             setTimeout(function() {
-                showLoadingState(outputElement, '▶️ Running your code...');
+                outputElement.innerHTML = '';
                 
-                setTimeout(function() {
-                    outputElement.innerHTML = '';
+                // Configure Skulpt
+                window.Sk.pre = "output";
+                window.Sk.configure({
+                    output: createOutputHandler(outputElement),
+                    read: builtinRead,
+                    inputfun: createInputHandler(outputElement),
+                    inputfunTakesPrompt: true,
+                    execLimit: 10000,
+                    yieldLimit: null,
+                    killableWhile: true,
+                    killableFor: true
+                });
+                
+                var myPromise = window.Sk.misceval.asyncToPromise(function() {
+                    return window.Sk.importMainWithBody("<stdin>", false, code, true);
+                });
+                
+                myPromise.then(function(mod) {
+                    // Success - update memory tracker
+                    if (memoryElement) {
+                        updateMemoryTracker(memoryElement, code);
+                    }
                     
-                    // Configure Skulpt
-                    window.Sk.pre = "output";
-                    window.Sk.configure({
-                        output: createOutputHandler(outputElement),
-                        read: builtinRead,
-                        inputfun: createInputHandler(outputElement),
-                        inputfunTakesPrompt: true,
-                        execLimit: 10000,
-                        yieldLimit: null,
-                        killableWhile: true,
-                        killableFor: true
-                    });
+                    // Show success message if no output
+                    if (outputElement.innerHTML.trim() === '') {
+                        outputElement.innerHTML = '<div class="no-output">Code ran successfully (no output)</div>';
+                    }
                     
-                    var myPromise = window.Sk.misceval.asyncToPromise(function() {
-                        return window.Sk.importMainWithBody("<stdin>", false, code, true);
-                    });
+                }, function(err) {
+                    // Error handling with friendly messages
+                    outputElement.innerHTML = '<div class="error-output">' +
+                        '<div class="error-title">❌ Oops! Something went wrong:</div>' +
+                        '<div class="error-message">' + friendlyError(err) + '</div>' +
+                    '</div>';
                     
-                    myPromise.then(function(mod) {
-                        // Success - update memory tracker
-                        if (memoryElement) {
-                            updateMemoryTracker(memoryElement, code);
-                        }
-                        
-                        // Show success message if no output
-                        if (outputElement.innerHTML.trim() === '') {
-                            outputElement.innerHTML = '<div class="no-output">Code ran successfully (no output)</div>';
-                        }
-                        
-                    }, function(err) {
-                        // Error handling with friendly messages
-                        outputElement.innerHTML = '<div class="error-output">' +
-                            '<div class="error-title">❌ Oops! Something went wrong:</div>' +
-                            '<div class="error-message">' + friendlyError(err) + '</div>' +
-                        '</div>';
-                        
-                    }).finally(function() {
-                        self.isRunning = false;
-                        if (runBtn) {
-                            runBtn.disabled = false;
-                            runBtn.textContent = '▶ Run Code';
-                        }
-                    });
-                }, 200);
-            }, 100);
+                }).finally(function() {
+                    self.isRunning = false;
+                    if (runBtn) {
+                        runBtn.disabled = false;
+                        runBtn.textContent = '▶ Run Code';
+                    }
+                });
+            }, 200);
             
         }).catch(function(error) {
             console.error('Skulpt loading failed:', error);
-            showFallback(outputElement);
+            outputElement.innerHTML = '<div class="error-fallback">' +
+                '<h4>Having trouble loading Python?</h4>' +
+                '<p>This sometimes happens on school networks. Try:</p>' +
+                '<ul>' +
+                    '<li>Refreshing the page (F5)</li>' +
+                    '<li>Checking your internet connection</li>' +
+                    '<li>Asking your teacher for help</li>' +
+                '</ul>' +
+            '</div>';
             
             self.isRunning = false;
             if (runBtn) {
@@ -444,7 +425,7 @@
         });
     };
     
-    EnhancedPythonPlayground.prototype.clearOutput = function() {
+    PythonPlayground.prototype.clearOutput = function() {
         var outputElement = document.getElementById(this.containerId + 'Output');
         var memoryElement = document.getElementById(this.containerId + 'Memory');
         
@@ -456,10 +437,10 @@
         }
     };
     
-    // Export the enhanced API
+    // Export the API
     window.PenguinTwistInterpreter = {
         createPlayground: function(containerId, type, options) {
-            return new EnhancedPythonPlayground(containerId, type, options);
+            return new PythonPlayground(containerId, options);
         }
     };
     
