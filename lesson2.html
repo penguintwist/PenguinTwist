@@ -189,6 +189,33 @@ Computer Science</div>
     <script src="shared/lesson-components.js"></script>
     
     <script>
+        // Global callback functions for mastery check (MUST be global scope)
+        window.unlockNextLesson = function() {
+            console.log('Unlocking next lesson...');
+            var nextBtn = document.getElementById('nextLessonBtn');
+            if (nextBtn) {
+                nextBtn.classList.remove('disabled');
+                nextBtn.style.opacity = '1';
+                nextBtn.style.pointerEvents = 'auto';
+                console.log('✅ Next lesson unlocked successfully');
+            } else {
+                console.error('❌ Next lesson button not found');
+            }
+        };
+
+        window.showChallenges = function() {
+            console.log('Showing challenges...');
+            var challengeDiv = document.getElementById('challengeSystem');
+            if (challengeDiv) {
+                challengeDiv.classList.remove('challenge-system-hidden');
+                challengeDiv.classList.add('unlocked');
+                challengeDiv.scrollIntoView({ behavior: 'smooth' });
+                console.log('✅ Challenges shown successfully');
+            } else {
+                console.error('❌ Challenge system not found');
+            }
+        };
+
         // Challenge data with reliable validation
         var challenges = {
             basic: [
@@ -295,12 +322,16 @@ Computer Science</div>
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 try {
+                    console.log('🐧 Starting PenguinTwist Lesson 2 initialization...');
+                    
                     // Check if enhanced components exist
                     var hasComponents = !!window.PenguinTwistComponents;
                     var hasInterpreter = !!window.PenguinTwistInterpreter;
                     
+                    console.log('Components available:', { hasComponents: hasComponents, hasInterpreter: hasInterpreter });
+                    
                     if (!hasComponents || !hasInterpreter) {
-                        console.log('Enhanced components not loaded, using fallbacks...');
+                        console.warn('Enhanced components not loaded, using fallbacks...');
                         setupBasicFallbacks();
                         return;
                     }
@@ -308,6 +339,7 @@ Computer Science</div>
                     // Initialize dark mode first
                     try {
                         window.PenguinTwistComponents.setupDarkMode();
+                        console.log('✅ Dark mode initialized');
                     } catch (darkModeError) {
                         console.warn('Dark mode setup failed:', darkModeError);
                     }
@@ -327,6 +359,7 @@ Computer Science</div>
                             }
                         );
                         memoryDemo.init();
+                        console.log('✅ Memory visualization created');
                     } catch (memoryError) {
                         console.warn('Memory visualization failed:', memoryError);
                         document.getElementById('memoryBoxDemo').innerHTML = getFallbackMessage('Memory visualization');
@@ -336,6 +369,7 @@ Computer Science</div>
                     try {
                         var assignmentDemo = window.PenguinTwistComponents.createAssignmentDemo('assignmentDemo');
                         assignmentDemo.init();
+                        console.log('✅ Assignment demo created');
                     } catch (assignmentError) {
                         console.warn('Assignment demo failed:', assignmentError);
                         document.getElementById('assignmentDemo').innerHTML = getFallbackMessage('Assignment demonstration');
@@ -352,6 +386,7 @@ Computer Science</div>
                             }
                         );
                         storageFlow.init();
+                        console.log('✅ Storage flow created');
                     } catch (storageError) {
                         console.warn('Storage flow failed:', storageError);
                         document.getElementById('storageFlow').innerHTML = getFallbackMessage('Storage visualization');
@@ -369,6 +404,7 @@ Computer Science</div>
                             }
                         );
                         playground1.init();
+                        console.log('✅ Practice playground created');
                     } catch (playground1Error) {
                         console.warn('Practice playground failed:', playground1Error);
                         document.getElementById('variablePracticePlayground').innerHTML = getFallbackMessage('Python playground');
@@ -385,6 +421,7 @@ Computer Science</div>
                             }
                         );
                         playground2.init();
+                        console.log('✅ Print playground created');
                     } catch (playground2Error) {
                         console.warn('Print playground failed:', playground2Error);
                         document.getElementById('variablePrintPlayground').innerHTML = getFallbackMessage('Python playground');
@@ -425,7 +462,7 @@ Computer Science</div>
                                     validateAnswer: function(answer) {
                                         var cleaned = answer.toLowerCase();
                                         return (cleaned.includes('quotes') || cleaned.includes('"age"')) && 
-                                               (cleaned.includes('variable') || cleaned.includes('contents'));
+                                               (cleaned.includes('variable') || cleaned.includes('contents') || cleaned.includes('value'));
                                     },
                                     hint: 'print("age") displays the word "age", print(age) displays the contents of the variable age'
                                 }
@@ -433,12 +470,14 @@ Computer Science</div>
                             {
                                 title: 'Check Your Understanding',
                                 onComplete: function() {
-                                    unlockNextLesson();
-                                    showChallenges();
+                                    console.log('🎉 Mastery check completed - triggering callbacks');
+                                    window.unlockNextLesson();
+                                    window.showChallenges();
                                 }
                             }
                         );
                         masteryCheck.init();
+                        console.log('✅ Mastery check created');
                     } catch (masteryError) {
                         console.warn('Mastery check failed:', masteryError);
                         document.getElementById('masteryCheck').innerHTML = getFallbackMessage('Assessment questions');
@@ -454,35 +493,20 @@ Computer Science</div>
                             }
                         );
                         challengeSystem.init();
+                        console.log('✅ Challenge system created');
                     } catch (challengeError) {
                         console.warn('Challenge system failed:', challengeError);
                         document.getElementById('challengeSystem').innerHTML = getFallbackMessage('Practice challenges');
                     }
 
+                    console.log('🎉 All components initialized successfully!');
+
                 } catch (error) {
-                    console.error('Component initialization failed:', error);
+                    console.error('❌ Component initialization failed:', error);
                     setupBasicFallbacks();
                 }
             }, 100);
         });
-
-        function unlockNextLesson() {
-            var nextBtn = document.getElementById('nextLessonBtn');
-            if (nextBtn) {
-                nextBtn.classList.remove('disabled');
-                nextBtn.style.opacity = '1';
-                nextBtn.style.pointerEvents = 'auto';
-            }
-        }
-
-        function showChallenges() {
-            var challengeDiv = document.getElementById('challengeSystem');
-            if (challengeDiv) {
-                challengeDiv.classList.remove('challenge-system-hidden');
-                challengeDiv.classList.add('unlocked');
-                challengeDiv.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
 
         function getFallbackMessage(componentName) {
             return '<div class="fallback-message">' +
@@ -534,6 +558,16 @@ Computer Science</div>
                 }
             }
         });
+
+        // Debug helper - remove this in production
+        window.debugMastery = function() {
+            console.log('=== MASTERY DEBUG INFO ===');
+            console.log('unlockNextLesson function:', typeof window.unlockNextLesson);
+            console.log('showChallenges function:', typeof window.showChallenges);
+            console.log('Next button element:', document.getElementById('nextLessonBtn'));
+            console.log('Challenge system element:', document.getElementById('challengeSystem'));
+            console.log('Mastery check element:', document.getElementById('masteryCheck'));
+        };
     </script>
 </body>
 </html>
