@@ -2,39 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Skulpt Loading Test</title>
+    <title>Skulpt Loading Test - Multiple CDNs</title>
 </head>
 <body>
-    <h1>Skulpt Loading Test</h1>
-    <div id="status">Testing...</div>
+    <h1>Skulpt Loading Test - Multiple CDNs</h1>
+    <div id="status">Testing CDN sources...</div>
     <div id="output"></div>
     
     <script>
-        document.getElementById('status').innerHTML = 'Loading Skulpt...';
+        var cdnSources = [
+            {
+                name: 'CDNJS',
+                skulpt: 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt.min.js',
+                stdlib: 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt-stdlib.js'
+            },
+            {
+                name: 'UNPKG',
+                skulpt: 'https://unpkg.com/skulpt@0.11.1/dist/skulpt.min.js',
+                stdlib: 'https://unpkg.com/skulpt@0.11.1/dist/skulpt-stdlib.js'
+            },
+            {
+                name: 'JSDelivr',
+                skulpt: 'https://cdn.jsdelivr.net/npm/skulpt@0.11.1/dist/skulpt.min.js',
+                stdlib: 'https://cdn.jsdelivr.net/npm/skulpt@0.11.1/dist/skulpt-stdlib.js'
+            }
+        ];
         
-        // Test direct loading
-        var script1 = document.createElement('script');
-        script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt.min.js';
-        script1.onload = function() {
-            document.getElementById('status').innerHTML += '<br>✅ Skulpt core loaded';
+        var currentCDN = 0;
+        
+        function tryNextCDN() {
+            if (currentCDN >= cdnSources.length) {
+                document.getElementById('status').innerHTML += '<br>❌ All CDN sources failed - Skulpt cannot be loaded';
+                return;
+            }
             
-            // Load stdlib
-            var script2 = document.createElement('script');
-            script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/skulpt/0.11.1/skulpt-stdlib.js';
-            script2.onload = function() {
-                document.getElementById('status').innerHTML += '<br>✅ Skulpt stdlib loaded';
-                testSkulpt();
+            var cdn = cdnSources[currentCDN];
+            document.getElementById('status').innerHTML += '<br>🔄 Trying ' + cdn.name + '...';
+            
+            var script1 = document.createElement('script');
+            script1.src = cdn.skulpt;
+            
+            script1.onload = function() {
+                document.getElementById('status').innerHTML += '<br>✅ ' + cdn.name + ' Skulpt core loaded';
+                
+                // Load stdlib
+                var script2 = document.createElement('script');
+                script2.src = cdn.stdlib;
+                script2.onload = function() {
+                    document.getElementById('status').innerHTML += '<br>✅ ' + cdn.name + ' Skulpt stdlib loaded';
+                    testSkulpt();
+                };
+                script2.onerror = function(e) {
+                    document.getElementById('status').innerHTML += '<br>❌ ' + cdn.name + ' stdlib failed';
+                    currentCDN++;
+                    tryNextCDN();
+                };
+                document.head.appendChild(script2);
             };
-            script2.onerror = function(e) {
-                document.getElementById('status').innerHTML += '<br>❌ Skulpt stdlib failed: ' + e;
+            
+            script1.onerror = function(e) {
+                document.getElementById('status').innerHTML += '<br>❌ ' + cdn.name + ' core failed';
+                currentCDN++;
+                tryNextCDN();
             };
-            document.head.appendChild(script2);
-        };
-        script1.onerror = function(e) {
-            document.getElementById('status').innerHTML += '<br>❌ Skulpt core failed: ' + e;
-            console.error('Skulpt loading error:', e);
-        };
-        document.head.appendChild(script1);
+            
+            document.head.appendChild(script1);
+        }
+        
+        // Start testing
+        tryNextCDN();
         
         function testSkulpt() {
             try {
@@ -54,17 +90,24 @@
                     });
                     
                     myPromise.then(function() {
-                        document.getElementById('status').innerHTML += '<br>✅ Skulpt execution successful!';
+                        document.getElementById('status').innerHTML += '<br>🎉 SUCCESS! Skulpt is working perfectly!';
                     }).catch(function(err) {
                         document.getElementById('status').innerHTML += '<br>❌ Skulpt execution failed: ' + err;
                     });
                 } else {
-                    document.getElementById('status').innerHTML += '<br>❌ Skulpt object not found';
+                    document.getElementById('status').innerHTML += '<br>❌ Skulpt object not found after loading';
                 }
             } catch (error) {
                 document.getElementById('status').innerHTML += '<br>❌ Skulpt test error: ' + error;
             }
         }
+        
+        // Also test direct URL access
+        document.getElementById('status').innerHTML += '<br><br>🔗 Test these URLs directly in your browser:';
+        cdnSources.forEach(function(cdn) {
+            document.getElementById('status').innerHTML += '<br><a href="' + cdn.skulpt + '" target="_blank">' + cdn.name + ' Skulpt</a>';
+            document.getElementById('status').innerHTML += ' | <a href="' + cdn.stdlib + '" target="_blank">' + cdn.name + ' Stdlib</a>';
+        });
     </script>
 </body>
 </html>
