@@ -56,7 +56,22 @@
             
             // Initialize dark mode
             window.PenguinTwistComponents.setupDarkMode();
-            console.log('✅ Dark mode initialized');
+            console.log('Dark mode initialized');
+            
+            // Create memory visualization
+            var memoryViz = window.PenguinTwistComponents.createMemoryVisualization(
+                'memoryBoxDemo',
+                {
+                    title: 'Think of Variables as Memory Boxes',
+                    boxes: [
+                        { label: 'name', value: 'Empty' },
+                        { label: 'age', value: 'Empty' },
+                        { label: 'subject', value: 'Empty' }
+                    ]
+                }
+            );
+            memoryViz.init();
+            console.log('Memory visualization created');
             
             // Create memory visualization
             var memoryViz = window.PenguinTwistComponents.createMemoryVisualization(
