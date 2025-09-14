@@ -43,7 +43,23 @@
                '</div>' +
                '<div class="memory-demo">' + boxesHTML + '</div>' +
                '<div class="demo-controls">' +
-                   '<button class="demo-btn" onclick="playMemoryDemo()">▶ Watch Variables Fill Up</button>' +
+                   '<button onclick="playMemoryDemo()" style="' +
+                   'background: linear-gradient(135deg, #06b6d4, #8b5cf6); ' +
+                   'color: white; ' +
+                   'border: 2px solid rgba(255, 255, 255, 0.2); ' +
+                   'padding: 12px 24px; ' +
+                   'border-radius: 25px; ' +
+                   'cursor: pointer; ' +
+                   'font-weight: 600; ' +
+                   'font-size: 15px; ' +
+                   'box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); ' +
+                   'transition: all 0.3s ease; ' +
+                   'min-width: 200px; ' +
+                   'font-family: inherit; ' +
+                   'text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); ' +
+                   '" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(6, 182, 212, 0.4)\';" ' +
+                   'onmouseout="this.style.transform=\'translateY(0px)\'; this.style.boxShadow=\'0 4px 15px rgba(6, 182, 212, 0.3)\';" ' +
+                   '>▶ Watch Variables Fill Up</button>' +
                '</div>';
     };
     
