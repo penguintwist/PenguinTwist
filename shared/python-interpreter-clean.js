@@ -267,26 +267,12 @@
         var title = this.options.title || 'Python Playground';
         var defaultCode = this.options.defaultCode || '# Write your Python code here\nprint("Hello, World!")';
         
-        // Check if this is a challenge playground and apply Arctic Aurora styling
-        var isChallenge = this.containerId.startsWith('challenge');
-        var extraStyles = isChallenge ? 
-            'background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9)) !important; ' +
-            'border: 3px solid #06b6d4 !important; ' +
-            'box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1) !important;' 
-            : '';
-        
-        var html = '<div class="enhanced-python-playground" style="' + extraStyles + '">' +
-            '<div class="playground-header" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;">' +
+        var html = '<div class="enhanced-python-playground arctic-aurora-theme">' +
+            '<div class="playground-header">' +
                 '<h4>' + title + '</h4>' +
                 '<div class="playground-controls">' +
-                    '<button class="run-btn" onclick="' + this.containerId + 'Instance.runCode()" style="' +
-                    'background: rgba(255, 255, 255, 0.2) !important; ' +
-                    'border: 2px solid rgba(255, 255, 255, 0.3) !important;"' +
-                    '>▶ Run Code</button>' +
-                    '<button class="clear-btn" onclick="' + this.containerId + 'Instance.clearOutput()" style="' +
-                    'background: rgba(255, 255, 255, 0.2) !important; ' +
-                    'border: 2px solid rgba(255, 255, 255, 0.3) !important;"' +
-                    '>🗑️ Clear</button>' +
+                    '<button class="run-btn" onclick="' + this.containerId + 'Instance.runCode()">▶ Run Code</button>' +
+                    '<button class="clear-btn" onclick="' + this.containerId + 'Instance.clearOutput()">🗑️ Clear</button>' +
                 '</div>' +
             '</div>' +
             '<div class="playground-content">' +
