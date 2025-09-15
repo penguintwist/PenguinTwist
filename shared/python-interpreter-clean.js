@@ -301,7 +301,7 @@
         var textarea = container.querySelector('.code-editor');
         
         // Try to use CodeMirror if available
-        if (false && window.CodeMirror) {
+        if (window.CodeMirror) {
             this.editor = window.CodeMirror.fromTextArea(textarea, {
                 mode: 'python',
                 theme: 'monokai',
