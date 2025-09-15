@@ -1151,3 +1151,72 @@ body.dark-mode #practiceSection h3 {
     color: #06b6d4 !important;
     opacity: 0.3 !important;
 }
+/* Add this to the end of your lesson-styles-clean.css file */
+
+/* ========================================
+   FIX FOR BLURRY GRADIENT TEXT
+   ======================================== */
+
+/* Fix blurry playground headers */
+.playground-header h4,
+.enhanced-python-playground h4 {
+    font-size: 1.4em;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
+    /* Remove gradient from playground titles - use solid white instead */
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: white !important;
+    background-clip: initial !important;
+    color: white !important;
+}
+
+/* Alternative: If you want to keep gradients but make them sharper */
+.challenge-item h5,
+.challenge-category h4,
+#practiceSection h3 {
+    /* Force GPU acceleration for sharper rendering */
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    backface-visibility: hidden;
+    will-change: transform;
+    
+    /* Make text slightly bolder to compensate for gradient transparency */
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* Specific fix for CodeMirror if it's causing issues */
+.CodeMirror {
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+/* Ensure challenge item headings are crisp */
+.challenge-item h5 {
+    display: inline-block !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Optional: Use text shadow instead of gradient for better readability */
+.use-text-shadow .challenge-item h5 {
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    color: #06b6d4 !important;
+    text-shadow: 
+        1px 1px 0 #8b5cf6,
+        2px 2px 0 rgba(139, 92, 246, 0.5),
+        3px 3px 0 rgba(139, 92, 246, 0.25);
+}
+
+body.dark-mode .use-text-shadow .challenge-item h5 {
+    color: #67e8f9 !important;
+    text-shadow: 
+        1px 1px 0 #c4b5fd,
+        2px 2px 0 rgba(196, 181, 253, 0.5),
+        3px 3px 0 rgba(196, 181, 253, 0.25);
+}
