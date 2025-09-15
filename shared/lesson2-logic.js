@@ -7,32 +7,32 @@
     // Challenge data with simple validation
     var challengeConfigs = {
         challenge1: {
-            title: '🐍 Create Your Profile',
+            title: 'Create Your Profile',
             defaultCode: '# Create three variables:\nname = "Your Name Here"\nage = 16\ncolor = "blue"\n\n# Print them:\nprint(name)\nprint(age)\nprint(color)',
             showMemory: true
         },
         challenge2: {
-            title: '🐍 Numbers and Text Practice',
+            title: 'Numbers and Text Practice',
             defaultCode: '# Text variable (use quotes):\nname = "Alex"\n\n# Number variable (no quotes):\nscore = 95\n\n# Print both:\nprint(name)\nprint(score)',
             showMemory: true
         },
         challenge3: {
-            title: '🐍 Character Creator',
+            title: 'Character Creator',
             defaultCode: '# Create your superhero character:\nhero_name = "Lightning Bolt"\npower = "Super Speed"\ncity = "Metro City"\n\n# Print character profile:\nprint(hero_name)\nprint(power)\nprint(city)',
             showMemory: true
         },
         challenge4: {
-            title: '🐍 School Timetable',
+            title: 'School Timetable',
             defaultCode: '# Your school subjects:\nperiod1 = "Mathematics"\nperiod2 = "Computer Science"\nperiod3 = "English"\n\n# Print your timetable:\nprint(period1)\nprint(period2)\nprint(period3)',
             showMemory: true
         },
         challenge5: {
-            title: '🐍 Mixed Data Challenge',
+            title: 'Mixed Data Challenge',
             defaultCode: '# Different data types:\nstudent_name = "Jamie"\ntest_score = 87\nsubject_code = "CS101"\nmax_score = 100\n\n# Print information:\nprint(student_name)\nprint(test_score)\nprint(subject_code)\nprint(max_score)',
             showMemory: true
         },
         challenge6: {
-            title: '🐍 Variable Update Challenge',
+            title: 'Variable Update Challenge',
             defaultCode: '# Create and print a variable:\nscore = 50\nprint(score)\n\n# Update the variable:\nscore = 75\nprint(score)\n\n# Update it again:\nscore = 100\nprint(score)',
             showMemory: true
         }
@@ -40,17 +40,17 @@
     
     // Main initialization function
     function initializeLesson() {
-        console.log('🐧 Initializing PenguinTwist Lesson 2...');
+        console.log('Initializing PenguinTwist Lesson 2...');
         
         try {
             // Check for required components
             if (!window.PenguinTwistComponents) {
-                console.error('❌ PenguinTwistComponents not loaded');
+                console.error('PenguinTwistComponents not loaded');
                 return;
             }
             
             if (!window.PenguinTwistInterpreter) {
-                console.error('❌ PenguinTwistInterpreter not loaded');
+                console.error('PenguinTwistInterpreter not loaded');
                 return;
             }
             
@@ -73,48 +73,30 @@
             memoryViz.init();
             console.log('Memory visualization created');
             
-            // Create memory visualization
-            var memoryViz = window.PenguinTwistComponents.createMemoryVisualization(
-                'memoryBoxDemo',
-                {
-                    title: 'Think of Variables as Memory Boxes',
-                    boxes: [
-                        { label: 'name', value: 'Empty' },
-                        { label: 'age', value: 'Empty' },
-                        { label: 'subject', value: 'Empty' }
-                    ]
-                }
-            );
-            memoryViz.init();
-            console.log('✅ Memory visualization created');
-            
-            // Create assignment demo
-            var assignmentDemo = window.PenguinTwistComponents.createAssignmentDemo('assignmentDemo');
-            assignmentDemo.init();
-            console.log('✅ Assignment demo created');
-            
             // Create main Python playgrounds
             var playground1 = window.PenguinTwistInterpreter.createPlayground(
                 'variablePracticePlayground',
+                'variables',
                 {
-                    title: '🐍 Python Variable Creator',
+                    title: 'Python Variable Creator',
                     defaultCode: '# Create your first variables here!\nname = "Alex"\nage = 16\n\n# Try creating more variables:\n# favorite_color = "blue"\n# lucky_number = 7',
                     showMemory: true
                 }
             );
             playground1.init();
-            console.log('✅ Practice playground created');
+            console.log('Practice playground created');
             
             var playground2 = window.PenguinTwistInterpreter.createPlayground(
                 'variablePrintPlayground',
+                'variables',
                 {
-                    title: '🐍 Variables and Print Practice',
+                    title: 'Variables and Print Practice',
                     defaultCode: '# Variables with different data types\nname = "Alex"\nage = 15\nsubject = "Computer Science"\n\n# Print them to see the output\nprint(name)\nprint(age)\nprint(subject)\n\n# Try creating your own!',
                     showMemory: true
                 }
             );
             playground2.init();
-            console.log('✅ Print playground created');
+            console.log('Print playground created');
             
             // Create mastery check
             var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
@@ -158,7 +140,7 @@
                 {
                     title: 'Check Your Understanding',
                     onComplete: function() {
-                        console.log('🎉 Mastery check completed!');
+                        console.log('Mastery check completed!');
                         window.unlockNextLesson();
                         window.showPracticeSection();
                         
@@ -170,20 +152,17 @@
                 }
             );
             masteryCheck.init();
-            console.log('✅ Mastery check created');
+            console.log('Mastery check created');
             
-            console.log('🎉 Lesson 2 initialization complete!');
+            console.log('Lesson 2 initialization complete!');
             
         } catch (error) {
-            console.error('❌ Lesson initialization failed:', error);
+            console.error('Lesson initialization failed:', error);
         }
     }
     
     function initializeChallenges() {
-        console.log('🏆 Initializing challenge playgrounds...');
-        
-        // Add consistent styling for challenge playgrounds
-        addChallengePlaygroundStyles();
+        console.log('Initializing challenge playgrounds...');
         
         for (var challengeId in challengeConfigs) {
             if (challengeConfigs.hasOwnProperty(challengeId)) {
@@ -191,17 +170,18 @@
                 try {
                     var playground = window.PenguinTwistInterpreter.createPlayground(
                         challengeId,
+                        'variables',
                         config
                     );
                     playground.init();
-                    console.log('✅ Challenge playground created:', challengeId);
+                    console.log('Challenge playground created:', challengeId);
                 } catch (error) {
-                    console.error('❌ Failed to create challenge:', challengeId, error);
+                    console.error('Failed to create challenge:', challengeId, error);
                 }
             }
         }
         
-        console.log('🏆 All challenge playgrounds initialized!');
+        console.log('All challenge playgrounds initialized!');
     }
     
     // Initialize when DOM is ready
