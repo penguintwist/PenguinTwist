@@ -758,14 +758,21 @@ body.dark-mode .challenge-item {
 }
 
 .challenge-item h5 {
-    color: #8b5cf6;
+    color: #06b6d4 !important;
     font-size: 1.3em;
     margin-bottom: 10px;
     font-weight: 600;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 body.dark-mode .challenge-item h5 {
-    color: #c4b5fd;
+    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 .challenge-item p {
