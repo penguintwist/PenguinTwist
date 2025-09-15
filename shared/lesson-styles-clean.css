@@ -1,9 +1,4 @@
-<!-- Add this CSS block to your lesson-styles-clean.css file -->
-<!-- Place it AFTER the existing challenge styles but BEFORE the media queries -->
-
-/* ========================================
-   ARCTIC AURORA CHALLENGE HEADING FIX
-   ======================================== *//* shared/lesson-styles-clean.css - Streamlined Arctic Aurora Theme */
+/* shared/lesson-styles-clean.css - Streamlined Arctic Aurora Theme */
 /* PenguinTwist Clean Lesson Styling - Working Version */
 
 /* Reset and Base Styles */
@@ -267,10 +262,17 @@ body.dark-mode .enhanced-python-playground {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+/* IMPORTANT FIX: Playground header titles should be solid white for clarity */
 .playground-header h4 {
-    font-size: 1.4em;
-    font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: white !important;
+    font-size: 1.4em !important;
+    font-weight: 600 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    /* Remove any gradient effects */
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
 }
 
 .playground-controls {
@@ -738,23 +740,25 @@ body.dark-mode .challenge-category {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
+/* Challenge category headings with Arctic Aurora gradient */
 .challenge-category h4 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-    width: 100%;
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    text-align: center;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    display: inline-block !important;
+    width: 100% !important;
+    font-size: 1.5em !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
 }
 
 body.dark-mode .challenge-category h4 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 .challenge-item {
@@ -770,22 +774,23 @@ body.dark-mode .challenge-item {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
+/* Challenge item headings with Arctic Aurora gradient */
 .challenge-item h5 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-    font-size: 1.3em;
-    margin-bottom: 10px;
-    font-weight: 600;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    display: inline-block !important;
+    font-size: 1.3em !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
 }
 
 body.dark-mode .challenge-item h5 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
 
 .challenge-item p {
@@ -1057,166 +1062,4 @@ body.dark-mode .no-output {
         padding: 12px;
         font-size: 12px;
     }
-}
-
-/* Force remove any default heading styles first */
-.challenge-category h4,
-.challenge-item h5,
-#practiceSection h4,
-#practiceSection h5 {
-    /* Reset any potential conflicts */
-    color: transparent !important;
-    -webkit-text-fill-color: transparent !important;
-    background-color: transparent !important;
-}
-
-/* Apply Arctic Aurora gradient to category headings */
-.challenge-category h4 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    background-image: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    display: inline-block !important; /* Critical for gradient text */
-    width: 100% !important;
-    font-size: 1.5em !important;
-    margin-bottom: 20px !important;
-    text-align: center !important;
-}
-
-/* Apply Arctic Aurora gradient to challenge item headings */
-.challenge-item h5 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    background-image: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    display: inline-block !important; /* Critical for gradient text */
-    font-size: 1.3em !important;
-    margin-bottom: 10px !important;
-    font-weight: 600 !important;
-}
-
-/* Dark mode Arctic Aurora gradients */
-body.dark-mode .challenge-category h4 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    background-image: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-}
-
-body.dark-mode .challenge-item h5 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    background-image: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-}
-
-/* Ensure practice section title also gets the gradient */
-#practiceSection h3 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    background-image: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    display: inline-block !important;
-    width: 100% !important;
-}
-
-body.dark-mode #practiceSection h3 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    background-image: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-}
-
-/* ========================================
-   DEBUGGING STYLES (Remove after testing)
-   ======================================== */
-   
-/* Add a temporary test to verify CSS is loading */
-.challenge-category {
-    position: relative;
-}
-
-.challenge-category::after {
-    content: "CSS v2.1 Loaded" !important;
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    font-size: 10px !important;
-    color: #06b6d4 !important;
-    opacity: 0.3 !important;
-}
-/* Add this to the end of your lesson-styles-clean.css file */
-
-/* ========================================
-   FIX FOR BLURRY GRADIENT TEXT
-   ======================================== */
-
-/* Fix blurry playground headers */
-.playground-header h4,
-.enhanced-python-playground h4 {
-    font-size: 1.4em;
-    font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    
-    /* Remove gradient from playground titles - use solid white instead */
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: white !important;
-    background-clip: initial !important;
-    color: white !important;
-}
-
-/* Alternative: If you want to keep gradients but make them sharper */
-.challenge-item h5,
-.challenge-category h4,
-#practiceSection h3 {
-    /* Force GPU acceleration for sharper rendering */
-    transform: translateZ(0);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    backface-visibility: hidden;
-    will-change: transform;
-    
-    /* Make text slightly bolder to compensate for gradient transparency */
-    font-weight: 700 !important;
-    letter-spacing: -0.02em;
-}
-
-/* Specific fix for CodeMirror if it's causing issues */
-.CodeMirror {
-    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
-    -webkit-font-smoothing: auto;
-    -moz-osx-font-smoothing: auto;
-}
-
-/* Ensure challenge item headings are crisp */
-.challenge-item h5 {
-    display: inline-block !important;
-    position: relative;
-    z-index: 1;
-}
-
-/* Optional: Use text shadow instead of gradient for better readability */
-.use-text-shadow .challenge-item h5 {
-    background: none !important;
-    -webkit-text-fill-color: initial !important;
-    color: #06b6d4 !important;
-    text-shadow: 
-        1px 1px 0 #8b5cf6,
-        2px 2px 0 rgba(139, 92, 246, 0.5),
-        3px 3px 0 rgba(139, 92, 246, 0.25);
-}
-
-body.dark-mode .use-text-shadow .challenge-item h5 {
-    color: #67e8f9 !important;
-    text-shadow: 
-        1px 1px 0 #c4b5fd,
-        2px 2px 0 rgba(196, 181, 253, 0.5),
-        3px 3px 0 rgba(196, 181, 253, 0.25);
 }
