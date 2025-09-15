@@ -200,7 +200,7 @@
         });
     };
     
-    // Global animation function for memory demo
+    // Global animation functions for memory demo
     window.playMemoryDemo = function() {
         var boxes = [
             { element: document.getElementById('demoBox1'), value: '"Alex"' },
@@ -208,7 +208,7 @@
             { element: document.getElementById('demoBox3'), value: '"Computer Science"' }
         ];
         
-        var button = document.querySelector('.demo-btn');
+        var button = document.querySelector('[onclick="playMemoryDemo()"]');
         if (button) {
             button.disabled = true;
             button.textContent = 'Running Demo...';
@@ -273,7 +273,7 @@
             nextBtn.classList.remove('disabled');
             nextBtn.style.opacity = '1';
             nextBtn.style.pointerEvents = 'auto';
-            console.log('✅ Next lesson unlocked');
+            console.log('Next lesson unlocked');
         }
     };
     
@@ -281,9 +281,6 @@
     window.PenguinTwistComponents = {
         createMemoryVisualization: function(containerId, options) {
             return new MemoryVisualization(containerId, options);
-        },
-        createAssignmentDemo: function(containerId, options) {
-            return new AssignmentDemo(containerId, options);
         },
         createMasteryCheck: function(containerId, questions, options) {
             return new MasteryCheck(containerId, questions, options);
