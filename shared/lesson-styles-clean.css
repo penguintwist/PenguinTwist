@@ -1,5 +1,5 @@
-/* shared/lesson-styles-clean.css - Arctic Aurora Theme v2.0 */
-/* PenguinTwist Educational Platform - Fully Audited & Optimized */
+/* shared/lesson-styles-clean.css - Arctic Aurora Theme v3.0 */
+/* PenguinTwist Educational Platform - Complete Perfect Edition */
 
 /* ============================================
    TABLE OF CONTENTS
@@ -13,9 +13,10 @@
    8. Memory Visualization
    9. Mastery Check
    10. Practice Challenges
-   11. Utility Classes
-   12. Animations
-   13. Responsive Design
+   11. Navigation & Utility
+   12. Loading & Error States
+   13. Animations
+   14. Responsive Design
    ============================================ */
 
 /* ============================================
@@ -120,6 +121,7 @@ body.dark-mode .header {
     padding: 8px 12px;
     border-radius: 25px;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 2;
     cursor: pointer;
@@ -141,7 +143,7 @@ body.dark-mode .header {
     cursor: pointer;
 }
 
-/* Navigation */
+/* Navigation Bar */
 .nav-back {
     background: rgba(255, 255, 255, 0.8);
     padding: 18px 0;
@@ -191,21 +193,20 @@ body.dark-mode .section {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+/* Section headings - solid cyan color, no gradient text */
 .section h3 {
     font-size: 2.2em;
     margin-bottom: 25px;
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #06b6d4;
+    font-weight: 700;
     display: inline-block;
+    border-left: 4px solid #06b6d4;
+    padding-left: 15px;
 }
 
 body.dark-mode .section h3 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #67e8f9;
+    border-left-color: #67e8f9;
 }
 
 .intro, .theory {
@@ -283,7 +284,8 @@ body.dark-mode .expected-output {
 /* ============================================
    7. PYTHON PLAYGROUND
    ============================================ */
-.enhanced-python-playground {
+.enhanced-python-playground,
+.python-playground-container {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
     border: 3px solid #06b6d4;
     border-radius: 20px;
@@ -294,7 +296,8 @@ body.dark-mode .expected-output {
     -webkit-backdrop-filter: blur(10px);
 }
 
-body.dark-mode .enhanced-python-playground {
+body.dark-mode .enhanced-python-playground,
+body.dark-mode .python-playground-container {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
     border-color: rgba(103, 232, 249, 0.6);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(103, 232, 249, 0.2);
@@ -310,17 +313,15 @@ body.dark-mode .enhanced-python-playground {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-/* FIX: Playground titles must be solid white for readability */
+/* Playground titles - always white text, no gradients */
 .playground-header h4 {
+    margin: 0;
+    padding: 0;
     color: white;
     font-size: 1.4em;
     font-weight: 600;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    /* Explicitly remove gradient effects */
-    background: none;
-    -webkit-background-clip: initial;
-    -webkit-text-fill-color: initial;
-    background-clip: initial;
+    line-height: 1;
 }
 
 .playground-controls {
@@ -343,7 +344,8 @@ body.dark-mode .enhanced-python-playground {
     -webkit-backdrop-filter: blur(10px);
 }
 
-.run-btn:hover:not(:disabled), .clear-btn:hover {
+.run-btn:hover:not(:disabled), 
+.clear-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
@@ -355,6 +357,7 @@ body.dark-mode .enhanced-python-playground {
     border-color: rgba(255, 255, 255, 0.2);
     cursor: not-allowed;
     opacity: 0.6;
+    transform: none;
 }
 
 .playground-content {
@@ -387,12 +390,13 @@ body.dark-mode .enhanced-python-playground {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* CodeMirror Integration Styles */
+/* CodeMirror Integration */
 .CodeMirror {
     font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 14px;
     height: 100%;
     background: #0a0a0a;
+    color: #e2e8f0;
 }
 
 .CodeMirror-gutters {
@@ -400,7 +404,15 @@ body.dark-mode .enhanced-python-playground {
     border-right: 1px solid rgba(6, 182, 212, 0.2);
 }
 
-/* Fallback textarea styles */
+.CodeMirror-linenumber {
+    color: #64748b;
+}
+
+.CodeMirror-cursor {
+    border-left: 2px solid #06b6d4;
+}
+
+/* Fallback textarea */
 .code-editor {
     flex: 1;
     background: #0a0a0a;
@@ -451,18 +463,19 @@ body.dark-mode .memory-section {
     min-height: 60px;
 }
 
+/* Memory tracker title - solid cyan color */
 .memory-tracker-title {
-    color: #06b6d4;
     font-weight: 700;
     font-size: 1.1em;
     margin-bottom: 15px;
     text-align: center;
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #06b6d4;
     display: inline-block;
     width: 100%;
+}
+
+body.dark-mode .memory-tracker-title {
+    color: #67e8f9;
 }
 
 .memory-item {
@@ -522,15 +535,17 @@ body.dark-mode .memory-visualization-container {
     border-color: rgba(103, 232, 249, 0.3);
 }
 
+/* Memory visualization title - solid cyan */
 .memory-visualization-title {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #06b6d4;
     font-weight: 700;
     margin-bottom: 25px;
     font-size: 1.4em;
     display: inline-block;
+}
+
+body.dark-mode .memory-visualization-title {
+    color: #67e8f9;
 }
 
 .memory-demo {
@@ -629,14 +644,16 @@ body.dark-mode .mastery-check {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+/* Mastery header - solid purple color */
 .mastery-header h3 {
-    background: linear-gradient(135deg, #06b6d4, #a855f7);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #8b5cf6;
     margin-bottom: 15px;
     font-size: 1.8em;
     display: inline-block;
+}
+
+body.dark-mode .mastery-header h3 {
+    color: #c4b5fd;
 }
 
 .mastery-question {
@@ -809,26 +826,37 @@ body.dark-mode .challenge-category {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
-/* Challenge category headings - Arctic Aurora gradient */
+/* Challenge category headings - solid cyan with gradient underline */
 .challenge-category h4 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
-    width: 100%;
+    color: #06b6d4;
     font-size: 1.5em;
     margin-bottom: 20px;
     text-align: center;
     font-weight: 700;
-    transform: translateZ(0); /* Force GPU for sharper text */
+    position: relative;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 100%;
+}
+
+.challenge-category h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+    border-radius: 2px;
 }
 
 body.dark-mode .challenge-category h4 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #67e8f9;
+}
+
+body.dark-mode .challenge-category h4::after {
+    background: linear-gradient(90deg, #67e8f9, #c4b5fd);
 }
 
 .challenge-item {
@@ -844,47 +872,27 @@ body.dark-mode .challenge-item {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
-/* Challenge item headings - Arctic Aurora gradient */
+/* Challenge item headings - solid cyan with background highlight */
 .challenge-item h5 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: inline-block;
+    color: #06b6d4;
     font-size: 1.3em;
     margin-bottom: 10px;
     font-weight: 600;
-    transform: translateZ(0); /* Force GPU for sharper text */
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+    padding: 5px 10px;
+    border-radius: 6px;
 }
 
 body.dark-mode .challenge-item h5 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #67e8f9;
+    background: linear-gradient(135deg, rgba(103, 232, 249, 0.15), rgba(196, 181, 253, 0.15));
 }
 
 .challenge-item p {
     margin-bottom: 20px;
     font-size: 1.1em;
     line-height: 1.6;
-}
-
-/* Challenge playground specific overrides */
-.challenge-item .enhanced-python-playground {
-    border-color: #06b6d4;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
-    box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1);
-}
-
-.challenge-item .playground-header {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
-}
-
-body.dark-mode .challenge-item .enhanced-python-playground {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
-    border-color: rgba(103, 232, 249, 0.6);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(103, 232, 249, 0.2);
 }
 
 /* ============================================
@@ -934,7 +942,9 @@ body.dark-mode .lesson-navigation {
     pointer-events: none;
 }
 
-/* Loading States */
+/* ============================================
+   12. LOADING & ERROR STATES
+   ============================================ */
 .loading-state {
     display: flex;
     flex-direction: column;
@@ -1011,7 +1021,7 @@ body.dark-mode .error-fallback h4 {
     color: #fbbf24;
 }
 
-/* Success States */
+/* Success State */
 .no-output {
     color: #10b981;
     font-style: italic;
@@ -1086,7 +1096,7 @@ body.dark-mode .no-output {
 }
 
 /* ============================================
-   12. ANIMATIONS
+   13. ANIMATIONS
    ============================================ */
 @keyframes variable-appear {
     from {
@@ -1132,8 +1142,9 @@ body.dark-mode .no-output {
 }
 
 /* ============================================
-   13. RESPONSIVE DESIGN
+   14. RESPONSIVE DESIGN
    ============================================ */
+
 /* Tablet Landscape */
 @media (max-width: 1024px) and (min-width: 769px) {
     .container {
@@ -1180,6 +1191,7 @@ body.dark-mode .no-output {
     
     .playground-header h4 {
         font-size: 1.2em;
+        text-align: center;
     }
     
     .playground-content {
@@ -1360,12 +1372,14 @@ body.dark-mode .no-output {
 
 /* High DPI Screens */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    /* Sharper gradients for retina displays */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
     .section h3,
     .challenge-category h4,
     .challenge-item h5 {
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         transform: translateZ(0);
         backface-visibility: hidden;
     }
@@ -1393,173 +1407,8 @@ body.dark-mode .no-output {
     .enhanced-python-playground {
         border: 2px solid #333;
     }
+    
+    .playground-header h4 {
+        color: #333;
+    }
 }
-
-/* ============================================
-   END OF STYLESHEET
-   ============================================ */
-
-/* Add this AFTER your existing CSS to override gradient text */
-/* This removes fuzzy gradient text and uses solid colors instead */
-
-/* ============================================
-   NO-BLUR TEXT OVERRIDE
-   Replaces gradient text with solid colors
-   ============================================ */
-
-/* Main section headings - use solid cyan */
-.section h3 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-    text-shadow: 0 1px 2px rgba(6, 182, 212, 0.2) !important;
-}
-
-body.dark-mode .section h3 {
-    color: #67e8f9 !important;
-    text-shadow: 0 1px 2px rgba(103, 232, 249, 0.3) !important;
-}
-
-/* Memory tracker title - solid color */
-.memory-tracker-title {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-}
-
-body.dark-mode .memory-tracker-title {
-    color: #67e8f9 !important;
-}
-
-/* Memory visualization title - solid color */
-.memory-visualization-title {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-}
-
-body.dark-mode .memory-visualization-title {
-    color: #67e8f9 !important;
-}
-
-/* Mastery check heading - solid purple */
-.mastery-header h3 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #8b5cf6 !important;
-    text-shadow: 0 1px 2px rgba(139, 92, 246, 0.2) !important;
-}
-
-body.dark-mode .mastery-header h3 {
-    color: #c4b5fd !important;
-    text-shadow: 0 1px 2px rgba(196, 181, 253, 0.3) !important;
-}
-
-/* Challenge category headings - solid cyan with underline */
-.challenge-category h4 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-    position: relative !important;
-    padding-bottom: 10px !important;
-}
-
-.challenge-category h4::after {
-    content: '' !important;
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: 60px !important;
-    height: 3px !important;
-    background: linear-gradient(90deg, #06b6d4, #8b5cf6) !important;
-    border-radius: 2px !important;
-}
-
-body.dark-mode .challenge-category h4 {
-    color: #67e8f9 !important;
-}
-
-body.dark-mode .challenge-category h4::after {
-    background: linear-gradient(90deg, #67e8f9, #c4b5fd) !important;
-}
-
-/* Challenge item headings - solid cyan */
-.challenge-item h5 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-    font-weight: 600 !important;
-}
-
-body.dark-mode .challenge-item h5 {
-    color: #67e8f9 !important;
-}
-
-/* Practice section heading if present */
-#practiceSection h3 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    color: #06b6d4 !important;
-    text-shadow: 0 1px 2px rgba(6, 182, 212, 0.2) !important;
-}
-
-body.dark-mode #practiceSection h3 {
-    color: #67e8f9 !important;
-    text-shadow: 0 1px 2px rgba(103, 232, 249, 0.3) !important;
-}
-
-/* Alternative: Add colored borders for visual interest */
-.section h3 {
-    border-left: 4px solid #06b6d4 !important;
-    padding-left: 15px !important;
-}
-
-body.dark-mode .section h3 {
-    border-left-color: #67e8f9 !important;
-}
-
-/* Alternative 2: Use background highlight instead of gradient text */
-.challenge-item h5 {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1)) !important;
-    padding: 5px 10px !important;
-    border-radius: 6px !important;
-    display: inline-block !important;
-}
-
-body.dark-mode .challenge-item h5 {
-    background: linear-gradient(135deg, rgba(103, 232, 249, 0.15), rgba(196, 181, 253, 0.15)) !important;
-}
-/* Add this to the END of your CSS file */
-/* This ensures ALL playground titles are simple white text */
-
-/* Force all playground header titles to be white */
-.playground-header h4,
-.enhanced-python-playground .playground-header h4,
-.challenge-item .playground-header h4 {
-    color: white !important;
-    background: none !important;
-    background-image: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-    font-weight: 600 !important;
-    font-size: 1.4em !important;
-}
-
-/* That's it. Simple white text. No gradients. No blur. */
