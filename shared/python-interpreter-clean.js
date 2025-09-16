@@ -1,6 +1,6 @@
 // shared/python-interpreter-clean.js
 // Streamlined Python interpreter with Skulpt (ES5 Compatible)
-// VERSION: Debug Edition
+// VERSION: Fixed Parameter Handling
 
 (function() {
     'use strict';
@@ -248,19 +248,32 @@
     function PythonPlayground(containerId, options) {
         console.log('🎮 Creating PythonPlayground instance');
         console.log('  Container ID:', containerId);
-        console.log('  Options received:', JSON.stringify(options, null, 2));
+        console.log('  Options received (raw):', options);
+        console.log('  Options type:', typeof options);
+        console.log('  Options stringified:', JSON.stringify(options, null, 2));
         
         this.containerId = containerId;
+        // Ensure options is always an object
         this.options = options || {};
         this.isRunning = false;
         this.editor = null;
         
+        // Debug the showMemory property specifically
         console.log('  showMemory setting:', this.options.showMemory);
-        console.log('  typeof showMemory:', typeof this.options.showMemory);
+        console.log('  showMemory type:', typeof this.options.showMemory);
+        console.log('  showMemory === true:', this.options.showMemory === true);
+        console.log('  Boolean(showMemory):', Boolean(this.options.showMemory));
+        
+        // Ensure showMemory is explicitly boolean if it exists
+        if (this.options.hasOwnProperty('showMemory')) {
+            this.options.showMemory = Boolean(this.options.showMemory);
+            console.log('  showMemory normalized to:', this.options.showMemory);
+        }
     }
     
     PythonPlayground.prototype.init = function() {
         console.log('📋 Initializing playground:', this.containerId);
+        console.log('  Current options:', this.options);
         
         var container = document.getElementById(this.containerId);
         if (!container) {
@@ -269,15 +282,29 @@
         }
         
         console.log('✅ Container found, creating HTML');
-        container.innerHTML = this.createHTML();
+        var htmlContent = this.createHTML();
+        console.log('  HTML content length:', htmlContent.length);
+        
+        container.innerHTML = htmlContent;
+        
         this.setupEditor(container);
         this.setupEvents(container);
         
         // Verify what was actually created
         var memorySection = container.querySelector('.memory-section');
-        console.log('  Memory section created?', memorySection !== null);
+        var memoryTracker = container.querySelector('.memory-tracker');
+        
+        console.log('🔍 Post-init verification for:', this.containerId);
+        console.log('  .memory-section exists:', memorySection !== null);
+        console.log('  .memory-tracker exists:', memoryTracker !== null);
+        
         if (memorySection) {
-            console.log('  Memory section HTML:', memorySection.outerHTML.substring(0, 100) + '...');
+            console.log('  Memory section classes:', memorySection.className);
+            console.log('  Memory section HTML preview:', memorySection.outerHTML.substring(0, 200));
+        } else {
+            console.log('  ❌ No memory section found in container');
+            // Debug: log what was actually created
+            console.log('  Container inner HTML preview:', container.innerHTML.substring(0, 500));
         }
         
         return true;
@@ -285,8 +312,9 @@
     
     PythonPlayground.prototype.createHTML = function() {
         console.log('🏗️ Creating HTML for playground:', this.containerId);
-        console.log('  Options at HTML creation:', this.options);
-        console.log('  showMemory value:', this.options.showMemory);
+        console.log('  Options during HTML creation:', this.options);
+        console.log('  showMemory check:', this.options.showMemory);
+        console.log('  Will create memory section:', Boolean(this.options.showMemory));
         
         var title = this.options.title || 'Python Playground';
         var defaultCode = this.options.defaultCode || '# Write your Python code here\nprint("Hello, World!")';
@@ -310,19 +338,22 @@
                 '</div>' +
             '</div>';
             
-        if (this.options.showMemory) {
-            console.log('  ✅ Adding memory section for:', this.containerId);
+        // CRITICAL FIX: More explicit check for showMemory
+        if (this.options.showMemory === true) {
+            console.log('  ✅ ADDING memory section for:', this.containerId);
             html += '<div class="memory-section">' +
                 '<div class="memory-tracker" id="' + this.containerId + 'Memory"></div>' +
             '</div>';
         } else {
             console.log('  ⚠️ NOT adding memory section for:', this.containerId);
-            console.log('    Reason: showMemory is', this.options.showMemory);
+            console.log('    Reason: showMemory is:', this.options.showMemory);
+            console.log('    Type:', typeof this.options.showMemory);
         }
         
         html += '</div>';
         
-        console.log('  HTML length created:', html.length, 'characters');
+        console.log('  Final HTML length:', html.length, 'characters');
+        console.log('  Contains .memory-section:', html.includes('memory-section'));
         
         return html;
     };
@@ -475,25 +506,50 @@
         }
     };
     
-    // Export the API
+    // Export the API with FIXED parameter handling
     window.PenguinTwistInterpreter = {
         createPlayground: function(containerId, type, options) {
-            console.log('🚀 createPlayground called');
-            console.log('  Arguments received:', arguments.length);
+            console.log('🚀 createPlayground called (FIXED VERSION)');
+            console.log('  Total arguments:', arguments.length);
             console.log('  Arg 1 (containerId):', containerId);
             console.log('  Arg 2 (type):', type);
             console.log('  Arg 3 (options):', options);
             
-            // CRITICAL: Handle the parameter mismatch
-            // If 3 arguments, the middle one is 'type' and should be ignored
-            var actualOptions = arguments.length === 3 ? options : type;
+            // FIXED: Handle different calling patterns
+            var actualOptions;
             
-            console.log('  Actual options to use:', actualOptions);
+            if (arguments.length === 1) {
+                // Only containerId provided
+                actualOptions = {};
+            } else if (arguments.length === 2) {
+                // Could be (containerId, options) OR (containerId, type)
+                if (typeof type === 'string' && !type.hasOwnProperty('title')) {
+                    // It's a type string, no options
+                    actualOptions = {};
+                } else {
+                    // It's options
+                    actualOptions = type;
+                }
+            } else if (arguments.length === 3) {
+                // (containerId, type, options) - use the third argument
+                actualOptions = options;
+            } else {
+                // Fallback
+                actualOptions = {};
+            }
+            
+            // Ensure actualOptions is an object
+            if (!actualOptions || typeof actualOptions !== 'object') {
+                console.warn('  Options not an object, using empty object');
+                actualOptions = {};
+            }
+            
+            console.log('  Resolved options:', JSON.stringify(actualOptions, null, 2));
             
             return new PythonPlayground(containerId, actualOptions);
         }
     };
     
-    console.log('=== Python Interpreter Ready ===');
+    console.log('=== Python Interpreter Ready (FIXED) ===');
     
 })();
