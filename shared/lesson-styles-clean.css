@@ -1398,3 +1398,149 @@ body.dark-mode .no-output {
 /* ============================================
    END OF STYLESHEET
    ============================================ */
+
+/* Add this AFTER your existing CSS to override gradient text */
+/* This removes fuzzy gradient text and uses solid colors instead */
+
+/* ============================================
+   NO-BLUR TEXT OVERRIDE
+   Replaces gradient text with solid colors
+   ============================================ */
+
+/* Main section headings - use solid cyan */
+.section h3 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+    text-shadow: 0 1px 2px rgba(6, 182, 212, 0.2) !important;
+}
+
+body.dark-mode .section h3 {
+    color: #67e8f9 !important;
+    text-shadow: 0 1px 2px rgba(103, 232, 249, 0.3) !important;
+}
+
+/* Memory tracker title - solid color */
+.memory-tracker-title {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+}
+
+body.dark-mode .memory-tracker-title {
+    color: #67e8f9 !important;
+}
+
+/* Memory visualization title - solid color */
+.memory-visualization-title {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+}
+
+body.dark-mode .memory-visualization-title {
+    color: #67e8f9 !important;
+}
+
+/* Mastery check heading - solid purple */
+.mastery-header h3 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #8b5cf6 !important;
+    text-shadow: 0 1px 2px rgba(139, 92, 246, 0.2) !important;
+}
+
+body.dark-mode .mastery-header h3 {
+    color: #c4b5fd !important;
+    text-shadow: 0 1px 2px rgba(196, 181, 253, 0.3) !important;
+}
+
+/* Challenge category headings - solid cyan with underline */
+.challenge-category h4 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+    position: relative !important;
+    padding-bottom: 10px !important;
+}
+
+.challenge-category h4::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 60px !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #06b6d4, #8b5cf6) !important;
+    border-radius: 2px !important;
+}
+
+body.dark-mode .challenge-category h4 {
+    color: #67e8f9 !important;
+}
+
+body.dark-mode .challenge-category h4::after {
+    background: linear-gradient(90deg, #67e8f9, #c4b5fd) !important;
+}
+
+/* Challenge item headings - solid cyan */
+.challenge-item h5 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+    font-weight: 600 !important;
+}
+
+body.dark-mode .challenge-item h5 {
+    color: #67e8f9 !important;
+}
+
+/* Practice section heading if present */
+#practiceSection h3 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    color: #06b6d4 !important;
+    text-shadow: 0 1px 2px rgba(6, 182, 212, 0.2) !important;
+}
+
+body.dark-mode #practiceSection h3 {
+    color: #67e8f9 !important;
+    text-shadow: 0 1px 2px rgba(103, 232, 249, 0.3) !important;
+}
+
+/* Alternative: Add colored borders for visual interest */
+.section h3 {
+    border-left: 4px solid #06b6d4 !important;
+    padding-left: 15px !important;
+}
+
+body.dark-mode .section h3 {
+    border-left-color: #67e8f9 !important;
+}
+
+/* Alternative 2: Use background highlight instead of gradient text */
+.challenge-item h5 {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1)) !important;
+    padding: 5px 10px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
+}
+
+body.dark-mode .challenge-item h5 {
+    background: linear-gradient(135deg, rgba(103, 232, 249, 0.15), rgba(196, 181, 253, 0.15)) !important;
+}
