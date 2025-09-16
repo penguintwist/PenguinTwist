@@ -1544,3 +1544,22 @@ body.dark-mode .section h3 {
 body.dark-mode .challenge-item h5 {
     background: linear-gradient(135deg, rgba(103, 232, 249, 0.15), rgba(196, 181, 253, 0.15)) !important;
 }
+/* Add this to the END of your CSS file */
+/* This ensures ALL playground titles are simple white text */
+
+/* Force all playground header titles to be white */
+.playground-header h4,
+.enhanced-python-playground .playground-header h4,
+.challenge-item .playground-header h4 {
+    color: white !important;
+    background: none !important;
+    background-image: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-clip: initial !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    font-weight: 600 !important;
+    font-size: 1.4em !important;
+}
+
+/* That's it. Simple white text. No gradients. No blur. */
