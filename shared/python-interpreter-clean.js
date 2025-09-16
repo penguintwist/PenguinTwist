@@ -1,8 +1,11 @@
 // shared/python-interpreter-clean.js
 // Streamlined Python interpreter with Skulpt (ES5 Compatible)
+// VERSION: Debug Edition
 
 (function() {
     'use strict';
+    
+    console.log('=== Python Interpreter Loading ===');
     
     // Global state
     var isSkultLoaded = false;
@@ -243,27 +246,48 @@
     
     // Python Playground Component
     function PythonPlayground(containerId, options) {
+        console.log('🎮 Creating PythonPlayground instance');
+        console.log('  Container ID:', containerId);
+        console.log('  Options received:', JSON.stringify(options, null, 2));
+        
         this.containerId = containerId;
         this.options = options || {};
         this.isRunning = false;
         this.editor = null;
+        
+        console.log('  showMemory setting:', this.options.showMemory);
+        console.log('  typeof showMemory:', typeof this.options.showMemory);
     }
     
     PythonPlayground.prototype.init = function() {
+        console.log('📋 Initializing playground:', this.containerId);
+        
         var container = document.getElementById(this.containerId);
         if (!container) {
-            console.error('Python playground container not found: ' + this.containerId);
+            console.error('❌ Python playground container not found: ' + this.containerId);
             return false;
         }
         
+        console.log('✅ Container found, creating HTML');
         container.innerHTML = this.createHTML();
         this.setupEditor(container);
         this.setupEvents(container);
+        
+        // Verify what was actually created
+        var memorySection = container.querySelector('.memory-section');
+        console.log('  Memory section created?', memorySection !== null);
+        if (memorySection) {
+            console.log('  Memory section HTML:', memorySection.outerHTML.substring(0, 100) + '...');
+        }
         
         return true;
     };
     
     PythonPlayground.prototype.createHTML = function() {
+        console.log('🏗️ Creating HTML for playground:', this.containerId);
+        console.log('  Options at HTML creation:', this.options);
+        console.log('  showMemory value:', this.options.showMemory);
+        
         var title = this.options.title || 'Python Playground';
         var defaultCode = this.options.defaultCode || '# Write your Python code here\nprint("Hello, World!")';
         
@@ -287,12 +311,18 @@
             '</div>';
             
         if (this.options.showMemory) {
+            console.log('  ✅ Adding memory section for:', this.containerId);
             html += '<div class="memory-section">' +
                 '<div class="memory-tracker" id="' + this.containerId + 'Memory"></div>' +
             '</div>';
+        } else {
+            console.log('  ⚠️ NOT adding memory section for:', this.containerId);
+            console.log('    Reason: showMemory is', this.options.showMemory);
         }
         
         html += '</div>';
+        
+        console.log('  HTML length created:', html.length, 'characters');
         
         return html;
     };
@@ -310,9 +340,10 @@
                 indentWithTabs: false,
                 lineWrapping: true
             });
+            console.log('  CodeMirror editor initialized for:', this.containerId);
         } else {
             // Fallback to textarea
-            console.warn('CodeMirror not available, using fallback textarea');
+            console.warn('  CodeMirror not available, using fallback textarea for:', this.containerId);
             this.editor = {
                 getValue: function() { return textarea.value; },
                 setValue: function(value) { textarea.value = value; }
@@ -342,6 +373,10 @@
         var outputElement = document.getElementById(this.containerId + 'Output');
         var memoryElement = document.getElementById(this.containerId + 'Memory');
         var runBtn = document.querySelector('#' + this.containerId + ' .run-btn');
+        
+        console.log('▶️ Running code for:', this.containerId);
+        console.log('  Output element found:', outputElement !== null);
+        console.log('  Memory element found:', memoryElement !== null);
         
         if (!outputElement) return;
         
@@ -381,7 +416,10 @@
                 myPromise.then(function(mod) {
                     // Success - update memory tracker
                     if (memoryElement) {
+                        console.log('  Updating memory tracker for:', self.containerId);
                         updateMemoryTracker(memoryElement, code);
+                    } else {
+                        console.log('  No memory element to update for:', self.containerId);
                     }
                     
                     // Show success message if no output
@@ -440,8 +478,22 @@
     // Export the API
     window.PenguinTwistInterpreter = {
         createPlayground: function(containerId, type, options) {
-            return new PythonPlayground(containerId, options);
+            console.log('🚀 createPlayground called');
+            console.log('  Arguments received:', arguments.length);
+            console.log('  Arg 1 (containerId):', containerId);
+            console.log('  Arg 2 (type):', type);
+            console.log('  Arg 3 (options):', options);
+            
+            // CRITICAL: Handle the parameter mismatch
+            // If 3 arguments, the middle one is 'type' and should be ignored
+            var actualOptions = arguments.length === 3 ? options : type;
+            
+            console.log('  Actual options to use:', actualOptions);
+            
+            return new PythonPlayground(containerId, actualOptions);
         }
     };
+    
+    console.log('=== Python Interpreter Ready ===');
     
 })();
