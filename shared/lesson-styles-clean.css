@@ -1,36 +1,76 @@
-/* shared/lesson-styles-clean.css - Streamlined Arctic Aurora Theme */
-/* PenguinTwist Clean Lesson Styling - Working Version */
+/* shared/lesson-styles-clean.css - Arctic Aurora Theme v2.0 */
+/* PenguinTwist Educational Platform - Fully Audited & Optimized */
 
-/* Reset and Base Styles */
+/* ============================================
+   TABLE OF CONTENTS
+   1. Reset & Base Styles
+   2. Typography
+   3. Layout & Container
+   4. Header & Navigation
+   5. Main Content Sections
+   6. Code & Output Displays
+   7. Python Playground
+   8. Memory Visualization
+   9. Mastery Check
+   10. Practice Challenges
+   11. Utility Classes
+   12. Animations
+   13. Responsive Design
+   ============================================ */
+
+/* ============================================
+   1. RESET & BASE STYLES
+   ============================================ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
     color: #1e293b;
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    transition: all 0.3s ease;
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Dark Mode Base */
 body.dark-mode {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #e2e8f0;
 }
 
-/* Container and Layout */
+/* ============================================
+   2. TYPOGRAPHY
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+code, pre, .monospace {
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', 'JetBrains Mono', monospace;
+}
+
+/* ============================================
+   3. LAYOUT & CONTAINER
+   ============================================ */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
 }
 
-/* Header Styles */
+/* ============================================
+   4. HEADER & NAVIGATION
+   ============================================ */
 .header {
     background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
     color: white;
@@ -46,8 +86,10 @@ body.dark-mode {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
     opacity: 0.3;
+    pointer-events: none;
 }
 
 body.dark-mode .header {
@@ -57,7 +99,6 @@ body.dark-mode .header {
 .header h1 {
     font-size: 3em;
     margin-bottom: 10px;
-    font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     position: relative;
     z-index: 1;
@@ -66,7 +107,6 @@ body.dark-mode .header {
 .header p {
     font-size: 1.3em;
     opacity: 0.95;
-    font-weight: 400;
     position: relative;
     z-index: 1;
 }
@@ -83,11 +123,13 @@ body.dark-mode .header {
     border: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 2;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, transform 0.2s ease;
+    will-change: background, transform;
 }
 
 .dark-mode-container:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
 }
 
 .dark-mode-label {
@@ -105,6 +147,7 @@ body.dark-mode .header {
     padding: 18px 0;
     border-bottom: 1px solid rgba(6, 182, 212, 0.2);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 body.dark-mode .nav-back {
@@ -124,7 +167,9 @@ body.dark-mode .nav-back {
     text-decoration: underline;
 }
 
-/* Lesson Content */
+/* ============================================
+   5. MAIN CONTENT SECTIONS
+   ============================================ */
 .lesson-content {
     padding: 50px 0;
 }
@@ -135,6 +180,7 @@ body.dark-mode .nav-back {
     padding: 30px;
     border-radius: 16px;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(6, 182, 212, 0.1);
     box-shadow: 0 8px 32px rgba(6, 182, 212, 0.1);
 }
@@ -152,7 +198,7 @@ body.dark-mode .section {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-weight: 700;
+    display: inline-block;
 }
 
 body.dark-mode .section h3 {
@@ -162,7 +208,6 @@ body.dark-mode .section h3 {
     background-clip: text;
 }
 
-/* Text Styles */
 .intro, .theory {
     font-size: 1.15em;
     line-height: 1.8;
@@ -180,22 +225,23 @@ body.dark-mode .section h3 {
     margin: 25px 0;
     border-radius: 0 12px 12px 0;
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(6, 182, 212, 0.2);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 body.dark-mode .tip {
     background: linear-gradient(135deg, rgba(103, 232, 249, 0.1), rgba(139, 92, 246, 0.1));
     border-left-color: #67e8f9;
-    border-color: rgba(103, 232, 249, 0.3);
 }
 
-/* Code Examples */
+/* ============================================
+   6. CODE & OUTPUT DISPLAYS
+   ============================================ */
 .code-example {
     background: linear-gradient(135deg, #0c1629 0%, #1e293b 100%);
     border: 2px solid rgba(6, 182, 212, 0.3);
     border-radius: 12px;
     padding: 20px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'JetBrains Mono', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 15px;
     margin: 20px 0;
     white-space: pre-wrap;
@@ -213,6 +259,7 @@ body.dark-mode .tip {
     right: 0;
     height: 3px;
     background: linear-gradient(90deg, #06b6d4, #8b5cf6, #06b6d4);
+    background-size: 200% 100%;
     border-radius: 12px 12px 0 0;
 }
 
@@ -222,7 +269,7 @@ body.dark-mode .tip {
     border-radius: 12px;
     padding: 15px;
     margin: 20px 0;
-    font-family: monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-weight: 500;
     box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);
 }
@@ -233,23 +280,24 @@ body.dark-mode .expected-output {
     color: #e2e8f0;
 }
 
-/* Python Playground - Arctic Aurora Style */
+/* ============================================
+   7. PYTHON PLAYGROUND
+   ============================================ */
 .enhanced-python-playground {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
     border: 3px solid #06b6d4;
     border-radius: 20px;
     overflow: hidden;
     margin: 30px 0;
-    box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 
-                0 0 60px rgba(6, 182, 212, 0.1);
+    box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 body.dark-mode .enhanced-python-playground {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
     border-color: rgba(103, 232, 249, 0.6);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
-                0 0 60px rgba(103, 232, 249, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(103, 232, 249, 0.2);
 }
 
 .playground-header {
@@ -262,17 +310,17 @@ body.dark-mode .enhanced-python-playground {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-/* IMPORTANT FIX: Playground header titles should be solid white for clarity */
+/* FIX: Playground titles must be solid white for readability */
 .playground-header h4 {
-    color: white !important;
-    font-size: 1.4em !important;
-    font-weight: 600 !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-    /* Remove any gradient effects */
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    background-clip: initial !important;
+    color: white;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Explicitly remove gradient effects */
+    background: none;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background-clip: initial;
 }
 
 .playground-controls {
@@ -292,9 +340,10 @@ body.dark-mode .enhanced-python-playground {
     font-size: 14px;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
-.run-btn:hover, .clear-btn:hover {
+.run-btn:hover:not(:disabled), .clear-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
@@ -305,7 +354,6 @@ body.dark-mode .enhanced-python-playground {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
     cursor: not-allowed;
-    transform: none;
     opacity: 0.6;
 }
 
@@ -339,12 +387,26 @@ body.dark-mode .enhanced-python-playground {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* CodeMirror Integration Styles */
+.CodeMirror {
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    height: 100%;
+    background: #0a0a0a;
+}
+
+.CodeMirror-gutters {
+    background: #0a0a0a;
+    border-right: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+/* Fallback textarea styles */
 .code-editor {
     flex: 1;
     background: #0a0a0a;
     border: none;
     padding: 20px;
-    font-family: 'Monaco', 'Menlo', 'Consolas', 'JetBrains Mono', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 14px;
     color: #e2e8f0;
     resize: none;
@@ -362,7 +424,7 @@ body.dark-mode .enhanced-python-playground {
     flex: 1;
     background: #1a1a1a;
     padding: 20px;
-    font-family: 'Monaco', 'Menlo', 'Consolas', 'JetBrains Mono', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 14px;
     color: #4ade80;
     overflow-y: auto;
@@ -371,7 +433,9 @@ body.dark-mode .enhanced-python-playground {
     word-break: break-word;
 }
 
-/* Memory Tracker */
+/* ============================================
+   8. MEMORY VISUALIZATION
+   ============================================ */
 .memory-section {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
     border-top: 2px solid rgba(6, 182, 212, 0.3);
@@ -397,6 +461,8 @@ body.dark-mode .memory-section {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    display: inline-block;
+    width: 100%;
 }
 
 .memory-item {
@@ -406,28 +472,18 @@ body.dark-mode .memory-section {
     border-radius: 8px;
     padding: 12px 16px;
     margin: 6px;
-    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 13px;
     transition: all 0.3s ease;
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(6, 182, 212, 0.2);
+    -webkit-backdrop-filter: blur(5px);
     animation: variable-appear 0.4s ease-out;
-}
-
-@keyframes variable-appear {
-    from {
-        opacity: 0;
-        transform: scale(0.8) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+    will-change: transform, opacity;
 }
 
 body.dark-mode .memory-item {
     background: rgba(15, 23, 42, 0.9);
-    border-color: rgba(103, 232, 249, 0.3);
+    border-left-color: #67e8f9;
     color: #e2e8f0;
 }
 
@@ -449,7 +505,7 @@ body.dark-mode .var-value {
     color: #6ee7b7;
 }
 
-/* Memory Visualization */
+/* Memory Visualization Container */
 .memory-visualization-container {
     margin: 30px 0;
     padding: 30px;
@@ -457,6 +513,7 @@ body.dark-mode .var-value {
     border: 2px solid rgba(6, 182, 212, 0.2);
     border-radius: 20px;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     text-align: center;
 }
 
@@ -473,6 +530,7 @@ body.dark-mode .memory-visualization-container {
     font-weight: 700;
     margin-bottom: 25px;
     font-size: 1.4em;
+    display: inline-block;
 }
 
 .memory-demo {
@@ -524,7 +582,7 @@ body.dark-mode .memory-box {
     border-radius: 10px;
     padding: 15px;
     background: rgba(248, 250, 252, 0.8);
-    font-family: 'Monaco', 'Menlo', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     transition: all 0.5s ease;
 }
 
@@ -552,13 +610,16 @@ body.dark-mode .box-content.filled {
     margin-top: 25px;
 }
 
-/* Mastery Check */
+/* ============================================
+   9. MASTERY CHECK
+   ============================================ */
 .mastery-check {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
     border: 2px solid rgba(6, 182, 212, 0.3);
     border-radius: 20px;
     padding: 30px;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(6, 182, 212, 0.1);
 }
 
@@ -575,6 +636,7 @@ body.dark-mode .mastery-check {
     background-clip: text;
     margin-bottom: 15px;
     font-size: 1.8em;
+    display: inline-block;
 }
 
 .mastery-question {
@@ -584,6 +646,7 @@ body.dark-mode .mastery-check {
     border-radius: 12px;
     border: 2px solid rgba(6, 182, 212, 0.2);
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 body.dark-mode .mastery-question {
@@ -597,9 +660,9 @@ body.dark-mode .mastery-question {
     border: 2px solid rgba(6, 182, 212, 0.3);
     border-radius: 10px;
     margin-top: 12px;
-    font-family: monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 15px;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .answer-input:focus {
@@ -635,7 +698,7 @@ body.dark-mode .answer-input:focus {
 
 .check-answers-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 .feedback {
@@ -644,6 +707,8 @@ body.dark-mode .answer-input:focus {
     border-radius: 8px;
     font-weight: 500;
     font-size: 14px;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
 }
 
 .feedback.correct {
@@ -688,6 +753,8 @@ body.dark-mode .score-display {
     border-radius: 12px;
     font-weight: 500;
     margin-top: 10px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
 }
 
 .result-message.passed {
@@ -714,12 +781,14 @@ body.dark-mode .result-message.failed {
     color: #fbbf24;
 }
 
-/* Practice Section */
+/* ============================================
+   10. PRACTICE CHALLENGES
+   ============================================ */
 .practice-section {
     margin: 50px 0;
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.5s ease;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .practice-section.show {
@@ -740,25 +809,26 @@ body.dark-mode .challenge-category {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
-/* Challenge category headings with Arctic Aurora gradient */
+/* Challenge category headings - Arctic Aurora gradient */
 .challenge-category h4 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    display: inline-block !important;
-    width: 100% !important;
-    font-size: 1.5em !important;
-    margin-bottom: 20px !important;
-    text-align: center !important;
-    font-weight: 700 !important;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    width: 100%;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+    transform: translateZ(0); /* Force GPU for sharper text */
 }
 
 body.dark-mode .challenge-category h4 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .challenge-item {
@@ -774,23 +844,24 @@ body.dark-mode .challenge-item {
     border-color: rgba(196, 181, 253, 0.3);
 }
 
-/* Challenge item headings with Arctic Aurora gradient */
+/* Challenge item headings - Arctic Aurora gradient */
 .challenge-item h5 {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
-    display: inline-block !important;
-    font-size: 1.3em !important;
-    margin-bottom: 10px !important;
-    font-weight: 600 !important;
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    font-weight: 600;
+    transform: translateZ(0); /* Force GPU for sharper text */
 }
 
 body.dark-mode .challenge-item h5 {
-    background: linear-gradient(135deg, #67e8f9, #c4b5fd) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    background: linear-gradient(135deg, #67e8f9, #c4b5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .challenge-item p {
@@ -799,27 +870,26 @@ body.dark-mode .challenge-item h5 {
     line-height: 1.6;
 }
 
-/* Fix challenge playground colors to match Arctic Aurora theme */
-.challenge-item .enhanced-python-playground,
-.enhanced-python-playground.arctic-aurora-theme {
-    border-color: #06b6d4 !important;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9)) !important;
-    box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1) !important;
+/* Challenge playground specific overrides */
+.challenge-item .enhanced-python-playground {
+    border-color: #06b6d4;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+    box-shadow: 0 8px 32px rgba(6, 182, 212, 0.2), 0 0 60px rgba(6, 182, 212, 0.1);
 }
 
-.challenge-item .playground-header,
-.enhanced-python-playground.arctic-aurora-theme .playground-header {
-    background: linear-gradient(135deg, #06b6d4, #8b5cf6) !important;
+.challenge-item .playground-header {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6);
 }
 
-body.dark-mode .challenge-item .enhanced-python-playground,
-body.dark-mode .enhanced-python-playground.arctic-aurora-theme {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9)) !important;
-    border-color: rgba(103, 232, 249, 0.6) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(103, 232, 249, 0.2) !important;
+body.dark-mode .challenge-item .enhanced-python-playground {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+    border-color: rgba(103, 232, 249, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(103, 232, 249, 0.2);
 }
 
-/* Navigation */
+/* ============================================
+   11. NAVIGATION & UTILITY
+   ============================================ */
 .lesson-navigation {
     margin: 50px 0;
     padding: 30px 0;
@@ -864,7 +934,7 @@ body.dark-mode .lesson-navigation {
     pointer-events: none;
 }
 
-/* Loading and Error States */
+/* Loading States */
 .loading-state {
     display: flex;
     flex-direction: column;
@@ -880,12 +950,6 @@ body.dark-mode .lesson-navigation {
     margin-bottom: 15px;
 }
 
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-10px); }
-    60% { transform: translateY(-5px); }
-}
-
 .loading-message {
     font-size: 1.1em;
     font-weight: 500;
@@ -893,6 +957,7 @@ body.dark-mode .lesson-navigation {
     color: #94a3b8;
 }
 
+/* Error States */
 .error-output {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
     border: 2px solid rgba(239, 68, 68, 0.3);
@@ -914,6 +979,39 @@ body.dark-mode .lesson-navigation {
     white-space: pre-line;
 }
 
+.error-fallback {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+    border: 2px solid rgba(251, 191, 36, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.error-fallback h4 {
+    color: #d97706;
+    margin-bottom: 15px;
+}
+
+.error-fallback ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-fallback li {
+    padding: 5px 0;
+}
+
+body.dark-mode .error-fallback {
+    background: linear-gradient(135deg, rgba(180, 83, 9, 0.2), rgba(245, 158, 11, 0.2));
+    border-color: rgba(251, 191, 36, 0.4);
+}
+
+body.dark-mode .error-fallback h4 {
+    color: #fbbf24;
+}
+
+/* Success States */
 .no-output {
     color: #10b981;
     font-style: italic;
@@ -945,17 +1043,6 @@ body.dark-mode .no-output {
     animation: input-appear 0.3s ease-out;
 }
 
-@keyframes input-appear {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .input-prompt {
     color: #fbbf24;
     font-weight: 600;
@@ -970,9 +1057,10 @@ body.dark-mode .no-output {
     border-radius: 6px;
     padding: 8px 12px;
     color: #4ade80;
-    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
     font-size: 14px;
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-field:focus {
@@ -989,7 +1077,7 @@ body.dark-mode .no-output {
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-submit:hover {
@@ -997,18 +1085,71 @@ body.dark-mode .no-output {
     box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .playground-content {
-        grid-template-columns: 1fr;
+/* ============================================
+   12. ANIMATIONS
+   ============================================ */
+@keyframes variable-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
     }
-    
-    .code-section {
-        border-right: none;
-        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
     }
 }
 
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { 
+        transform: translateY(0); 
+    }
+    40% { 
+        transform: translateY(-10px); 
+    }
+    60% { 
+        transform: translateY(-5px); 
+    }
+}
+
+@keyframes input-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   13. RESPONSIVE DESIGN
+   ============================================ */
+/* Tablet Landscape */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        padding: 0 30px;
+    }
+    
+    .section {
+        padding: 25px;
+    }
+    
+    .memory-demo {
+        gap: 20px;
+    }
+}
+
+/* Tablet Portrait */
 @media (max-width: 768px) {
     .container {
         padding: 0 15px;
@@ -1018,9 +1159,17 @@ body.dark-mode .no-output {
         font-size: 2.2em;
     }
     
+    .header p {
+        font-size: 1.1em;
+    }
+    
     .section {
         padding: 20px;
         margin-bottom: 30px;
+    }
+    
+    .section h3 {
+        font-size: 1.8em;
     }
     
     .playground-header {
@@ -1029,9 +1178,29 @@ body.dark-mode .no-output {
         gap: 15px;
     }
     
+    .playground-header h4 {
+        font-size: 1.2em;
+    }
+    
+    .playground-content {
+        grid-template-columns: 1fr;
+        min-height: 300px;
+    }
+    
+    .code-section {
+        border-right: none;
+        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+        min-height: 200px;
+    }
+    
     .nav-buttons {
         flex-direction: column;
         text-align: center;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        max-width: 300px;
     }
     
     .memory-demo {
@@ -1039,27 +1208,193 @@ body.dark-mode .no-output {
         gap: 20px;
     }
     
+    .memory-box {
+        width: 100%;
+        max-width: 300px;
+    }
+    
     .challenge-category {
         padding: 20px;
     }
+    
+    .challenge-category h4 {
+        font-size: 1.3em;
+    }
+    
+    .challenge-item {
+        padding: 20px;
+    }
+    
+    .challenge-item h5 {
+        font-size: 1.2em;
+    }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
+    .header {
+        padding: 20px 0;
+    }
+    
     .header h1 {
         font-size: 1.8em;
     }
     
+    .header p {
+        font-size: 1em;
+    }
+    
+    .dark-mode-container {
+        top: 15px;
+        right: 15px;
+        padding: 6px 10px;
+    }
+    
+    .dark-mode-label {
+        font-size: 12px;
+    }
+    
     .section {
         padding: 15px;
+        border-radius: 12px;
     }
     
     .section h3 {
         font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .intro, .theory {
+        font-size: 1em;
+    }
+    
+    .tip {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .code-example {
+        padding: 15px;
+        font-size: 13px;
+    }
+    
+    .playground-header h4 {
+        font-size: 1.1em;
+    }
+    
+    .playground-controls {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .run-btn, .clear-btn {
+        padding: 6px 12px;
+        font-size: 12px;
     }
     
     .code-editor, .output-display {
-        min-height: 200px;
+        min-height: 150px;
         padding: 12px;
         font-size: 12px;
     }
+    
+    .memory-visualization-container {
+        padding: 20px;
+    }
+    
+    .memory-visualization-title {
+        font-size: 1.2em;
+    }
+    
+    .memory-box {
+        min-width: 140px;
+        padding: 15px;
+    }
+    
+    .box-label {
+        font-size: 0.9em;
+        padding: 6px 12px;
+    }
+    
+    .box-content {
+        font-size: 1em;
+        min-height: 40px;
+        padding: 10px;
+    }
+    
+    .mastery-check {
+        padding: 20px;
+    }
+    
+    .mastery-header h3 {
+        font-size: 1.4em;
+    }
+    
+    .mastery-question {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .check-answers-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .challenge-category h4 {
+        font-size: 1.2em;
+    }
+    
+    .challenge-item h5 {
+        font-size: 1.1em;
+    }
+    
+    .challenge-item p {
+        font-size: 1em;
+    }
+    
+    .nav-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
 }
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Sharper gradients for retina displays */
+    .section h3,
+    .challenge-category h4,
+    .challenge-item h5 {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .dark-mode-container,
+    .nav-back,
+    .nav-buttons,
+    .playground-controls {
+        display: none;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+        border: 1px solid #ccc;
+    }
+    
+    .enhanced-python-playground {
+        border: 2px solid #333;
+    }
+}
+
+/* ============================================
+   END OF STYLESHEET
+   ============================================ */
