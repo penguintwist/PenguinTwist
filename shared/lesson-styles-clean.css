@@ -1,5 +1,5 @@
-/* shared/lesson-styles-clean.css - Arctic Aurora Theme v3.0 */
-/* PenguinTwist Educational Platform - Complete Perfect Edition */
+/* shared/lesson-styles-clean.css - Arctic Aurora Theme v3.1 */
+/* PenguinTwist Educational Platform - Complete Perfect Edition with Text Chunking */
 
 /* ============================================
    TABLE OF CONTENTS
@@ -8,15 +8,16 @@
    3. Layout & Container
    4. Header & Navigation
    5. Main Content Sections
-   6. Code & Output Displays
-   7. Python Playground
-   8. Memory Visualization
-   9. Mastery Check
-   10. Practice Challenges
-   11. Navigation & Utility
-   12. Loading & Error States
-   13. Animations
-   14. Responsive Design
+   6. Text Chunking Components (NEW)
+   7. Code & Output Displays
+   8. Python Playground
+   9. Memory Visualization
+   10. Mastery Check
+   11. Practice Challenges
+   12. Navigation & Utility
+   13. Loading & Error States
+   14. Animations
+   15. Responsive Design
    ============================================ */
 
 /* ============================================
@@ -235,7 +236,420 @@ body.dark-mode .tip {
 }
 
 /* ============================================
-   6. CODE & OUTPUT DISPLAYS
+   6. TEXT CHUNKING COMPONENTS (NEW)
+   ============================================ */
+
+/* Concept Chunks - Primary information blocks */
+.concept-chunk {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.05));
+    border-left: 4px solid #06b6d4;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 0 12px 12px 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.concept-chunk::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #06b6d4, #8b5cf6, #06b6d4);
+    background-size: 200% 100%;
+    animation: gradient-flow 3s ease infinite;
+}
+
+body.dark-mode .concept-chunk {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.1));
+    border-left-color: #67e8f9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Detail Chunks - Expandable additional information */
+.detail-chunk {
+    margin: 20px 0;
+    border: 2px solid rgba(6, 182, 212, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.detail-chunk:hover {
+    border-color: rgba(6, 182, 212, 0.4);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.1);
+}
+
+body.dark-mode .detail-chunk {
+    border-color: rgba(103, 232, 249, 0.3);
+}
+
+body.dark-mode .detail-chunk:hover {
+    border-color: rgba(103, 232, 249, 0.5);
+    box-shadow: 0 4px 15px rgba(103, 232, 249, 0.2);
+}
+
+.detail-chunk summary {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #06b6d4;
+    list-style: none;
+    transition: background 0.3s ease, color 0.3s ease;
+    position: relative;
+}
+
+.detail-chunk summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.detail-chunk[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.detail-chunk summary:hover {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.15));
+}
+
+body.dark-mode .detail-chunk summary {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.15));
+    color: #67e8f9;
+}
+
+body.dark-mode .detail-chunk summary:hover {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(139, 92, 246, 0.2));
+}
+
+.detail-content {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(6, 182, 212, 0.1);
+    animation: detail-expand 0.3s ease-out;
+}
+
+body.dark-mode .detail-content {
+    background: rgba(15, 23, 42, 0.5);
+    border-top-color: rgba(103, 232, 249, 0.2);
+}
+
+/* Rule Chunks - Important rules and guidelines */
+.rule-chunk {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+    border: 2px solid rgba(251, 191, 36, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.rule-chunk::before {
+    content: '⚡';
+    position: absolute;
+    top: -5px;
+    right: 15px;
+    font-size: 2em;
+    opacity: 0.3;
+    transform: rotate(15deg);
+}
+
+body.dark-mode .rule-chunk {
+    background: linear-gradient(135deg, rgba(180, 83, 9, 0.2), rgba(245, 158, 11, 0.15));
+    border-color: rgba(251, 191, 36, 0.4);
+}
+
+.rule-chunk h4 {
+    margin: 0 0 15px 0;
+    color: #d97706;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rule-chunk h4::before {
+    content: '📋';
+    font-size: 1.1em;
+}
+
+body.dark-mode .rule-chunk h4 {
+    color: #fbbf24;
+}
+
+.rule-examples {
+    margin-top: 15px;
+}
+
+.rule-examples .code-example {
+    background: rgba(255, 255, 255, 0.8);
+    margin: 8px 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    border-left: 3px solid #d97706;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+}
+
+body.dark-mode .rule-examples .code-example {
+    background: rgba(15, 23, 42, 0.8);
+    border-left-color: #fbbf24;
+    color: #e2e8f0;
+}
+
+/* Quick Check - Interactive checkpoints */
+.quick-check {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.15));
+    border-left: 4px solid #8b5cf6;
+    padding: 20px;
+    margin: 25px 0;
+    border-radius: 0 12px 12px 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1);
+    position: relative;
+}
+
+.quick-check::before {
+    content: '🤔';
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.5em;
+    opacity: 0.6;
+}
+
+body.dark-mode .quick-check {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.2));
+    border-left-color: #c4b5fd;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Multiple Choice Container */
+.mc-container {
+    margin: 20px 0;
+}
+
+.mc-option {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(168, 85, 247, 0.2);
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin: 12px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    position: relative;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transform-origin: center;
+}
+
+.mc-option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: transparent;
+    border-radius: 10px 0 0 10px;
+    transition: background 0.3s ease;
+}
+
+.mc-option:hover:not(.disabled) {
+    border-color: #8b5cf6;
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+}
+
+.mc-option:hover:not(.disabled)::before {
+    background: linear-gradient(180deg, #8b5cf6, #a855f7);
+}
+
+body.dark-mode .mc-option {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(196, 181, 253, 0.3);
+    color: #e2e8f0;
+}
+
+body.dark-mode .mc-option:hover:not(.disabled) {
+    border-color: #c4b5fd;
+    background: rgba(15, 23, 42, 0.95);
+    box-shadow: 0 4px 15px rgba(196, 181, 253, 0.3);
+}
+
+.mc-option.selected-correct {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 214, 160, 0.1));
+    border-color: #10b981;
+    color: #059669;
+    transform: scale(1.02);
+}
+
+.mc-option.selected-correct::before {
+    background: linear-gradient(180deg, #10b981, #06d6a0);
+}
+
+.mc-option.selected-wrong {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(248, 113, 113, 0.1));
+    border-color: #ef4444;
+    color: #dc2626;
+    transform: scale(0.98);
+}
+
+.mc-option.selected-wrong::before {
+    background: linear-gradient(180deg, #ef4444, #f87171);
+}
+
+body.dark-mode .mc-option.selected-correct {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(6, 214, 160, 0.15));
+    border-color: #34d399;
+    color: #6ee7b7;
+}
+
+body.dark-mode .mc-option.selected-wrong {
+    background: linear-gradient(135deg, rgba(153, 27, 27, 0.2), rgba(248, 113, 113, 0.15));
+    border-color: #fca5a5;
+    color: #fecaca;
+}
+
+.mc-option.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none !important;
+}
+
+/* Feedback Messages */
+.feedback-message {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 15px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: feedback-appear 0.4s ease-out;
+    position: relative;
+}
+
+.feedback-correct {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 214, 160, 0.1));
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    color: #059669;
+}
+
+.feedback-correct::before {
+    content: '✅';
+    margin-right: 8px;
+}
+
+.feedback-wrong {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(248, 113, 113, 0.1));
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    color: #dc2626;
+}
+
+.feedback-wrong::before {
+    content: '💡';
+    margin-right: 8px;
+}
+
+body.dark-mode .feedback-correct {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(6, 214, 160, 0.15));
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
+}
+
+body.dark-mode .feedback-wrong {
+    background: linear-gradient(135deg, rgba(153, 27, 27, 0.2), rgba(248, 113, 113, 0.15));
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fecaca;
+}
+
+/* Code Comparison - Side by side code blocks */
+.code-comparison {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.code-comparison .code-example {
+    flex: 1;
+    text-align: center;
+    min-width: 200px;
+    position: relative;
+}
+
+.code-comparison .code-example::after {
+    content: 'VS';
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.code-comparison .code-example:last-child::after {
+    display: none;
+}
+
+/* Transition Chunks - Section transitions */
+.transition-chunk {
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+    color: white;
+    border-radius: 15px;
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
+}
+
+.transition-chunk::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+}
+
+.transition-chunk p {
+    position: relative;
+    z-index: 1;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+/* ============================================
+   7. CODE & OUTPUT DISPLAYS
    ============================================ */
 .code-example {
     background: linear-gradient(135deg, #0c1629 0%, #1e293b 100%);
@@ -282,7 +696,7 @@ body.dark-mode .expected-output {
 }
 
 /* ============================================
-   7. PYTHON PLAYGROUND
+   8. PYTHON PLAYGROUND
    ============================================ */
 .enhanced-python-playground,
 .python-playground-container {
@@ -446,7 +860,7 @@ body.dark-mode .python-playground-container {
 }
 
 /* ============================================
-   8. MEMORY VISUALIZATION
+   9. MEMORY VISUALIZATION
    ============================================ */
 .memory-section {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
@@ -626,7 +1040,7 @@ body.dark-mode .box-content.filled {
 }
 
 /* ============================================
-   9. MASTERY CHECK
+   10. MASTERY CHECK
    ============================================ */
 .mastery-check {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(168, 85, 247, 0.1));
@@ -799,7 +1213,7 @@ body.dark-mode .result-message.failed {
 }
 
 /* ============================================
-   10. PRACTICE CHALLENGES
+   11. PRACTICE CHALLENGES
    ============================================ */
 .practice-section {
     margin: 50px 0;
@@ -896,7 +1310,7 @@ body.dark-mode .challenge-item h5 {
 }
 
 /* ============================================
-   11. NAVIGATION & UTILITY
+   12. NAVIGATION & UTILITY
    ============================================ */
 .lesson-navigation {
     margin: 50px 0;
@@ -943,7 +1357,7 @@ body.dark-mode .lesson-navigation {
 }
 
 /* ============================================
-   12. LOADING & ERROR STATES
+   13. LOADING & ERROR STATES
    ============================================ */
 .loading-state {
     display: flex;
@@ -1096,7 +1510,7 @@ body.dark-mode .no-output {
 }
 
 /* ============================================
-   13. ANIMATIONS
+   14. ANIMATIONS
    ============================================ */
 @keyframes variable-appear {
     from {
@@ -1141,8 +1555,46 @@ body.dark-mode .no-output {
     }
 }
 
+@keyframes gradient-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes detail-expand {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+}
+
+@keyframes feedback-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 /* ============================================
-   14. RESPONSIVE DESIGN
+   15. RESPONSIVE DESIGN
    ============================================ */
 
 /* Tablet Landscape */
@@ -1153,66 +1605,6 @@ body.dark-mode .no-output {
     
     .section {
         padding: 25px;
-    }
-    
-    .memory-demo {
-        gap: 20px;
-    }
-}
-
-/* Tablet Portrait */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 15px;
-    }
-    
-    .header h1 {
-        font-size: 2.2em;
-    }
-    
-    .header p {
-        font-size: 1.1em;
-    }
-    
-    .section {
-        padding: 20px;
-        margin-bottom: 30px;
-    }
-    
-    .section h3 {
-        font-size: 1.8em;
-    }
-    
-    .playground-header {
-        padding: 15px 20px;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .playground-header h4 {
-        font-size: 1.2em;
-        text-align: center;
-    }
-    
-    .playground-content {
-        grid-template-columns: 1fr;
-        min-height: 300px;
-    }
-    
-    .code-section {
-        border-right: none;
-        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
-        min-height: 200px;
-    }
-    
-    .nav-buttons {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .nav-btn {
-        width: 100%;
-        max-width: 300px;
     }
     
     .memory-demo {
@@ -1239,6 +1631,43 @@ body.dark-mode .no-output {
     
     .challenge-item h5 {
         font-size: 1.2em;
+    }
+    
+    /* Chunking components responsive */
+    .concept-chunk,
+    .rule-chunk,
+    .quick-check {
+        margin: 15px -10px;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .detail-chunk {
+        margin: 15px -10px;
+    }
+    
+    .code-comparison {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .code-comparison .code-example::after {
+        content: '↓';
+        right: 50%;
+        transform: translateX(50%);
+        bottom: -25px;
+        top: auto;
+    }
+    
+    .mc-option {
+        padding: 12px 15px;
+        margin: 10px 0;
+        font-size: 14px;
+    }
+    
+    .feedback-message {
+        padding: 15px;
+        font-size: 14px;
     }
 }
 
@@ -1368,6 +1797,62 @@ body.dark-mode .no-output {
         padding: 10px 20px;
         font-size: 14px;
     }
+    
+    /* Mobile chunking adjustments */
+    .concept-chunk,
+    .rule-chunk,
+    .quick-check {
+        margin: 12px -15px;
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .concept-chunk::before {
+        height: 2px;
+    }
+    
+    .rule-chunk::before {
+        font-size: 1.5em;
+        top: -3px;
+        right: 10px;
+    }
+    
+    .quick-check::before {
+        font-size: 1.2em;
+        top: 12px;
+        right: 15px;
+    }
+    
+    .rule-chunk h4 {
+        font-size: 1.1em;
+    }
+    
+    .detail-chunk summary {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    .detail-content {
+        padding: 15px;
+        font-size: 14px;
+    }
+    
+    .mc-option {
+        padding: 10px 12px;
+        margin: 8px 0;
+        font-size: 13px;
+    }
+    
+    .feedback-message {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .transition-chunk {
+        padding: 20px 15px;
+        margin: 20px -15px;
+        font-size: 1em;
+    }
 }
 
 /* High DPI Screens */
@@ -1380,6 +1865,14 @@ body.dark-mode .no-output {
     .section h3,
     .challenge-category h4,
     .challenge-item h5 {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+    
+    .concept-chunk,
+    .rule-chunk,
+    .quick-check,
+    .detail-chunk {
         transform: translateZ(0);
         backface-visibility: hidden;
     }
@@ -1411,4 +1904,92 @@ body.dark-mode .no-output {
     .playground-header h4 {
         color: #333;
     }
+    
+    .concept-chunk,
+    .rule-chunk,
+    .quick-check {
+        border: 1px solid #ccc;
+        background: #f9f9f9;
+        page-break-inside: avoid;
+    }
+    
+    .detail-chunk {
+        border: 1px solid #ccc;
+    }
+    
+    .mc-container,
+    .feedback-message {
+        display: none;
+    }
 }
+        gap: 20px;
+    }
+    
+    .concept-chunk,
+    .rule-chunk,
+    .quick-check {
+        padding: 18px;
+        margin: 18px 0;
+    }
+    
+    .code-comparison {
+        gap: 15px;
+    }
+}
+
+/* Tablet Portrait */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .header h1 {
+        font-size: 2.2em;
+    }
+    
+    .header p {
+        font-size: 1.1em;
+    }
+    
+    .section {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .section h3 {
+        font-size: 1.8em;
+    }
+    
+    .playground-header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .playground-header h4 {
+        font-size: 1.2em;
+        text-align: center;
+    }
+    
+    .playground-content {
+        grid-template-columns: 1fr;
+        min-height: 300px;
+    }
+    
+    .code-section {
+        border-right: none;
+        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+        min-height: 200px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .memory-demo {
