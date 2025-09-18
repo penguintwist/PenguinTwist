@@ -40,12 +40,39 @@
     <div class="container">
         <div class="lesson-content">
             
-            <!-- Introduction Section -->
+            <!-- Introduction Section - CHUNKED -->
             <div class="section">
                 <h3>Why Programs Need Memory</h3>
-                <div class="intro">
-                    <p>Imagine a calculator that forgets your answer the moment you press equals. Or a game that resets your score every time you collect a coin. Or a website that asks for your name on every single page.</p>
-                    <p>Programs need to remember information to be useful. Variables are like labelled storage boxes in the computer's memory - they let your programs remember and reuse information like names, scores, messages, or any data your program needs.</p>
+                
+                <div class="concept-chunk">
+                    <p>Imagine a calculator that forgets your answer the moment you press equals.</p>
+                    <p>Or a game that resets your score every time you collect a coin.</p>
+                </div>
+                
+                <div class="quick-check">
+                    <p><strong>Quick think:</strong> What would happen if your phone forgot your contacts every time you closed it?</p>
+                    <div class="mc-container">
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'memory1')">
+                            A) It would work fine - you could just re-enter them
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, true, 'memory1')">
+                            B) It would be completely useless for communication
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'memory1')">
+                            C) It would only affect calling, not texting
+                        </div>
+                    </div>
+                    <div id="feedback-memory1" class="feedback-message"></div>
+                </div>
+                
+                <div class="concept-chunk">
+                    <p>Programs need to remember information to be useful.</p>
+                    <p>Variables are like labelled storage boxes in the computer's memory.</p>
+                </div>
+                
+                <div class="rule-chunk">
+                    <h4>What Variables Store</h4>
+                    <p>Names, scores, messages, or any data your program needs to remember.</p>
                 </div>
             </div>
             
@@ -66,27 +93,48 @@
                 <div id="memoryBoxDemo" class="memory-visualization-container"></div>
             </div>
             
-            <!-- Creating Variables Section -->
+            <!-- Creating Variables Section - CHUNKED -->
             <div class="section">
                 <h3>Creating Your First Variable</h3>
-                <div class="theory">
-                    <p>In Python, you create a variable using the assignment operator (the equals sign). This tells Python to store information in a labelled box.</p>
-                    
+                
+                <div class="concept-chunk">
+                    <p>In Python, you create a variable using the assignment operator (the equals sign).</p>
                     <div class="code-example">name = "Alex"</div>
-                    
-                    <p>This code creates a memory box labelled 'name' and stores the text "Alex" inside it.</p>
-                    
-                    <div class="tip">
-                        <strong>The Assignment Process:</strong> The equals sign doesn't mean "equal to" in maths. In programming, it means "store the value on the right into the variable on the left."
+                </div>
+                
+                <div class="detail-chunk">
+                    <details>
+                        <summary>What does this actually do? (Click to expand)</summary>
+                        <div class="detail-content">
+                            <p>This creates a memory box labelled 'name' and stores the text "Alex" inside it.</p>
+                            <p>The equals sign means "store the value on the right into the variable on the left."</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="rule-chunk">
+                    <h4>Critical Rule</h4>
+                    <p>Text must be wrapped in quotes, but numbers don't need quotes.</p>
+                    <div class="rule-examples">
+                        <div class="code-example">name = "Alex"  ← Text needs quotes</div>
+                        <div class="code-example">age = 15      ← Numbers don't</div>
                     </div>
-                    
-                    <p>You can store different types of information:</p>
-                    <div class="code-example">name = "Alex"
-age = 15</div>
-                    
-                    <div class="tip">
-                        <strong>Important:</strong> Text must be wrapped in quotes, but numbers don't need quotes. Python treats them differently!
+                </div>
+                
+                <div class="quick-check">
+                    <p><strong>Quick check:</strong> Which of these correctly creates a variable for someone's age?</p>
+                    <div class="mc-container">
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'variable1')">
+                            A) "age" = 16
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, true, 'variable1')">
+                            B) age = 16
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'variable1')">
+                            C) age = "16"
+                        </div>
                     </div>
+                    <div id="feedback-variable1" class="feedback-message"></div>
                 </div>
             </div>
             
@@ -108,34 +156,52 @@ age = 15</div>
                 <div id="variablePracticePlayground" class="python-playground-container"></div>
             </div>
             
-            <!-- Print Variables Section -->
+            <!-- Using Variables with Print Section - CHUNKED -->
             <div class="section">
                 <h3>Using Variables with Print</h3>
-                <div class="theory">
-                    <p>Now that you can create variables, you can use them with print statements. This is where the magic happens - your program can remember and display information!</p>
-                    
+                
+                <div class="concept-chunk">
+                    <p>Now that you can create variables, you can use them with print statements.</p>
+                    <p>This is where the magic happens - your program can remember and display information!</p>
+                </div>
+                
+                <div class="rule-chunk">
+                    <h4>Key Example</h4>
                     <div class="code-example">name = "Alex"
 print(name)</div>
-                    
-                    <div class="expected-output"><strong>Output:</strong>
-Alex</div>
-                    
-                    <div class="tip">
-                        <strong>Key Distinction:</strong> Notice the difference between print(name) and print("name"). The first prints the contents of the variable, the second prints the word "name".
+                    <div class="expected-output"><strong>Output:</strong> Alex</div>
+                </div>
+                
+                <div class="quick-check">
+                    <p><strong>Spot the difference:</strong> What's different between these two print statements?</p>
+                    <div class="code-comparison">
+                        <div class="code-example">print(name)</div>
+                        <div class="code-example">print("name")</div>
                     </div>
-                    
-                    <p>Watch what happens when we print multiple variables:</p>
+                    <div class="mc-container">
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'print1')">
+                            A) They do exactly the same thing
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, true, 'print1')">
+                            B) First prints the contents of variable, second prints the word "name"
+                        </div>
+                        <div class="mc-option" onclick="selectAnswer(this, false, 'print1')">
+                            C) First will cause an error, second works fine
+                        </div>
+                    </div>
+                    <div id="feedback-print1" class="feedback-message"></div>
+                </div>
+                
+                <div class="concept-chunk">
+                    <p>You can print multiple variables to show different pieces of information:</p>
                     <div class="code-example">name = "Alex"
 age = 15
-subject = "Computer Science"
 print(name)
-print(age) 
-print(subject)</div>
-                    
-                    <div class="expected-output"><strong>Output:</strong>
-Alex
-15
-Computer Science</div>
+print(age)</div>
+                </div>
+                
+                <div class="transition-chunk">
+                    <p>Ready to try this yourself? Use the playground below to practice.</p>
                 </div>
                 
                 <!-- Python Playground 2 -->
@@ -239,5 +305,76 @@ Computer Science</div>
     
     <!-- Lesson Logic -->
     <script src="shared/lesson2-logic.js"></script>
+    
+    <!-- Multiple Choice Functionality -->
+    <script>
+    function selectAnswer(element, isCorrect, questionId) {
+        // Disable all options for this question
+        var container = element.parentNode;
+        var options = container.querySelectorAll('.mc-option');
+        options.forEach(function(option) {
+            option.classList.add('disabled');
+            option.onclick = null;
+        });
+        
+        // Mark the selected answer
+        if (isCorrect) {
+            element.classList.add('selected-correct');
+        } else {
+            element.classList.add('selected-wrong');
+        }
+        
+        // Show feedback
+        var feedback = document.getElementById('feedback-' + questionId);
+        feedback.style.display = 'block';
+        
+        // Customized feedback based on question
+        if (questionId === 'memory1') {
+            if (isCorrect) {
+                feedback.className = 'feedback-message feedback-correct';
+                feedback.innerHTML = '✅ Exactly! Without memory, programs become useless. Variables give programs the ability to remember important information.';
+            } else {
+                feedback.className = 'feedback-message feedback-wrong';
+                feedback.innerHTML = '💡 Think about how frustrating it would be to re-enter all your contacts every time. Programs need memory to be useful.';
+            }
+        } else if (questionId === 'variable1') {
+            if (isCorrect) {
+                feedback.className = 'feedback-message feedback-correct';
+                feedback.innerHTML = '✅ Correct! Age is a number, so no quotes needed. Variable name on the left, value on the right.';
+            } else if (element.textContent.includes('"age"')) {
+                feedback.className = 'feedback-message feedback-wrong';
+                feedback.innerHTML = '💡 The variable name should not have quotes. Only put quotes around the VALUE if it\'s text.';
+            } else {
+                feedback.className = 'feedback-message feedback-wrong';
+                feedback.innerHTML = '💡 Age is a number for calculations, so it shouldn\'t have quotes. Quotes make it into text instead.';
+            }
+        } else if (questionId === 'print1') {
+            if (isCorrect) {
+                feedback.className = 'feedback-message feedback-correct';
+                feedback.innerHTML = '✅ Perfect! print(name) shows what\'s INSIDE the variable. print("name") just shows the word "name".';
+            } else {
+                feedback.className = 'feedback-message feedback-wrong';
+                feedback.innerHTML = '💡 They\'re very different! Quotes tell Python to print the exact text. No quotes means print what\'s stored in the variable.';
+            }
+        }
+    }
+    
+    // Helper functions for backward compatibility
+    window.unlockNextLesson = function() {
+        var nextBtn = document.getElementById('nextLessonBtn');
+        if (nextBtn) {
+            nextBtn.classList.remove('disabled');
+            nextBtn.href = 'lesson3.html';
+        }
+    };
+    
+    window.showPracticeSection = function() {
+        var practiceSection = document.getElementById('practiceSection');
+        if (practiceSection) {
+            practiceSection.style.display = 'block';
+            practiceSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+    </script>
 </body>
 </html>
