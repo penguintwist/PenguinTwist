@@ -16,22 +16,117 @@
     <!-- Streamlined Styles -->
     <link rel="stylesheet" href="shared/lesson-styles-clean.css">
     
-    <!-- TARGETED CSS FIX for scroll bar -->
+    <!-- COMPLETE CSS FIXES -->
     <style>
-        /* Fix unwanted scroll bars */
+        /* Fix unwanted scroll bars in animations */
         .variable-animation,
         .animation-container,
         .animation-workspace {
             overflow: hidden !important;
         }
         
-        /* Hide any problematic animation elements */
+        /* Hide problematic animation elements */
         .animation-controls .anim-btn {
             display: none;
         }
         
         .step-btn, .reset-btn, .next-step {
             display: none !important;
+        }
+        
+        /* CRITICAL FIX: Remove scroll bars from code examples */
+        .code-example {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+            resize: none !important;
+            white-space: pre-wrap !important;
+            word-wrap: break-word !important;
+        }
+        
+        /* Fix code comparison blocks specifically */
+        .code-comparison .code-example {
+            overflow: hidden !important;
+            white-space: nowrap !important;
+            text-overflow: ellipsis;
+            min-height: auto !important;
+            height: auto !important;
+            max-height: none !important;
+        }
+        
+        /* Fix CodeMirror scroll bars */
+        .CodeMirror {
+            overflow: hidden !important;
+        }
+        
+        .CodeMirror-scroll {
+            overflow: hidden !important;
+        }
+        
+        .CodeMirror-scrollbar-filler,
+        .CodeMirror-gutter-filler {
+            display: none !important;
+        }
+        
+        /* Ensure comparison containers are clean */
+        .code-comparison {
+            overflow: visible !important;
+        }
+        
+        /* Fix playground containers */
+        .python-playground-container {
+            overflow: visible !important;
+        }
+        
+        .playground-content {
+            overflow: visible !important;
+        }
+        
+        /* Additional scroll bar prevention */
+        .section {
+            overflow: visible !important;
+        }
+        
+        .lesson-content {
+            overflow: visible !important;
+        }
+        
+        /* Fix any remaining scroll issues */
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+        *::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        
+        /* But allow main page scroll */
+        html, body {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+        
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: block !important;
+            width: 8px;
+        }
+        
+        html::-webkit-scrollbar-track,
+        body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        html::-webkit-scrollbar-thumb,
+        body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        html::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
     </style>
 </head>
