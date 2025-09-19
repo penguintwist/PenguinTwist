@@ -89,11 +89,8 @@
                     </div>
                 </div>
                 
-                <!-- Simple Memory Visualization -->
+                <!-- Simple Memory Visualization - WORKING VERSION -->
                 <div id="memoryBoxDemo" class="memory-visualization-container"></div>
-                
-                <!-- NEW: Interactive Variable Assignment Animation -->
-                <div id="variableAssignmentDemo" class="animation-container"></div>
             </div>
             
             <!-- Creating Variables Section - CHUNKED -->
@@ -302,29 +299,29 @@ print(age)</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     
-    <!-- NEW: Analytics System (Load First) -->
+    <!-- Analytics System (Optional - can be removed if causing issues) -->
     <script src="shared/analytics.js"></script>
-    
-    <!-- NEW: Variable Animation System -->
-    <script src="shared/variable-animator.js"></script>
     
     <!-- Shared Components - Streamlined -->
     <script src="shared/python-interpreter-clean.js"></script>
     <script src="shared/lesson-components-clean.js"></script>
     
-    <!-- Lesson Logic (Analytics Enhanced) -->
-    <script src="shared/lesson2-logic.js"></script>
+    <!-- Lesson Logic - FIXED VERSION -->
+    <script src="shared/lesson2-logic-fixed.js"></script>
     
     <!-- Multiple Choice Functionality -->
     <script>
     function selectAnswer(element, isCorrect, questionId) {
-        // Track multiple choice interactions
-        if (window.penguinAnalytics) {
-            window.penguinAnalytics.trackFeatureUsage('multiple_choice', 'lesson2', {
-                questionId: questionId,
-                isCorrect: isCorrect,
-                selectedText: element.textContent.trim()
-            });
+        // Track multiple choice interactions (safely)
+        try {
+            if (window.penguinAnalytics) {
+                window.penguinAnalytics.trackFeatureUsage('multiple_choice', 'lesson2', {
+                    questionId: questionId,
+                    isCorrect: isCorrect
+                });
+            }
+        } catch (e) {
+            // Silently continue if analytics fails
         }
         
         // Disable all options for this question
@@ -383,11 +380,6 @@ print(age)</div>
         if (nextBtn) {
             nextBtn.classList.remove('disabled');
             nextBtn.href = 'lesson3.html';
-            
-            // Track lesson unlock
-            if (window.penguinAnalytics) {
-                window.penguinAnalytics.trackProgressFlow('lesson2', 'lesson3', 'unlock');
-            }
         }
     };
     
@@ -396,39 +388,8 @@ print(age)</div>
         if (practiceSection) {
             practiceSection.style.display = 'block';
             practiceSection.scrollIntoView({ behavior: 'smooth' });
-            
-            // Track practice section access
-            if (window.penguinAnalytics) {
-                window.penguinAnalytics.trackFeatureUsage('practice_section', 'lesson2', { accessed: true });
-            }
         }
     };
-    
-    // Track page visibility for engagement metrics
-    document.addEventListener('visibilitychange', function() {
-        if (window.penguinAnalytics) {
-            if (document.hidden) {
-                window.penguinAnalytics.trackFeatureUsage('page_visibility', 'lesson2', { visible: false });
-            } else {
-                window.penguinAnalytics.trackFeatureUsage('page_visibility', 'lesson2', { visible: true });
-            }
-        }
-    });
-    
-    // Track scroll depth for engagement
-    var maxScrollDepth = 0;
-    window.addEventListener('scroll', function() {
-        var scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-        
-        if (scrollPercent > maxScrollDepth) {
-            maxScrollDepth = scrollPercent;
-            
-            // Track significant scroll milestones
-            if (window.penguinAnalytics && maxScrollDepth % 25 === 0 && maxScrollDepth > 0) {
-                window.penguinAnalytics.trackFeatureUsage('scroll_depth', 'lesson2', { depth: maxScrollDepth });
-            }
-        }
-    });
     </script>
 </body>
 </html>
