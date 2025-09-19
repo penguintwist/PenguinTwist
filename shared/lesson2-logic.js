@@ -1,13 +1,13 @@
-// shared/lesson2-logic.js
+// shared/lesson2-logic-fixed.js
 // Main logic for Lesson 2 - Variables (ES5 Compatible) 
-// VERSION: Analytics + Animation Integration
+// VERSION: Stable - No Animation Dependencies, Analytics Optional
 
 (function() {
     'use strict';
     
-    console.log('=== Lesson 2 Logic Loading ===');
+    console.log('=== Lesson 2 Logic Loading (Fixed) ===');
     
-    // Track lesson start time for analytics
+    // Track lesson start time for analytics (if available)
     var lessonStartTime = Date.now();
     var masteryAttempts = {};
     
@@ -47,46 +47,52 @@
     
     console.log('Challenge configs defined:', Object.keys(challengeConfigs));
     
-    // Enhanced Python Interpreter with Analytics
-    function createAnalyticsEnhancedPlayground(containerId, type, config) {
+    // Safe analytics wrapper - won't break if analytics fails
+    function safeTrackEvent(eventType, data) {
+        try {
+            if (window.penguinAnalytics) {
+                window.penguinAnalytics.trackEvent(eventType, data);
+            }
+        } catch (e) {
+            // Silently continue if analytics fails
+            console.log('Analytics unavailable:', e.message);
+        }
+    }
+    
+    // Enhanced Python Interpreter with Optional Analytics
+    function createEnhancedPlayground(containerId, type, config) {
+        console.log('Creating enhanced playground:', containerId);
+        
         var playground = window.PenguinTwistInterpreter.createPlayground(containerId, type, config);
         
-        // Override runCode to add analytics
+        // Override runCode to add optional analytics
         var originalRunCode = playground.runCode;
         playground.runCode = function() {
             var code = this.editor.getValue();
             var codeLength = code.length;
-            var hasOutput = false;
-            var hasError = false;
-            var errorType = null;
             
-            // Track code execution attempt
-            if (window.penguinAnalytics) {
-                window.penguinAnalytics.trackCodeExecution('lesson2', containerId, codeLength, hasOutput, hasError, errorType);
-            }
+            // Track code execution attempt (safely)
+            safeTrackEvent('code_run', {
+                lesson: 'lesson2',
+                playground: containerId,
+                codeLength: Math.floor(codeLength / 10) * 10
+            });
             
             // Call original function
-            originalRunCode.call(this);
-            
-            // Check for common errors after execution
-            setTimeout(function() {
+            try {
+                originalRunCode.call(this);
+            } catch (error) {
+                console.error('Error in runCode:', error);
+                
+                // Show user-friendly error
                 var outputElement = document.getElementById(containerId + 'Output');
-                if (outputElement && outputElement.innerHTML.includes('error-output')) {
-                    hasError = true;
-                    if (outputElement.innerHTML.includes('NameError')) {
-                        errorType = 'NameError';
-                    } else if (outputElement.innerHTML.includes('SyntaxError')) {
-                        errorType = 'SyntaxError';
-                    }
-                    
-                    // Track error for improvement
-                    if (window.penguinAnalytics) {
-                        window.penguinAnalytics.trackCommonError('lesson2', containerId, errorType, 'Variable assignment error');
-                    }
-                } else if (outputElement && outputElement.innerHTML.trim() !== '') {
-                    hasOutput = true;
+                if (outputElement) {
+                    outputElement.innerHTML = '<div class="error-output">' +
+                        '<div class="error-title">❌ Something went wrong:</div>' +
+                        '<div class="error-message">There was a problem running your code. Try refreshing the page or simplifying your code.</div>' +
+                    '</div>';
                 }
-            }, 1000);
+            }
         };
         
         return playground;
@@ -97,10 +103,8 @@
         console.log('🎯 Initializing PenguinTwist Lesson 2...');
         console.log('  Timestamp:', new Date().toISOString());
         
-        // Track lesson start
-        if (window.penguinAnalytics) {
-            window.penguinAnalytics.trackLessonStart('lesson2');
-        }
+        // Track lesson start (safely)
+        safeTrackEvent('lesson_start', { lesson: 'lesson2' });
         
         try {
             // Check for required components
@@ -120,13 +124,7 @@
             window.PenguinTwistComponents.setupDarkMode();
             console.log('✅ Dark mode initialized');
             
-            // Track dark mode usage
-            var isDarkMode = document.body.classList.contains('dark-mode');
-            if (window.penguinAnalytics) {
-                window.penguinAnalytics.trackFeatureUsage('dark_mode', 'lesson2', { enabled: isDarkMode });
-            }
-            
-            // Create enhanced memory visualization with animation
+            // Create memory visualization (WORKING VERSION)
             console.log('📦 Creating memory visualization...');
             var memoryViz = window.PenguinTwistComponents.createMemoryVisualization(
                 'memoryBoxDemo',
@@ -142,11 +140,7 @@
             memoryViz.init();
             console.log('✅ Memory visualization created');
             
-            // Add variable assignment animation
-            console.log('🎬 Creating variable assignment animation...');
-            createVariableAssignmentDemo();
-            
-            // Create main Python playgrounds with analytics
+            // Create main Python playgrounds
             console.log('🎮 Creating practice playground...');
             var playground1Config = {
                 title: 'Python Variable Creator',
@@ -154,7 +148,7 @@
                 showMemory: true
             };
             
-            var playground1 = createAnalyticsEnhancedPlayground(
+            var playground1 = createEnhancedPlayground(
                 'variablePracticePlayground',
                 'variables',
                 playground1Config
@@ -169,7 +163,7 @@
                 showMemory: true
             };
             
-            var playground2 = createAnalyticsEnhancedPlayground(
+            var playground2 = createEnhancedPlayground(
                 'variablePrintPlayground',
                 'variables',
                 playground2Config
@@ -177,7 +171,7 @@
             playground2.init();
             console.log('✅ Print playground created');
             
-            // Create mastery check with analytics
+            // Create mastery check with FIXED validation
             console.log('📝 Creating mastery check...');
             var masteryCheck = window.PenguinTwistComponents.createMasteryCheck(
                 'masteryCheck',
@@ -186,9 +180,14 @@
                         question: 'To store "Computer Science" in a variable called subject, what code do you write?',
                         placeholder: 'Type your Python code here',
                         validateAnswer: function(answer) {
-                            var isCorrect = /subject\s*=\s*["']computer science["']/i.test(answer.trim());
-                            trackMasteryAttempt(0, isCorrect);
-                            return isCorrect;
+                            try {
+                                var isCorrect = /subject\s*=\s*["']computer science["']/i.test(answer.trim());
+                                trackMasteryAttempt(0, isCorrect);
+                                return isCorrect;
+                            } catch (e) {
+                                console.error('Validation error:', e);
+                                return false;
+                            }
                         },
                         hint: 'Remember: subject = "Computer Science" (with quotes around the text!)'
                     },
@@ -196,9 +195,14 @@
                         question: 'Create a variable called "score" that stores the number 95.',
                         placeholder: 'Type your code here',
                         validateAnswer: function(answer) {
-                            var isCorrect = /score\s*=\s*95/.test(answer.trim());
-                            trackMasteryAttempt(1, isCorrect);
-                            return isCorrect;
+                            try {
+                                var isCorrect = /score\s*=\s*95/.test(answer.trim());
+                                trackMasteryAttempt(1, isCorrect);
+                                return isCorrect;
+                            } catch (e) {
+                                console.error('Validation error:', e);
+                                return false;
+                            }
                         },
                         hint: 'Numbers don\'t need quotes: score = 95'
                     },
@@ -206,9 +210,14 @@
                         question: 'If you run: name = "Jamie" then print(name), what appears on screen?',
                         placeholder: 'What gets displayed?',
                         validateAnswer: function(answer) {
-                            var isCorrect = answer.toLowerCase().trim() === 'jamie';
-                            trackMasteryAttempt(2, isCorrect);
-                            return isCorrect;
+                            try {
+                                var isCorrect = answer.toLowerCase().trim() === 'jamie';
+                                trackMasteryAttempt(2, isCorrect);
+                                return isCorrect;
+                            } catch (e) {
+                                console.error('Validation error:', e);
+                                return false;
+                            }
                         },
                         hint: 'The variable contains "Jamie", so print(name) displays: Jamie'
                     },
@@ -216,11 +225,16 @@
                         question: 'What\'s the difference between print("age") and print(age)?',
                         placeholder: 'Explain the difference',
                         validateAnswer: function(answer) {
-                            var cleaned = answer.toLowerCase();
-                            var isCorrect = (cleaned.includes('quotes') || cleaned.includes('"age"')) && 
-                                           (cleaned.includes('variable') || cleaned.includes('contents') || cleaned.includes('value'));
-                            trackMasteryAttempt(3, isCorrect);
-                            return isCorrect;
+                            try {
+                                var cleaned = answer.toLowerCase();
+                                var isCorrect = (cleaned.includes('quotes') || cleaned.includes('"age"')) && 
+                                               (cleaned.includes('variable') || cleaned.includes('contents') || cleaned.includes('value'));
+                                trackMasteryAttempt(3, isCorrect);
+                                return isCorrect;
+                            } catch (e) {
+                                console.error('Validation error:', e);
+                                return false;
+                            }
                         },
                         hint: 'print("age") displays the word "age", print(age) displays the contents of the variable age'
                     }
@@ -230,26 +244,42 @@
                     onComplete: function() {
                         console.log('🎉 Mastery check completed!');
                         
-                        // Track lesson completion
-                        var timeSpent = Date.now() - lessonStartTime;
-                        var totalAttempts = Object.values(masteryAttempts).reduce(function(sum, attempts) {
-                            return sum + attempts.length;
-                        }, 0);
-                        var score = Object.keys(masteryAttempts).length;
-                        
-                        if (window.penguinAnalytics) {
-                            window.penguinAnalytics.trackMasteryComplete('lesson2', totalAttempts, timeSpent, score);
-                            window.penguinAnalytics.trackLessonComplete('lesson2', timeSpent);
+                        try {
+                            // Track lesson completion (safely)
+                            var timeSpent = Date.now() - lessonStartTime;
+                            var totalAttempts = Object.values(masteryAttempts).reduce(function(sum, attempts) {
+                                return sum + attempts.length;
+                            }, 0);
+                            var score = Object.keys(masteryAttempts).length;
+                            
+                            safeTrackEvent('mastery_complete', {
+                                lesson: 'lesson2',
+                                totalAttempts: totalAttempts,
+                                timeSpent: Math.floor(timeSpent / 1000),
+                                score: score
+                            });
+                            
+                            // Unlock next lesson and show practice
+                            window.unlockNextLesson();
+                            window.showPracticeSection();
+                            
+                            console.log('⏰ Scheduling challenge initialization in 600ms...');
+                            setTimeout(function() {
+                                console.log('⏰ Timer fired, initializing challenges...');
+                                initializeChallenges();
+                            }, 600);
+                            
+                        } catch (error) {
+                            console.error('Error in mastery completion:', error);
+                            
+                            // Still try to unlock next lesson even if tracking fails
+                            window.unlockNextLesson();
+                            window.showPracticeSection();
+                            
+                            setTimeout(function() {
+                                initializeChallenges();
+                            }, 600);
                         }
-                        
-                        window.unlockNextLesson();
-                        window.showPracticeSection();
-                        
-                        console.log('⏰ Scheduling challenge initialization in 600ms...');
-                        setTimeout(function() {
-                            console.log('⏰ Timer fired, initializing challenges...');
-                            initializeChallenges();
-                        }, 600);
                     }
                 }
             );
@@ -262,72 +292,38 @@
             console.error('❌ Lesson initialization failed:', error);
             console.error('  Stack trace:', error.stack);
             
-            // Track initialization errors
-            if (window.penguinAnalytics) {
-                window.penguinAnalytics.trackCommonError('lesson2', 'initialization', 'InitializationError', error.message);
-            }
+            // Track initialization errors (safely)
+            safeTrackEvent('error', {
+                lesson: 'lesson2',
+                type: 'initialization',
+                message: error.message
+            });
+            
+            // Show fallback message to user
+            showFallbackMessage();
         }
     }
     
     function trackMasteryAttempt(questionIndex, isCorrect) {
-        if (!masteryAttempts[questionIndex]) {
-            masteryAttempts[questionIndex] = [];
-        }
-        masteryAttempts[questionIndex].push({
-            timestamp: Date.now(),
-            isCorrect: isCorrect
-        });
-        
-        // Track individual attempts
-        if (window.penguinAnalytics) {
-            window.penguinAnalytics.trackMasteryAttempt('lesson2', questionIndex, isCorrect, masteryAttempts[questionIndex].length);
-        }
-    }
-    
-    function createVariableAssignmentDemo() {
-        // Check if animation container exists
-        var demoContainer = document.getElementById('variableAssignmentDemo');
-        if (!demoContainer) {
-            console.log('No animation demo container found, skipping animation creation');
-            return;
-        }
-        
-        console.log('🎬 Creating variable assignment animation');
-        
-        // Check if animator is available
-        if (!window.VariableAssignmentAnimator) {
-            console.warn('Variable animator not loaded, adding fallback');
-            demoContainer.innerHTML = '<div class="tip">' +
-                '<strong>Interactive Demo Coming Soon:</strong> ' +
-                'We\'re working on an animated demonstration of how variables work in memory. ' +
-                'For now, imagine Python creating a labeled box called "name" and putting "Alex" inside it!' +
-                '</div>';
-            return;
-        }
-        
         try {
-            var animator = new window.VariableAssignmentAnimator('variableAssignmentDemo', {
-                animationSpeed: 1000,
-                autoPlay: false,
-                showControls: true
+            if (!masteryAttempts[questionIndex]) {
+                masteryAttempts[questionIndex] = [];
+            }
+            masteryAttempts[questionIndex].push({
+                timestamp: Date.now(),
+                isCorrect: isCorrect
             });
             
-            if (animator.init()) {
-                animator.createAssignmentAnimation('name', '"Alex"', 'string');
-                console.log('✅ Variable assignment animation created');
-                
-                // Track animation creation
-                if (window.penguinAnalytics) {
-                    window.penguinAnalytics.trackFeatureUsage('variable_animation', 'lesson2', { created: true });
-                }
-            }
+            // Track individual attempts (safely)
+            safeTrackEvent('mastery_attempt', {
+                lesson: 'lesson2',
+                question: questionIndex,
+                isCorrect: isCorrect,
+                attempts: masteryAttempts[questionIndex].length
+            });
+            
         } catch (error) {
-            console.error('❌ Animation creation failed:', error);
-            demoContainer.innerHTML = '<div class="tip">' +
-                '<strong>Visual Demo:</strong> ' +
-                'Think of creating a variable like putting a value in a labeled box. ' +
-                'When you write <code>name = "Alex"</code>, Python creates a box labeled "name" and stores "Alex" inside it.' +
-                '</div>';
+            console.error('Error tracking mastery attempt:', error);
         }
     }
     
@@ -342,7 +338,6 @@
             if (challengeConfigs.hasOwnProperty(challengeId)) {
                 var config = challengeConfigs[challengeId];
                 console.log('🎯 Creating challenge:', challengeId);
-                console.log('  Config for', challengeId + ':', JSON.stringify(config, null, 2));
                 
                 try {
                     // Check if container exists
@@ -351,55 +346,22 @@
                         console.warn('  ⚠️ Container not found for:', challengeId);
                         failCount++;
                         continue;
-                    } else {
-                        console.log('  ✅ Container found for:', challengeId);
                     }
                     
-                    // Create analytics-enhanced playground
-                    var playground = createAnalyticsEnhancedPlayground(challengeId, 'variables', config);
-                    
-                    console.log('  Playground instance created for:', challengeId);
-                    console.log('  Instance options:', playground.options);
-                    console.log('  showMemory value:', playground.options.showMemory);
+                    // Create enhanced playground
+                    var playground = createEnhancedPlayground(challengeId, 'variables', config);
                     
                     var initResult = playground.init();
-                    console.log('  Init result for', challengeId + ':', initResult);
                     
                     if (initResult) {
                         console.log('✅ Challenge playground initialized:', challengeId);
                         successCount++;
                         
-                        // Track challenge playground creation
-                        if (window.penguinAnalytics) {
-                            window.penguinAnalytics.trackFeatureUsage('challenge_playground', 'lesson2', {
-                                challengeId: challengeId,
-                                title: config.title
-                            });
-                        }
-                        
-                        // Verify memory section was created - wait a moment for DOM
-                        setTimeout(function(id) {
-                            return function() {
-                                var memorySection = document.querySelector('#' + id + ' .memory-section');
-                                var memoryTracker = document.querySelector('#' + id + ' .memory-tracker');
-                                
-                                console.log('🔍 DOM verification for', id + ':');
-                                console.log('  .memory-section found:', memorySection !== null);
-                                console.log('  .memory-tracker found:', memoryTracker !== null);
-                                
-                                if (memorySection) {
-                                    console.log('  Memory section HTML:', memorySection.outerHTML.substring(0, 200));
-                                } else {
-                                    console.error('  ❌ Memory section missing for:', id);
-                                    
-                                    // Debug: show what was actually created
-                                    var actualContainer = document.getElementById(id);
-                                    if (actualContainer) {
-                                        console.log('  Container HTML:', actualContainer.innerHTML.substring(0, 500));
-                                    }
-                                }
-                            };
-                        }(challengeId), 100);
+                        // Track challenge creation (safely)
+                        safeTrackEvent('challenge_created', {
+                            lesson: 'lesson2',
+                            challengeId: challengeId
+                        });
                         
                     } else {
                         console.error('  ❌ Init failed for:', challengeId);
@@ -408,8 +370,6 @@
                     
                 } catch (error) {
                     console.error('  ❌ Error creating challenge', challengeId + ':', error);
-                    console.error('    Error details:', error.message);
-                    console.error('    Stack:', error.stack);
                     failCount++;
                 }
             }
@@ -418,69 +378,44 @@
         console.log('🏆 Challenge initialization summary:');
         console.log('  ✅ Successful:', successCount);
         console.log('  ❌ Failed:', failCount);
-        console.log('  📊 Total attempted:', Object.keys(challengeConfigs).length);
         
-        // Track challenge initialization results
-        if (window.penguinAnalytics) {
-            window.penguinAnalytics.trackFeatureUsage('challenges_initialized', 'lesson2', {
-                successful: successCount,
-                failed: failCount,
-                total: Object.keys(challengeConfigs).length
-            });
-        }
+        // Track results (safely)
+        safeTrackEvent('challenges_initialized', {
+            lesson: 'lesson2',
+            successful: successCount,
+            failed: failCount,
+            total: Object.keys(challengeConfigs).length
+        });
         
         if (failCount > 0) {
             console.warn('⚠️ Some challenges failed to initialize. Check containers exist in HTML.');
         }
     }
     
-    // Struggle Detection System
-    function detectUserStruggle() {
-        var runCounts = {};
-        var errorCounts = {};
-        var lastActivity = Date.now();
-        
-        // Monitor playground usage for struggle indicators
-        setInterval(function() {
-            var now = Date.now();
-            var idleTime = now - lastActivity;
-            
-            // Detect long idle periods (over 5 minutes on same playground)
-            if (idleTime > 300000) { // 5 minutes
-                if (window.penguinAnalytics) {
-                    window.penguinAnalytics.trackUserStruggle('lesson2', 'long_idle', {
-                        idleTime: Math.floor(idleTime / 1000)
-                    });
-                }
-                lastActivity = now; // Reset to avoid repeated triggers
+    function showFallbackMessage() {
+        try {
+            var container = document.querySelector('.lesson-content');
+            if (container) {
+                container.innerHTML = '<div class="error-fallback">' +
+                    '<h4>⚠️ Loading Issue</h4>' +
+                    '<p>There was a problem loading this lesson. This can happen due to:</p>' +
+                    '<ul>' +
+                        '<li>Slow internet connection</li>' +
+                        '<li>Browser compatibility issues</li>' +
+                        '<li>Missing lesson files</li>' +
+                    '</ul>' +
+                    '<p><strong>Try:</strong></p>' +
+                    '<ul>' +
+                        '<li>Refresh the page (F5)</li>' +
+                        '<li>Check your internet connection</li>' +
+                        '<li>Try a different browser</li>' +
+                        '<li>Contact your teacher for help</li>' +
+                    '</ul>' +
+                '</div>';
             }
-        }, 60000); // Check every minute
-        
-        // Track activity
-        document.addEventListener('click', function() {
-            lastActivity = Date.now();
-        });
-        
-        document.addEventListener('keypress', function() {
-            lastActivity = Date.now();
-        });
-    }
-    
-    // Enhanced Error Tracking
-    function enhanceErrorTracking() {
-        // Override console.error to catch JavaScript errors
-        var originalError = console.error;
-        console.error = function() {
-            originalError.apply(console, arguments);
-            
-            // Track JavaScript errors that might indicate platform issues
-            if (window.penguinAnalytics && arguments[0]) {
-                var errorMsg = arguments[0].toString();
-                if (errorMsg.includes('Skulpt') || errorMsg.includes('Python') || errorMsg.includes('playground')) {
-                    window.penguinAnalytics.trackCommonError('lesson2', 'javascript', 'PlatformError', errorMsg.substring(0, 100));
-                }
-            }
-        };
+        } catch (e) {
+            console.error('Could not show fallback message:', e);
+        }
     }
     
     // Export for global access
@@ -488,20 +423,12 @@
     
     // Auto-initialize when DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeLesson();
-            detectUserStruggle();
-            enhanceErrorTracking();
-        });
+        document.addEventListener('DOMContentLoaded', initializeLesson);
     } else {
         // DOM already loaded, initialize immediately
-        setTimeout(function() {
-            initializeLesson();
-            detectUserStruggle();
-            enhanceErrorTracking();
-        }, 100);
+        setTimeout(initializeLesson, 100);
     }
     
-    console.log('=== Lesson 2 Logic Ready (Analytics Enhanced) ===');
+    console.log('=== Lesson 2 Logic Ready (Fixed & Stable) ===');
     
 })();
