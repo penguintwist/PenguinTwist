@@ -15,6 +15,25 @@
     
     <!-- Streamlined Styles -->
     <link rel="stylesheet" href="shared/lesson-styles-clean.css">
+    
+    <!-- TARGETED CSS FIX for scroll bar -->
+    <style>
+        /* Fix unwanted scroll bars */
+        .variable-animation,
+        .animation-container,
+        .animation-workspace {
+            overflow: hidden !important;
+        }
+        
+        /* Hide any problematic animation elements */
+        .animation-controls .anim-btn {
+            display: none;
+        }
+        
+        .step-btn, .reset-btn, .next-step {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -76,7 +95,7 @@
                 </div>
             </div>
             
-            <!-- Memory Box Visualization -->
+            <!-- Memory Box Visualization - KEEP THE WORKING VERSION -->
             <div class="section">
                 <h3>Understanding Variables as Memory Boxes</h3>
                 <div class="theory">
@@ -89,7 +108,7 @@
                     </div>
                 </div>
                 
-                <!-- Simple Memory Visualization - WORKING VERSION -->
+                <!-- KEEP: Working Memory Visualization -->
                 <div id="memoryBoxDemo" class="memory-visualization-container"></div>
             </div>
             
@@ -217,8 +236,16 @@ print(age)</div>
                 </div>
             </div>
             
-            <!-- Assessment Section -->
-            <div id="masteryCheck" class="mastery-check-container"></div>
+            <!-- RESTORED: Assessment Section -->
+            <div class="section">
+                <h3>Check Your Understanding</h3>
+                <div class="theory">
+                    <p>Complete these questions to test your variable knowledge and unlock the next lesson:</p>
+                </div>
+                
+                <!-- Mastery Check - RESTORED -->
+                <div id="masteryCheck" class="mastery-check-container"></div>
+            </div>
             
             <!-- Practice Challenges Section (Hidden Initially) -->
             <div id="practiceSection" class="practice-section" style="display: none;">
@@ -299,15 +326,15 @@ print(age)</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     
-    <!-- Analytics System (Optional - can be removed if causing issues) -->
+    <!-- Analytics System (Optional) -->
     <script src="shared/analytics.js"></script>
     
     <!-- Shared Components - Streamlined -->
     <script src="shared/python-interpreter-clean.js"></script>
     <script src="shared/lesson-components-clean.js"></script>
     
-    <!-- Lesson Logic - FIXED VERSION -->
-    <script src="shared/lesson2-logic-fixed.js"></script>
+    <!-- Lesson Logic - Use ORIGINAL (working version) -->
+    <script src="shared/lesson2-logic.js"></script>
     
     <!-- Multiple Choice Functionality -->
     <script>
