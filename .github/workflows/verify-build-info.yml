@@ -1,0 +1,12 @@
+name: "Verify Build Info"
+on: [push]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Generate build-info.js"
+        run: ./scripts/generate-build-info.sh
+      - name: "Verify build-info.js"
+        run: ./scripts/verify-build-info.sh
