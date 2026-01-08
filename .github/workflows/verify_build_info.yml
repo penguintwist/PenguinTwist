@@ -1,0 +1,23 @@
+name: "Verify Build Info"
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Generate build-info.js"
+        run: ./scripts/generate-build-info.sh
+      - name: "Verify build-info.js is up to date"
+        run: |
+          if ! git diff --quiet js/build-info.js; then
+            echo "Error: js/build-info.js is out of date."
+            echo "Please run scripts/generate-build-info.sh and commit the changes."
+            git diff js/build-info.js
+            exit 1
+          else
+            echo "js/build-info.js is up to date."
+          fi
