@@ -3,6 +3,6 @@
 
 window.BUILD_INFO = {
     version: '0.1.0',
-    tree: '28654441d73cd5589fb26ddee6a2a9701c440fa7',
+    contentId: 'ad0a458b3a160086e63d30a599db825fbfa110e9',
     date: '2026-01-08'
 };

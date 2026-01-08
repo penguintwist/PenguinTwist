@@ -1,5 +1,22 @@
 #!/bin/bash
-TREE_HASH=$(git write-tree)
+
+# This script generates a build information file (js/build-info.js)
+# with a content hash representing the current state of the source files.
+#
+# To create a stable identifier that doesn't change when this script is rerun,
+# we calculate a hash of the content of all tracked files, *excluding* this
+# build-info file itself. This makes the generation process idempotent.
+#
+# The process is:
+# 1. Get a list of all tracked files and their Git blob hashes.
+# 2. Filter out the js/build-info.js file from this list.
+# 3. Create a SHA1 hash of the list of the remaining blob hashes.
+#
+# This `contentId` is a reliable signature of the repository's content.
+
+# The `|| true` prevents the script from failing if the file doesn't exist yet
+# or if there are no other tracked files.
+CONTENT_ID=$(git ls-files -s | grep -v "js/build-info.js" | cut -d' ' -f2 | sha1sum | cut -d' ' -f1 || true)
 DATE=$(date -u +%Y-%m-%d)
 VERSION="0.1.0" # Placeholder version
 
@@ -10,7 +27,7 @@ cat > js/build-info.js <<EOL
 
 window.BUILD_INFO = {
     version: '$VERSION',
-    tree: '$TREE_HASH',
+    contentId: '$CONTENT_ID',
     date: '$DATE'
 };
 EOL
